@@ -28,9 +28,6 @@ namespace NE_Science
     public class MPL_Module : Lab
     {
 
-        private const string MSG_CONFIG_NODE_NAME = "NE_MSG_LabEquipmentSlot";
-        private const string USU_CONFIG_NODE_NAME = "NE_USU_LabEquipmentSlot";
-
         [KSPField(isPersistant = false)]
         public float LabTimePerHour = 0;
         [KSPField(isPersistant = false)]
@@ -56,16 +53,27 @@ namespace NE_Science
         {
             base.OnLoad(node);
             NE_Helper.log("MPL OnLoad");
-            msgSlot = getLabEquipmentSlot(node.GetNode(MSG_CONFIG_NODE_NAME));
-            usuSlot = getLabEquipmentSlot(node.GetNode(USU_CONFIG_NODE_NAME));
+            LabEquipmentSlot les = getLabEquipmentSlot(node);
+
+            switch (les.getRackType())
+            {
+                case EquipmentRacks.MSG:
+                    msgSlot = les;
+                    break;
+                case EquipmentRacks.USU:
+                    usuSlot = les;
+                    break;
+                default:
+                    NE_Helper.logError("MPL OnLoad - invalid equipment rack specified in save file.");
+            }
         }
 
         public override void OnSave(ConfigNode node)
         {
             base.OnSave(node);
             NE_Helper.log("MPL OnSave");
-            node.AddNode(getConfigNodeForSlot(MSG_CONFIG_NODE_NAME, msgSlot));
-            node.AddNode(getConfigNodeForSlot(USU_CONFIG_NODE_NAME, usuSlot));
+            node.AddNode(getConfigNodeForSlot(LabEquipmentSlot.CONFIG_NODE_NAME, msgSlot));
+            node.AddNode(getConfigNodeForSlot(LabEquipmentSlot.CONFIG_NODE_NAME, usuSlot));
 
         }
 

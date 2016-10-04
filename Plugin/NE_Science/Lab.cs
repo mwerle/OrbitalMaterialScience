@@ -69,17 +69,27 @@ namespace NE_Science
 
         }
 
-        protected LabEquipmentSlot getLabEquipmentSlot(ConfigNode configNode)
+        protected LabEquipmentSlot[] getLabEquipmentSlots(ConfigNode configNode)
         {
+            LabEquipmentSlot[] les;
+
             if (configNode != null)
             {
-                return LabEquipmentSlot.getLabEquipmentSlotFromConfigNode(configNode.GetNode(LabEquipmentSlot.CONFIG_NODE_NAME), this);
+                //return LabEquipmentSlot.getLabEquipmentSlotFromConfigNode(configNode.GetNode(LabEquipmentSlot.CONFIG_NODE_NAME), this);
+                ConfigNode[] cns = configNode.GetNodes(LabEquipmentSlot.CONFIG_NODE_NAME);
+                les = new LabEquipmentSlot[cns.Length];
+                for (int i = 0; i < cns.Length; i++)
+                {
+                    les[i] = getLabEquipmentSlotFromConfigNode
+                }
             }
             else
             {
                 NE_Helper.logError("Lab GetLabEquipmentSlotFromNode: LabEquipmentSlotNode null");
-                return new LabEquipmentSlot(EquipmentRacks.NONE);
+                les = new LabEquipmentSlot[1];
+                les[0] = new LabEquipmentSlot(EquipmentRacks.NONE);
             }
+            return les;
         }
 
         protected ConfigNode getConfigNodeForSlot(string nodeName, LabEquipmentSlot slot)

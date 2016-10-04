@@ -119,6 +119,11 @@ namespace NE_Science
             return new LabEquipmentSlot(type, le);
         }
 
+        public EquipmentRacks getRackType()
+        {
+            return type;
+        }
+
         internal bool experimentSlotFree()
         {
             if (equ != null)

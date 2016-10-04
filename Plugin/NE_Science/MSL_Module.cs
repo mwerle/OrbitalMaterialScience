@@ -58,9 +58,27 @@ namespace NE_Science
         {
             base.OnLoad(node);
             NE_Helper.log("MSL OnLoad");
-            cirSlot = getLabEquipmentSlot(node.GetNode(CIR_CONFIG_NODE_NAME));
-            firSlot = getLabEquipmentSlot(node.GetNode(FIR_CONFIG_NODE_NAME));
-            printerSlot = getLabEquipmentSlot(node.GetNode(DPR_CONFIG_NODE_NAME));
+
+            LabEquipmentSlot les = getLabEquipmentSlot(node);
+            foreach (var les in )
+
+
+            switch (les.getRackType())
+            {
+                case EquipmentRacks.CIR:
+                    cirSlot = les;
+                    break;
+                case EquipmentRacks.FIR:
+                    firSlot = les;
+                    break;
+            case EquipmentRacks.PRINTER:
+                    printerSlot = les;
+                    break;
+                default:
+                    NE_Helper.logError("MSL OnLoad - invalid equipment rack specified in save file.");
+            }
+
+
         }
 
         public override void OnSave(ConfigNode node)
