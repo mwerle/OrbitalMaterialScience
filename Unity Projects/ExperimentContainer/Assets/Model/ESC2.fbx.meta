@@ -4,11 +4,22 @@ ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
+    100002: Camera
+    100004: Container_2U
+    100006: Lamp
     400000: //RootNode
+    400002: Camera
+    400004: Container_2U
+    400006: Lamp
     2300000: //RootNode
+    2300002: Container_2U
     3300000: //RootNode
+    3300002: Container_2U
     4300000: Container
+    4300002: Container_2U
+    4300004: ESC2_Cylinder
     9500000: //RootNode
+    11100000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
@@ -23,7 +34,7 @@ ModelImporter:
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5

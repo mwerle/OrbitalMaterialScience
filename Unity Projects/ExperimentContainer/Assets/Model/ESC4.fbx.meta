@@ -4,10 +4,20 @@ ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
+    100002: Camera
+    100004: Container_4U
+    100006: Lamp
     400000: //RootNode
+    400002: Camera
+    400004: Container_4U
+    400006: Lamp
     2300000: //RootNode
+    2300002: Container_4U
     3300000: //RootNode
+    3300002: Container_4U
     4300000: Container
+    4300002: Container_4U
+    4300004: ESC4_Cylinder
     9500000: //RootNode
   materials:
     importMaterials: 1
