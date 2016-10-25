@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: ESC4_UV
-  m_Shader: {fileID: 4800000, guid: b85a9e203b3d19f4eb507f7d80dc97aa, type: 3}
+  m_Shader: {fileID: 4800000, guid: 006a02235764773478998a79f8e09f85, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_CustomRenderQueue: -1
