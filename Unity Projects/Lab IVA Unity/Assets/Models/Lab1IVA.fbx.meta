@@ -46,6 +46,7 @@ ModelImporter:
     100080: RailBase.002
     100082: RailBase.003
     100084: CIR_LaptopBase
+    100086: FIR_LaptopBase
     400000: 3D_Printer
     400002: Base1
     400004: Base2
@@ -89,6 +90,7 @@ ModelImporter:
     400080: RailBase.002
     400082: RailBase.003
     400084: CIR_LaptopBase
+    400086: FIR_LaptopBase
     2300000: 3D_Printer
     2300002: Base1
     2300004: Base2
@@ -132,6 +134,7 @@ ModelImporter:
     2300080: RailBase.002
     2300082: RailBase.003
     2300084: CIR_LaptopBase
+    2300086: FIR_LaptopBase
     3300000: 3D_Printer
     3300002: Base1
     3300004: Base2
@@ -175,6 +178,7 @@ ModelImporter:
     3300080: RailBase.002
     3300082: RailBase.003
     3300084: CIR_LaptopBase
+    3300086: FIR_LaptopBase
     4300000: Lab_IVA
     4300002: Window2
     4300004: Window1
@@ -219,6 +223,7 @@ ModelImporter:
     4300082: Rail Base.003
     4300084: RailBase.003
     4300086: CIR_LaptopBase
+    4300088: FIR_LaptopBase
     7400000: FFR_Pump
     7400002: Lab IVA|Head BaseAction
     7400004: Lab IVA|HeadAction
