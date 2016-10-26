@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: NE_MEP825_Texture
-  m_Shader: {fileID: 4800000, guid: d1a91050285d17a48953d33103bd5b31, type: 3}
+  m_Shader: {fileID: 4800000, guid: 6b3e2c0f85fcc3b4f8d2575e592b6bf3, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_CustomRenderQueue: -1
