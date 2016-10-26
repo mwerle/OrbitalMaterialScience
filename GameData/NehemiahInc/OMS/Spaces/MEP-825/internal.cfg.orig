@@ -1,0 +1,30 @@
+INTERNAL
+{
+	name = neMEP825Internals
+	MODULE
+	{
+		name = InternalSeat
+		seatTransformName = Seat
+		allowCrewHelmet = false
+	}
+	MODULE
+	{
+		name = MEP_IVA_Alarm_Animation
+		maxIntensity = 3.5
+		intensityStep = 0.12
+	}
+	PROP
+	{
+		name = NE_MEP_ExpScreen
+		position = -0.98,-0.2,-0.51
+		rotation = 6.234706E-08,0.9238796,0.3826835,-1.505191E-07
+		scale = 1,1,1
+	}
+	PROP
+	{
+		name = NE_MEP_StatusScreen
+		position = 0.98,-0.2,-0.51
+		rotation = 6.339635E-08,0.9211854,0.3891239,-1.500802E-07
+		scale = 1,1,1
+	}
+}

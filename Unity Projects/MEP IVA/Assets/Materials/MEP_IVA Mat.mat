@@ -22,6 +22,12 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - first:
+        name: _Emissive
+      second:
+        m_Texture: {fileID: 2800000, guid: 86ffa0ab4e5aeda4eae9ca0bcda640d0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
         name: _MainTex
       second:
         m_Texture: {fileID: 2800000, guid: 867f3aa7a8c87244db35b66b668232ff, type: 3}
@@ -41,6 +47,9 @@ Material:
     - first:
         name: _Color
       second: {r: 1, g: 1, b: 1, a: 1}
+    - first:
+        name: _EmissiveColor
+      second: {r: 0, g: 0, b: 0, a: 1}
     - first:
         name: _RimColor
       second: {r: 0, g: 0, b: 0, a: 0}
