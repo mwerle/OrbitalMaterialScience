@@ -104,7 +104,7 @@ namespace NE_Science
 
         private void stopSoundFX()
         {
-            if (prAs.isPlaying)
+            if (prAs != null && prAs.isPlaying)
             {
                 prAs.Stop();
             }
@@ -112,7 +112,7 @@ namespace NE_Science
 
         private void playSoundFX()
         {
-            if (!prAs.isPlaying)
+            if (prAs != null && !prAs.isPlaying)
             {
                 prAs.Play();
             }
@@ -157,51 +157,51 @@ namespace NE_Science
 
         private void initPartObjects()
         {
-            if (part.internalModel != null)
+            if (part.internalModel == null)
             {
-                GameObject labIVA = part.internalModel.gameObject.transform.GetChild(0).GetChild(0).gameObject;
-                if (labIVA.GetComponent<MeshFilter>().name == "Lab1IVA")
-                {
-                    NE_Helper.log("set printer transforms");
-                    GameObject printer = labIVA.transform.GetChild(0).gameObject;
-                    //GameObject cir = labIVA.transform.GetChild(1).gameObject;
-                    headBase = printer.transform.GetChild(1).GetChild(0);
-                    if (headBase != null)
-                    {
-                        prAs = part.gameObject.AddComponent<AudioSource>();// using gameobjects from the internal model does not work AS would stay in the place it was added.
-                        AudioClip clip = GameDatabase.Instance.GetAudioClip(prMovingSound);
-                        prAs.clip = clip;
-                        prAs.dopplerLevel = DOPPLER_LEVEL;
-                        prAs.rolloffMode = AudioRolloffMode.Logarithmic;
-                        prAs.Stop();
-                        prAs.loop = true;
-                        prAs.minDistance = MIN_DIST;
-                        prAs.maxDistance = MAX_DIST;
-                        prAs.volume = 1f;
-
-                        prBaseChgDirAs = part.gameObject.AddComponent<AudioSource>();// using gameobjects from the internal model does not work AS would stay in the place it was added.
-                        prBaseChgDirAs.clip = GameDatabase.Instance.GetAudioClip(prBaseChgDirSound);
-                        prBaseChgDirAs.dopplerLevel = DOPPLER_LEVEL;
-                        prBaseChgDirAs.rolloffMode = AudioRolloffMode.Logarithmic;
-                        prBaseChgDirAs.Stop();
-                        prBaseChgDirAs.loop = false;
-                        prBaseChgDirAs.minDistance = MIN_DIST;
-                        prBaseChgDirAs.maxDistance = MAX_DIST;
-                        prBaseChgDirAs.volume = 0.4f;
-
-                        prHeadChgDirAs = part.gameObject.AddComponent<AudioSource>();// using gameobjects from the internal model does not work AS would stay in the place it was added.
-                        prHeadChgDirAs.clip = GameDatabase.Instance.GetAudioClip(prHeadChgDirSound);
-                        prHeadChgDirAs.dopplerLevel = DOPPLER_LEVEL;
-                        prHeadChgDirAs.rolloffMode = AudioRolloffMode.Logarithmic;
-                        prHeadChgDirAs.Stop();
-                        prHeadChgDirAs.loop = false;
-                        prHeadChgDirAs.minDistance = MIN_DIST;
-                        prHeadChgDirAs.maxDistance = MAX_DIST;
-                        prHeadChgDirAs.volume = 1f;
-                    }
-                    head = headBase.GetChild(0);
-                }
+                return;
             }
+            GameObject labIVA = part.internalModel.gameObject.transform.GetChild(0).GetChild(0).gameObject;
+            if (labIVA.GetComponent<MeshFilter>().name != "MSL_IVA")
+            {
+                return;
+            }
+
+            NE_Helper.log("set printer transforms");
+            GameObject printer = labIVA.transform.FindChild("3D_Printer").gameObject;
+            headBase = printer.transform.GetChild(1).GetChild(0);
+            head = headBase.GetChild(0);
+
+            prAs = part.gameObject.AddComponent<AudioSource>();// using gameobjects from the internal model does not work AS would stay in the place it was added.
+            AudioClip clip = GameDatabase.Instance.GetAudioClip(prMovingSound);
+            prAs.clip = clip;
+            prAs.dopplerLevel = DOPPLER_LEVEL;
+            prAs.rolloffMode = AudioRolloffMode.Logarithmic;
+            prAs.Stop();
+            prAs.loop = true;
+            prAs.minDistance = MIN_DIST;
+            prAs.maxDistance = MAX_DIST;
+            prAs.volume = 1f;
+
+            prBaseChgDirAs = part.gameObject.AddComponent<AudioSource>();// using gameobjects from the internal model does not work AS would stay in the place it was added.
+            prBaseChgDirAs.clip = GameDatabase.Instance.GetAudioClip(prBaseChgDirSound);
+            prBaseChgDirAs.dopplerLevel = DOPPLER_LEVEL;
+            prBaseChgDirAs.rolloffMode = AudioRolloffMode.Logarithmic;
+            prBaseChgDirAs.Stop();
+            prBaseChgDirAs.loop = false;
+            prBaseChgDirAs.minDistance = MIN_DIST;
+            prBaseChgDirAs.maxDistance = MAX_DIST;
+            prBaseChgDirAs.volume = 0.4f;
+
+            prHeadChgDirAs = part.gameObject.AddComponent<AudioSource>();// using gameobjects from the internal model does not work AS would stay in the place it was added.
+            prHeadChgDirAs.clip = GameDatabase.Instance.GetAudioClip(prHeadChgDirSound);
+            prHeadChgDirAs.dopplerLevel = DOPPLER_LEVEL;
+            prHeadChgDirAs.rolloffMode = AudioRolloffMode.Logarithmic;
+            prHeadChgDirAs.Stop();
+            prHeadChgDirAs.loop = false;
+            prHeadChgDirAs.minDistance = MIN_DIST;
+            prHeadChgDirAs.maxDistance = MAX_DIST;
+            prHeadChgDirAs.volume = 1f;
         }
     }
 }

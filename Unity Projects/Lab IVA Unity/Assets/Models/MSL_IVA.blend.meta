@@ -135,6 +135,8 @@ ModelImporter:
     4300046: Rail_Long_003
     4300048: Rail_Base_003
     4300050: RailBase_003
+    4300052: MSL1000_IVA
+    4300054: MSL_IVA
     7400000: MSL_FIR_Animation
     7400002: MSL_Printer_Animation
     9500000: //RootNode

@@ -401,7 +401,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 100018, guid: 915322ab5a9da2d428ba0a131d7c53bd, type: 3}
       propertyPath: m_Name
-      value: NE_MSL-1000
+      value: MSL_IVA
       objectReference: {fileID: 0}
     - target: {fileID: 100012, guid: 915322ab5a9da2d428ba0a131d7c53bd, type: 3}
       propertyPath: m_Name

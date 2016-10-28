@@ -92,7 +92,7 @@ namespace NE_Science
 
         private void stopSoundFX()
         {
-            if (pumpAs.isPlaying)
+            if (pumpAs != null && pumpAs.isPlaying)
             {
                 pumpAs.Stop();
             }
@@ -100,7 +100,7 @@ namespace NE_Science
 
         private void playSoundFX()
         {
-            if (!pumpAs.isPlaying)
+            if (pumpAs != null && !pumpAs.isPlaying)
             {
                 pumpAs.Play();
             }
@@ -108,29 +108,31 @@ namespace NE_Science
 
         private void initPartObjects()
         {
-            if (part.internalModel != null)
+            if (part.internalModel == null)
             {
-                GameObject labIVA = part.internalModel.gameObject.transform.GetChild(0).GetChild(0).gameObject;
-                if (labIVA.GetComponent<MeshFilter>().name == "Lab1IVA")
-                {
-                    //printer = labIVA.transform.GetChild(0).gameObject;
-                    //GameObject cir = labIVA.transform.GetChild(1).gameObject;
-                    GameObject ffr = labIVA.transform.GetChild(2).gameObject;
-                    pump1 = ffr.transform.GetChild(1);
-                    pump2 = ffr.transform.GetChild(2);
-
-                    pumpAs = part.gameObject.AddComponent<AudioSource>(); // using gameobjects from the internal model does not work AS would stay in the place it was added.
-                    AudioClip clip = GameDatabase.Instance.GetAudioClip(pumpSound);
-                    pumpAs.clip = clip;
-                    pumpAs.dopplerLevel = DOPPLER_LEVEL;
-                    pumpAs.rolloffMode = AudioRolloffMode.Logarithmic;
-                    pumpAs.Stop();
-                    pumpAs.loop = true;
-                    pumpAs.minDistance = MIN_DIST;
-                    pumpAs.maxDistance = MAX_DIST;
-                    pumpAs.volume = 1f;
-                }
+                return;
             }
+
+            GameObject labIVA = part.internalModel.gameObject.transform.GetChild(0).GetChild(0).gameObject;
+            if (labIVA.GetComponent<MeshFilter>().name != "MSL_IVA")
+            {
+                return;
+            }
+                
+            GameObject fir = labIVA.transform.FindChild("FIR").gameObject;
+            pump1 = fir.transform.FindChild("Pump_1");
+            pump2 = fir.transform.FindChild("Pump_2");
+
+            pumpAs = part.gameObject.AddComponent<AudioSource>(); // using gameobjects from the internal model does not work AS would stay in the place it was added.
+            AudioClip clip = GameDatabase.Instance.GetAudioClip(pumpSound);
+            pumpAs.clip = clip;
+            pumpAs.dopplerLevel = DOPPLER_LEVEL;
+            pumpAs.rolloffMode = AudioRolloffMode.Logarithmic;
+            pumpAs.Stop();
+            pumpAs.loop = true;
+            pumpAs.minDistance = MIN_DIST;
+            pumpAs.maxDistance = MAX_DIST;
+            pumpAs.volume = 1f;
         }
     }
 }
