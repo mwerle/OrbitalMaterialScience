@@ -1,6 +1,6 @@
 ﻿/*
  *   This file is part of Orbital Material Science.
- *   
+ *
  *   Orbital Material Science is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -24,6 +24,7 @@ namespace NE_Science
 {
     class MSL_FIR_Animation : InternalModule
     {
+        private bool isUserInIVA = false;
 
         [KSPField]
         public string pumpSound = "NehemiahInc/OMS/Sounds/pump";
@@ -42,6 +43,23 @@ namespace NE_Science
 
         private int count = 0;
 
+        public override void OnAwake()
+        {
+            base.OnAwake();
+            GameEvents.OnCameraChange.Add(OnCameraChange);
+        }
+
+        private void OnCameraChange(CameraManager.CameraMode newMode)
+        {
+            isUserInIVA = NE_Helper.IsUserInIVA(part);
+
+            // If we leave IVA, stop all sounds
+            if (!isUserInIVA)
+            {
+                stopSoundFX();
+            }
+        }
+
         public override void OnFixedUpdate()
         {
             base.OnUpdate();
@@ -52,7 +70,7 @@ namespace NE_Science
                     initPartObjects();
                 }
                 MSL_Module lab = part.GetComponent<MSL_Module>();
-                if (lab.isEquipmentRunning(EquipmentRacks.FIR))
+                if (lab.isEquipmentRunning(EquipmentRacks.FIR) && isUserInIVA)
                 {
                     if (pump1 != null)
                     {

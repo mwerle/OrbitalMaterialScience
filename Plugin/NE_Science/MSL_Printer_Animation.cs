@@ -1,6 +1,6 @@
 ﻿/*
  *   This file is part of Orbital Material Science.
- *   
+ *
  *   Orbital Material Science is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -24,6 +24,7 @@ namespace NE_Science
 {
     class MSL_Printer_Animation : InternalModule
     {
+        private bool isUserInIVA = false;
 
         [KSPField]
         public string prMovingSound = "NehemiahInc/OMS/Sounds/3DPmove";
@@ -58,7 +59,24 @@ namespace NE_Science
         private int count = 0;
 
         private int baseDirection = 1;
-        private int headDirection = 1;        
+        private int headDirection = 1;
+
+        public override void OnAwake()
+        {
+            base.OnAwake();
+            GameEvents.OnCameraChange.Add(OnCameraChange);
+        }
+
+        private void OnCameraChange(CameraManager.CameraMode newMode)
+        {
+            isUserInIVA = NE_Helper.IsUserInIVA(part);
+
+            // If we leave IVA, stop all sounds
+            if (!isUserInIVA)
+            {
+                stopSoundFX();
+            }
+        }
 
         public override void OnFixedUpdate()
         {
@@ -70,7 +88,7 @@ namespace NE_Science
                     initPartObjects();
                 }
                 MSL_Module lab = part.GetComponent<MSL_Module>();
-                if (lab.isEquipmentRunning(EquipmentRacks.PRINTER))
+                if (lab.isEquipmentRunning(EquipmentRacks.PRINTER) && isUserInIVA)
                 {
                     moveBase();
                     moveHead();
@@ -95,7 +113,7 @@ namespace NE_Science
         private void playSoundFX()
         {
             if (!prAs.isPlaying)
-            {                
+            {
                 prAs.Play();
             }
         }
@@ -106,18 +124,16 @@ namespace NE_Science
             pos += HEAD_SPEED * -headDirection; //I dont understand why it has to be -headDirection to work
             if (pos > HEAD_MAX || pos < HEAD_MIN)
             {
-               headDirection = headDirection * -1;  
+               headDirection = headDirection * -1;
+                if (prAs.isPlaying)
+                {
+                    prHeadChgDirAs.Play();
+                }
             }
             else
             {
                 float movment = HEAD_SPEED * headDirection;
                 head.Translate(0, movment, 0, Space.Self);
-            }
-
-            pos += HEAD_SPEED * -headDirection;
-            if (pos > HEAD_MAX || pos < HEAD_MIN)
-            {
-                prHeadChgDirAs.Play();
             }
         }
 
@@ -128,16 +144,14 @@ namespace NE_Science
             if (pos > BASE_MAX || pos < BASE_MIN)
             {
                 baseDirection = baseDirection * -1;
+                if (prAs.isPlaying)
+                {
+                    prBaseChgDirAs.Play();
+                }
             }
             else
             {
                 headBase.Translate(BASE_SPEED * baseDirection, 0, 0);
-            }
-
-            pos += BASE_SPEED * baseDirection;
-            if (pos > BASE_MAX || pos < BASE_MIN)
-            {
-                prBaseChgDirAs.Play();
             }
         }
 
