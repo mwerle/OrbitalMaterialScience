@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: 3D_Rack
-  m_Shader: {fileID: 4800000, guid: 6b3e2c0f85fcc3b4f8d2575e592b6bf3, type: 3}
+  m_Shader: {fileID: 4800000, guid: 006a02235764773478998a79f8e09f85, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_CustomRenderQueue: -1
@@ -18,7 +18,7 @@ Material:
     - first:
         name: _BumpMap
       second:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 9cd7e22278fd97243aa1e3634b5cb66d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - first:
