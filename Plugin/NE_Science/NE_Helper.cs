@@ -208,8 +208,55 @@ namespace NE_Science
             }
         }
 
+        public static void log( string format, params object[] list )
+        {
+            if (debug)
+            {
+                Debug.LogFormat("[NE] " + format, list);
+            }
+        }
+
         public static void logError(string errMsg){
             Debug.LogError("[NE] Error: " + errMsg);
         }
-    }
-}
+
+    } // END class NE_Helper
+
+    public delegate void GameObjectVisitor(GameObject go, int indent);
+
+    /// <summary>
+    /// Class adding some extension methods to the GameObject class.
+    /// </summary>
+    public static class GOExtensions
+    {
+        // Dump object
+        private static void internal_PrintComponents(GameObject go, int indent)
+        {
+            NE_Helper.log("{0}{1} has components:", indent > 0 ? new string('-', indent) + ">" : "", go.name);
+
+            var components = go.GetComponents<Component>();
+            foreach (var c in components)
+                NE_Helper.log("{0}: {1}", new string('.', indent + 3) + "c", c.GetType().FullName);
+        }
+
+        public static void PrintComponents(this UnityEngine.GameObject go, int maxIndent = 0)
+        {
+            go.TraverseHierarchy(internal_PrintComponents, 0, maxIndent);
+        }
+
+        public static void TraverseHierarchy(this UnityEngine.GameObject go, GameObjectVisitor visitor, int indent = 0, int maxIndent = 0)
+        {
+            visitor(go, indent);
+
+            for (int i = 0; i < go.transform.childCount; ++i)
+            {
+                go.transform.GetChild(i).gameObject.TraverseHierarchy(visitor, indent + 3, maxIndent);
+                if (maxIndent > 0 && indent/3 > maxIndent)
+                {
+                    break;
+                }
+            }
+        }
+    } // END class GOExtensions
+
+} // END namespace NE_Science

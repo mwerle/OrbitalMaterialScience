@@ -1,8 +1,8 @@
 ﻿/*
  *   This file is part of Orbital Material Science.
- *   
+ *
  *   Part of the code may originate from Station Science ba ether net http://forum.kerbalspaceprogram.com/threads/54774-0-23-5-Station-Science-(fourth-alpha-low-tech-docking-port-experiment-pod-models)
- * 
+ *
  *   Orbital Material Science is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -105,40 +105,22 @@ namespace NE_Science
             if (part.internalModel != null)
             {
                 GameObject labIVA = part.internalModel.gameObject.transform.GetChild(0).GetChild(0).gameObject;
-                if (labIVA.GetComponent<MeshFilter>().name == "Lab1IVA")
+                if (labIVA.GetComponent<MeshFilter>().name == "MSL_IVA")
                 {
-                    printer = labIVA.transform.GetChild(0).gameObject;
-                    cir = labIVA.transform.GetChild(1).gameObject;
-                    fir = labIVA.transform.GetChild(2).gameObject;
+                    printer = labIVA.transform.FindChild("3D_Printer").gameObject;
+                    cir = labIVA.transform.FindChild("CIR").gameObject;
+                    fir = labIVA.transform.FindChild("FIR").gameObject;
 
-                    if (firSlot.isEquipmentInstalled())
-                    {
-                        fir.SetActive(true);
-                    }
-                    else
-                    {
-                        fir.SetActive(false);
-                    }
+                    fir.SetActive(firSlot.isEquipmentInstalled());
+                    cir.SetActive(cirSlot.isEquipmentInstalled());
+                    printer.SetActive(printerSlot.isEquipmentInstalled());
 
-                    if (cirSlot.isEquipmentInstalled())
-                    {
-                        cir.SetActive(true);
-                    }
-                    else
-                    {
-                        cir.SetActive(false);
-                    }
-
-                    if (printerSlot.isEquipmentInstalled())
-                    {
-                        printer.SetActive(true);
-                    }
-                    else
-                    {
-                        printer.SetActive(false);
-                    }
+                    NE_Helper.log("init E Racks successfull");
                 }
-                NE_Helper.log("init E Racks successfull");
+                else
+                {
+                    NE_Helper.logError("MSL_IVA mesh not found");
+                }
             }
             else {
                 NE_Helper.log("init E Racks internal model null");
@@ -354,7 +336,7 @@ namespace NE_Science
                 {
                     Events["moveCIRExp"].guiName = "Move " + cirSlot.getExperiment().getAbbreviation();
                 }
-                
+
                 if (cirSlot.canActionRun())
                 {
                     string cirActionString = cirSlot.getActionString();
@@ -363,7 +345,7 @@ namespace NE_Science
                 Events["actionCIRExp"].active = cirSlot.canActionRun();
                 if (!cirSlot.experimentSlotFree())
                 {
-                    cirStatus = cirSlot.getExperiment().getAbbreviation() + ": " + cirSlot.getExperiment().getStateString(); 
+                    cirStatus = cirSlot.getExperiment().getAbbreviation() + ": " + cirSlot.getExperiment().getStateString();
                 }
                 else
                 {
@@ -393,7 +375,7 @@ namespace NE_Science
                 if (!firSlot.experimentSlotFree())
                 {
                     ffrStatus = firSlot.getExperiment().getAbbreviation() + ": " + firSlot.getExperiment().getStateString();
-                    
+
                 }
                 else
                 {
@@ -414,7 +396,7 @@ namespace NE_Science
                 {
                     Events["movePRExp"].guiName = "Move " + printerSlot.getExperiment().getAbbreviation();
                 }
-                
+
                 if (printerSlot.canActionRun())
                 {
                     string prActionString = printerSlot.getActionString();
@@ -423,7 +405,7 @@ namespace NE_Science
                 Events["actionPRExp"].active = printerSlot.canActionRun();
                 if (!printerSlot.experimentSlotFree())
                 {
-                    prStatus = printerSlot.getExperiment().getAbbreviation() + ": " + printerSlot.getExperiment().getStateString();    
+                    prStatus = printerSlot.getExperiment().getAbbreviation() + ": " + printerSlot.getExperiment().getStateString();
                 }
                 else
                 {

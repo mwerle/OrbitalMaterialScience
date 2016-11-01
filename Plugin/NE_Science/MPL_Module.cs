@@ -1,8 +1,8 @@
 ﻿/*
  *   This file is part of Orbital Material Science.
- *   
+ *
  *   Part of the code may originate from Station Science ba ether net http://forum.kerbalspaceprogram.com/threads/54774-0-23-5-Station-Science-(fourth-alpha-low-tech-docking-port-experiment-pod-models)
- * 
+ *
  *   Orbital Material Science is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -95,17 +95,82 @@ namespace NE_Science
             return gen;
         }
 
+        static bool isFirstTime = true;
         private void initERacksActive()
         {
+            if (part == null)
+            {
+                NE_Helper.log("init E Racks - part is null!");
+                return;
+            }
+
+            Part foo = part.FindChildPart("MPL_IVA(Clone)", true);
+            if (foo != null)
+            {
+                NE_Helper.log("init E Racks - found MPL_IVA!");
+                NE_Helper.log("init E Racks - MeshFilter: " + foo.gameObject?.GetComponent<MeshFilter>()?.name);
+            }
+            else
+            {
+                NE_Helper.log("init E Racks - MPL_IVA not found!");
+            }
             if (part.internalModel != null)
             {
-                GameObject labIVA = part.internalModel.gameObject.transform.GetChild(0).GetChild(0).gameObject;
-                if (labIVA.GetComponent<MeshFilter>().name == "MPL_IVA")
+
+                GameObject labIVA = part.internalModel.gameObject?.transform?.GetChild(0)?.GetChild(0)?.gameObject;
+                if (isFirstTime && NE_Helper.debugging())
                 {
-                    msg = labIVA.transform.GetChild(3).gameObject;
-                    
-                    cfe = msg.transform.GetChild(2).GetChild(0).gameObject;
-                    usu = labIVA.transform.GetChild(4).gameObject;
+                    part.internalModel?.gameObject.PrintComponents(5);
+                }
+                if (labIVA == null)
+                {
+                    NE_Helper.log("init E Racks - labIVA object not found");
+                    return;
+                }
+                if (labIVA.GetComponent<MeshFilter>() == null)
+                {
+                    NE_Helper.log("init E Racks - MeshFilter not found");
+                    if (isFirstTime)
+                    {
+                        labIVA.PrintComponents(2);
+                        isFirstTime = false;
+                    }
+                    if (labIVA.transform.GetComponent<MeshFilter>() != null)
+                    {
+                        NE_Helper.log("init E Racks - but labIVA.transform has MeshFilter: {0}", labIVA.transform.GetComponent<MeshFilter>().name);
+                    }
+                    if (labIVA.transform.GetChild(0).GetComponent<MeshFilter>() != null)
+                    {
+                        NE_Helper.log("init E Racks - but labIVA.GetChild(0) has MeshFilter: {0}", labIVA.transform.GetChild(0).GetComponent<MeshFilter>().name);
+                    }
+                }
+                else
+                {
+                    NE_Helper.log("init E Racks - MeshFilter '" + labIVA.GetComponent<MeshFilter>().name + "'found");
+                }
+                // MKW DEBUG
+                labIVA = labIVA.transform.GetChild(0).gameObject;
+                if (labIVA.GetComponent<MeshFilter>()?.name == "MPL_IVA")
+                {
+                    msg = labIVA.transform.FindChild("MSG")?.gameObject;
+                    if (msg == null)
+                    {
+                        NE_Helper.log("init E Racks - MSG object not found");
+                        return;
+                    }
+
+                    cfe = msg.transform.FindChild("CFE")?.gameObject;
+                    if (msg == null)
+                    {
+                        NE_Helper.log("init E Racks - CFE object not found");
+                        return;
+                    }
+                    usu = labIVA.transform.FindChild("UltraSound")?.gameObject;
+                    if (msg == null)
+                    {
+                        NE_Helper.log("init E Racks - UltraSound object not found");
+                        return;
+                    }
 
                     cfe.SetActive(!msgSlot.experimentSlotFree());
                     msg.SetActive(msgSlot.isEquipmentInstalled());
@@ -115,12 +180,13 @@ namespace NE_Science
                 }
                 else
                 {
-                    NE_Helper.logError("MPL mesh not found");
+                    NE_Helper.logError("init E Racks - MPL mesh not found");
                 }
-                
+
             }
-            else {
-                NE_Helper.log("init E Racks internal model null");
+            else
+            {
+                NE_Helper.log("init E Racks - internal model null");
             }
         }
 
@@ -312,7 +378,7 @@ namespace NE_Science
                 {
                     Events["moveMSGExp"].guiName = "Move " + msgSlot.getExperiment().getAbbreviation();
                 }
-                
+
                 if (msgSlot.canActionRun())
                 {
                     string cirActionString = msgSlot.getActionString();
