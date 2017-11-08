@@ -32,6 +32,9 @@ namespace NE_Science
 
         private bool error = false;
 
+        // MKW DEBUG
+        public static bool isFirstTime = true;
+
         public override void OnStart(PartModule.StartState state)
         {
             base.OnStart(state);
@@ -48,10 +51,20 @@ namespace NE_Science
                 return;
             }
 
-            var lights = gameObject.GetComponentsInChildren(typeof(Light)) as Light[];
+            var lights = gameObject.GetComponentsInChildren<Light>();
             if (lights == null)
             {
+                // Try to find inactive components
+                lights = gameObject.GetComponentsInChildren<Light>(true);
+            }
+            if (lights == null || lights.Length == 0)
+            {
                 NE_Helper.logError("MEP_Animation: No lights found in MEP_Module!");
+                if (NE_Helper.debugging() && isFirstTime)
+                {
+                    gameObject.PrintComponents(5);
+                    isFirstTime = false;
+                }
                 return;
             }
 

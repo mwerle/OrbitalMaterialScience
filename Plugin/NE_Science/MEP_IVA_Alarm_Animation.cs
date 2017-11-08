@@ -1,6 +1,6 @@
 ﻿/*
  *   This file is part of Orbital Material Science.
- *   
+ *
  *   Orbital Material Science is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -39,10 +39,9 @@ namespace NE_Science
         private const float MIN_DIST = 1f;
         private const float MAX_DIST = 2f;
 
-        private Light alarmLight;
-        private Material lightMat;
-
-        private AudioSource alarmAs;
+        private Light _alarmLight;
+        private Material _lightMat;
+        private AudioSource _alarmAs;
 
         private int count = 0;
 
@@ -53,10 +52,13 @@ namespace NE_Science
         {
             if (count == 0)
             {
+                /*
                 if (alarmLight == null)
                 {
                     initPartObjects();
                 }
+                */
+
                 MEP_Module lab = part.GetComponent<MEP_Module>();
                 if (lab.MEPlabState == MEPLabStatus.ERROR_ON_START || lab.MEPlabState == MEPLabStatus.ERROR_ON_STOP)
                 {
@@ -73,13 +75,14 @@ namespace NE_Science
                     }
                     stopSoundFX();
                 }
-
             }
             count = (count + 1) % 2;
         }
 
         private void animateAlarmLight()
         {
+            if (alarmLight == null) return;
+
             float newIntesity = curIntensity + (intensityStep * (float)lightDir);
             if (newIntesity > maxIntensity || newIntesity < 0.01f)
             {
@@ -96,7 +99,7 @@ namespace NE_Science
 
         private void stopSoundFX()
         {
-            if (!alarmAs.isPlaying)
+            if (alarmAs != null && alarmAs.isPlaying)
             {
                 alarmAs.Stop();
             }
@@ -104,33 +107,114 @@ namespace NE_Science
 
         private void playSoundFX()
         {
-            if (!alarmAs.isPlaying)
+            if (alarmAs != null && !alarmAs.isPlaying)
             {
                 alarmAs.Play();
             }
         }
 
+        public Light alarmLight
+        {
+            get
+            {
+                if (_alarmLight == null)
+                {
+                    GameObject labIVA = part.internalModel?.gameObject.transform.GetChild(0).GetChild(0).gameObject;
+                    if (labIVA == null)
+                    {
+                        NE_Helper.log("MEP_IVA_AlarmAnimation.initPartObjects - IVA not found");
+                        goto done;
+                    }
 
+                    var lights = labIVA.GetComponentsInChildren<Light>();
+                    if (lights == null || lights.Length == 0)
+                    {
+                        NE_Helper.log("MEP_IVA_AlarmAnimation.initPartObjects - no lights found in IVA");
+                        goto done;
+                    }
+
+                    for (int idx = 0; idx < lights.Length; idx++)
+                    {
+                        var light = lights[idx];
+                        if (light.name == "AlarmLight")
+                        {
+                            NE_Helper.log("Found alarm light");
+                            _alarmLight = light;
+                            _lightMat = light.GetComponent<Renderer>().material;
+                            break;
+                        }
+                    }
+                }
+            done:
+                return _alarmLight;
+            }
+        }
+
+        public Material lightMat
+        {
+            get
+            {
+                if (_lightMat == null)
+                {
+                    _lightMat = alarmLight.GetComponent<Renderer>().material;
+                }
+                return _lightMat;
+            }
+        }
+
+        public AudioSource alarmAs
+        {
+            get
+            {
+                if (_alarmAs == null)
+                {
+                    _alarmAs = part.gameObject.AddComponent<AudioSource>(); // using gameobjects from the internal model does not work AS would stay in the place it was added.
+                    AudioClip clip = GameDatabase.Instance.GetAudioClip(alarmSound);
+                    _alarmAs.clip = clip;
+                    _alarmAs.dopplerLevel = DOPPLER_LEVEL;
+                    _alarmAs.rolloffMode = AudioRolloffMode.Linear;
+                    _alarmAs.Stop();
+                    _alarmAs.loop = true;
+                    _alarmAs.minDistance = MIN_DIST;
+                    _alarmAs.maxDistance = MAX_DIST;
+                    _alarmAs.volume = 0.6f;
+                }
+                return _alarmAs;
+            }
+        }
+
+        /*
+        // MKW DEBUG
+        static bool isFirstTime = true;
 
         private void initPartObjects()
         {
-            if (part.internalModel != null)
+#if true
+            GameObject labIVA = part.internalModel?.gameObject.transform.GetChild(0).GetChild(0).gameObject;
+
+            if (labIVA == null)
             {
-                GameObject labIVA = part.internalModel.gameObject.transform.GetChild(0).GetChild(0).gameObject;
+                NE_Helper.log("MEP_IVA_AlarmAnimation.initPartObjects - IVA not found");
+                return;
+            }
 
-                if (labIVA.GetComponent<MeshFilter>().name == "MEP IVA")
+            var lights = labIVA.GetComponentsInChildren<Light>();
+            if (lights == null || lights.Length == 0)
+            {
+                NE_Helper.log("MEP_IVA_AlarmAnimation.initPartObjects - no lights found in IVA");
+                return;
+            }
+
+            for (int idx = 0; idx < lights.Length; idx++)
+            {
+                var light = lights[idx];
+                if (light.name == "AlarmLight")
                 {
-                    NE_Helper.log("set alarm light");
-
-                    GameObject light = labIVA.transform.GetChild(3).GetChild(0).gameObject;
-                    alarmLight = light.transform.GetChild(0).gameObject.GetComponent<Light>();
-
+                    NE_Helper.log("Found alarm light");
+                    alarmLight = light;
                     lightMat = light.GetComponent<Renderer>().material;
-                    alarmAs = part.gameObject.GetComponent<AudioSource>();
-                    if (alarmAs == null)
-                    {
-                        alarmAs = part.gameObject.AddComponent<AudioSource>(); // using gameobjects from the internal model does not work AS would stay in the place it was added.
-                    }
+
+                    alarmAs = part.gameObject.AddComponent<AudioSource>(); // using gameobjects from the internal model does not work AS would stay in the place it was added.
                     AudioClip clip = GameDatabase.Instance.GetAudioClip(alarmSound);
                     alarmAs.clip = clip;
                     alarmAs.dopplerLevel = DOPPLER_LEVEL;
@@ -141,11 +225,67 @@ namespace NE_Science
                     alarmAs.maxDistance = MAX_DIST;
                     alarmAs.volume = 0.6f;
                 }
-                else
+            }
+
+#else
+            // MKW DEBUG
+            if (isFirstTime && NE_Helper.debugging())
+            {
+                part.internalModel?.gameObject.PrintComponents(5);
+            }
+            var mf = labIVA?.GetComponent<MeshFilter>();
+            if (mf == null)
+            {
+                NE_Helper.log("MEP_IVA_AlarmAnimation.initPartObjects - MeshFilter not found");
+                if (isFirstTime && NE_Helper.debugging())
                 {
-                    NE_Helper.logError("MEP IVA not found");
+                    labIVA?.PrintComponents(2);
+                }
+                if (labIVA?.transform?.GetComponent<MeshFilter>() != null)
+                {
+                    NE_Helper.log("MEP_IVA_AlarmAnimation.initPartObjects - but labIVA.transform has MeshFilter: {0}", labIVA.transform.GetComponent<MeshFilter>().name);
+                    mf = labIVA.transform.GetComponent<MeshFilter>();
+                }
+                if (labIVA?.transform?.GetChild(0)?.GetComponent<MeshFilter>() != null)
+                {
+                    NE_Helper.log("MEP_IVA_AlarmAnimation.initPartObjects - but labIVA.transform.GetChild(0) has MeshFilter: {0}", labIVA.transform.GetChild(0).GetComponent<MeshFilter>().name);
+                    mf = labIVA.transform.GetChild(0).GetComponent<MeshFilter>();
                 }
             }
+
+            if (mf?.name == "MEP IVA")
+            {
+                NE_Helper.log("set alarm light");
+
+                GameObject light = labIVA.transform.GetChild(3).GetChild(0).gameObject;
+                alarmLight = light.transform.GetChild(0).gameObject.GetComponent<Light>();
+
+                lightMat = light.GetComponent<Renderer>().material;
+            }
+            else
+            {
+                NE_Helper.logError("MEP IVA not found; could not configure light");
+            }
+
+            alarmAs = part.gameObject.GetComponent<AudioSource>();
+            if (alarmAs == null)
+            {
+                NE_Helper.log("set alarm audio");
+                alarmAs = part.gameObject.AddComponent<AudioSource>(); // using gameobjects from the internal model does not work AS would stay in the place it was added.
+                AudioClip clip = GameDatabase.Instance.GetAudioClip(alarmSound);
+                alarmAs.clip = clip;
+                alarmAs.dopplerLevel = DOPPLER_LEVEL;
+                alarmAs.rolloffMode = AudioRolloffMode.Linear;
+                alarmAs.Stop();
+                alarmAs.loop = true;
+                alarmAs.minDistance = MIN_DIST;
+                alarmAs.maxDistance = MAX_DIST;
+                alarmAs.volume = 0.6f;
+            }
+
+            isFirstTime = false;
+#endif
         }
+        */
     }
 }
