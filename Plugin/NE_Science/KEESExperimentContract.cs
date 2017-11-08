@@ -67,7 +67,7 @@ namespace NE_Science.Contracts
             return null;
         }
 
-        private static Experiment[] ExperimentParts
+        public static Experiment[] ExperimentParts
         {
             get
             {
