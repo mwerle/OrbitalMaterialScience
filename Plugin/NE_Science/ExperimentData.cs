@@ -1,6 +1,6 @@
 ﻿/*
  *   This file is part of Orbital Material Science.
- *   
+ *
  *   Orbital Material Science is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -16,9 +16,9 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using UnityEngine;
+using KSP.Localization;
 
 namespace NE_Science
 {
@@ -48,13 +48,26 @@ namespace NE_Science
 
         private Guid cachedVesselID;
         private int partCount;
-        private List<ExperimentStorage> contCache = null;
+        private ExperimentStorage[] contCache = null;
 
+        /// <summary>
+        /// Creates a new Experiment data object
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="type"></param>
+        /// <param name="name">This should be a localisation tag for the "display name".</param>
+        /// <param name="abb"></param>
+        /// <param name="eq"></param>
+        /// <param name="mass"></param>
+        /// <param name="cost"></param>
         public ExperimentData(string id, string type, string name, string abb, EquipmentRacks eq, float mass, float cost)
         {
             this.id = id;
             this.type = type;
-            this.name = name;
+            if (!Localizer.TryGetStringByTag(name, out this.name))
+            {
+                this.name = name;
+            }
             this.abb = abb;
             this.mass = mass;
             this.cost = cost;
@@ -98,33 +111,38 @@ namespace NE_Science
 
         private string getReqString()
         {
-            
-            string reqString = "Needs: ";
+            string reqString = "";// = Localizer.GetStringByTag("#ne_Needs") + ": ";
             switch (getEquipmentNeeded())
             {
                 case EquipmentRacks.CIR:
-                    reqString += "MSL-1000 with Combustion Integrated Rack (CIR)";
+                    reqString = Localizer.Format("#ne_Needs_1_with_2", "MSL-1000", "#ne_oms_eq_cir_title");
+                    //reqString += "MSL-1000 with Combustion Integrated Rack (CIR)";
                     break;
                 case EquipmentRacks.FIR:
-                    reqString += "MSL-1000 with Fluid Integrated Rack (FIR)";
+                    reqString = Localizer.Format("#ne_Needs_1_with_2", "MSL-1000", "#ne_oms_eq_fir_title");
+                    //reqString += "MSL-1000 with Fluid Integrated Rack (FIR)";
                     break;
                 case EquipmentRacks.PRINTER:
-                    reqString += "MSL-1000 with 3D-Printer (3PR)";
+                    reqString = Localizer.Format("#ne_Needs_1_with_2", "MSL-1000", "#ne_oms_eq_3dp_title");
+                    //reqString += "MSL-1000 with 3D-Printer (3PR)";
                     break;
                 case EquipmentRacks.MSG:
-                    reqString += "MPL-600 with Microgravity Science Glovebox (MSG)";
+                    reqString = Localizer.Format("#ne_Needs_1_with_2", "MPL-600", "#ne_oms_eq_msg_title");
+                    //reqString += "MPL-600 with Microgravity Science Glovebox (MSG)";
                     break;
                 case EquipmentRacks.USU:
-                    reqString += "MPL-600 with Ultrasound Unit (USU)";
+                    reqString = Localizer.Format("#ne_Needs_1_with_2", "MPL-600", "#ne_kls_eq_usu_title");
+                    //reqString += "MPL-600 with Ultrasound Unit (USU)";
                     break;
                 case EquipmentRacks.KEMINI:
-                    reqString += "Command Pod mk1";
+                    reqString = Localizer.Format("#ne_Needs_1", "Command Pod mk1");
                     break;
                 case EquipmentRacks.EXPOSURE:
-                    reqString += "MEP-825 and MPL-600 or MSL-1000";
+                    reqString = Localizer.Format("#ne_Needs_1_and_2_or_3", "MEP-825", "MPL-600", "MSL-1000");
+                    //reqString += "MEP-825 and MPL-600 or MSL-1000";
                     break;
             }
-            
+
             return reqString;
         }
 
@@ -222,22 +240,17 @@ namespace NE_Science
         public List<ExperimentStorage> getFreeExperimentContainers(Vessel vessel)
         {
             List<ExperimentStorage> freeCont = new List<ExperimentStorage>();
-            List<ExperimentStorage> allCont;
-            if (cachedVesselID == vessel.id && partCount == vessel.parts.Count && contCache != null)
+            if (contCache == null || cachedVesselID != vessel.id && partCount != vessel.parts.Count)
             {
-                allCont = contCache;
-            }
-            else
-            {
-                allCont = new List<ExperimentStorage>(UnityFindObjectsOfType(typeof(ExperimentStorage)) as ExperimentStorage[]);
-                contCache = allCont;
+                contCache = UnityFindObjectsOfType(typeof(ExperimentStorage)) as ExperimentStorage[];
                 cachedVesselID = vessel.id;
                 partCount = vessel.parts.Count;
                 NE_Helper.log("Storage Cache refresh");
             }
 
-            foreach (ExperimentStorage c in allCont)
+            for (int idx = 0, count = contCache.Length; idx < count; idx++)
             {
+                var c = contCache[idx];
                 if (c.vessel == vessel && c.isEmpty() && c.type == storageType)
                 {
                     freeCont.Add(c);
@@ -315,10 +328,10 @@ namespace NE_Science
             switch (state)
             {
                 case ExperimentState.INSTALLED:
-                    return "Start " + getAbbreviation();
+                    return Localizer.Format("#ne_Start_1", getAbbreviation());
 
                 case ExperimentState.FINISHED:
-                    return "End " + getAbbreviation();
+                    return Localizer.Format("#ne_End_1", getAbbreviation());
 
                 default:
                     return "";
@@ -327,10 +340,11 @@ namespace NE_Science
 
         public virtual void runLabAction()
         {
-            
+
         }
 
-        internal virtual string getStateString()
+        /** Returns the status of the experiment as an english string. */
+        internal virtual string stateString()
         {
             switch (state)
             {
@@ -346,6 +360,27 @@ namespace NE_Science
                     return "Finalized";
                 default:
                     return "NullState";
+            }
+        }
+
+
+        /** Returns the status of the experiment as a localized string. */
+        internal virtual string displayStateString()
+        {
+            switch (state)
+            {
+                case ExperimentState.STORED:
+                    return Localizer.GetStringByTag("#ne_Stored");
+                case ExperimentState.INSTALLED:
+                    return Localizer.GetStringByTag("#ne_Installed");
+                case ExperimentState.RUNNING:
+                    return Localizer.GetStringByTag("#ne_Running");
+                case ExperimentState.FINISHED:
+                    return Localizer.GetStringByTag("#ne_Finished");
+                case ExperimentState.FINALIZED:
+                    return Localizer.GetStringByTag("#ne_Finalized");
+                default:
+                    return Localizer.GetStringByTag("#ne_NullState");
             }
         }
 
@@ -407,12 +442,12 @@ namespace NE_Science
             switch (state)
             {
                 case ExperimentState.INSTALLED:
-                    return "Start " + getAbbreviation();
+                    return Localizer.Format("#ne_Start_1", getAbbreviation());
 
                 case ExperimentState.RUNNING:
                     if (step.isResearchFinished())
                     {
-                        return "End " + getAbbreviation();
+                        return Localizer.Format("#ne_End_1", getAbbreviation());
                     }
                     else
                     {
@@ -480,13 +515,12 @@ namespace NE_Science
             }
                 baseNode.AddValue(ACTIVE_VALUE, activeStep);
 
-                int count = 0;
-                foreach (ExperimentStep es in steps)
+                for (int idx = 0, count = steps.Length; idx < count; idx++)
                 {
-                    count++;
+                    var es = steps[idx];
                     if (es == null) {
                         NE_Helper.logError ("MultiStepExperimentData("+getId()+").getNode() - es is NULL!\n"
-                        + "    entry "+count+" in steps["+steps.Length+"] is NULL\n");
+                            + "    entry "+(idx+1)+" in steps["+steps.Length+"] is NULL\n");
                         continue;
                     }
                     ConfigNode expNode = es.getNode ();
@@ -511,8 +545,9 @@ namespace NE_Science
 
             ConfigNode[] stepNodes = node.GetNodes(ExperimentStep.CONFIG_NODE_NAME);
             steps = new T[stepNodes.Length];
-            foreach (ConfigNode stepNode in stepNodes)
+            for (int idx = 0, count = stepNodes.Length; idx < count; idx++)
             {
+                var stepNode = stepNodes[idx];
                 T step = (T)ExperimentStep.getExperimentStepFromConfigNode(stepNode, this);
                 steps[step.getIndex()] = step;
             }
@@ -537,12 +572,13 @@ namespace NE_Science
             switch (state)
             {
                 case ExperimentState.INSTALLED:
-                    return "Start " + getAbbreviation() + " " + steps[activeStep].getName();
+                    return Localizer.Format("#ne_Start_1_step_2", getAbbreviation(), steps[activeStep].getName());
+
 
                 case ExperimentState.RUNNING:
                     if (steps[activeStep].isResearchFinished())
                     {
-                        return "End " + getAbbreviation() + " " + steps[activeStep].getName();
+                        return Localizer.Format("#ne_End_1_step_2", getAbbreviation(), steps[activeStep].getName());
                     }
                     else
                     {

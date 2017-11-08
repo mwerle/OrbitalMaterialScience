@@ -18,19 +18,17 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
+using KSP.Localization;
 
 namespace NE_Science
 {
     public class MSL_Module : Lab
     {
 
-        private const string CIR_CONFIG_NODE_NAME = "NE_CIR_LabEquipmentSlot";
-        private const string FIR_CONFIG_NODE_NAME = "NE_FIR_LabEquipmentSlot";
-        private const string DPR_CONFIG_NODE_NAME = "NE_DPR_LabEquipmentSlot";
+        private const string CIR_LAB_EQUIPMENT_TYPE = "CIR";
+        private const string FIR_LAB_EQUIPMENT_TYPE = "FIR";
+        private const string PRINTER_LAB_EQUIPMENT_TYPE = "PRINTER";
 
         [KSPField(isPersistant = false)]
         public float LabTimePerHour = 0;
@@ -58,18 +56,18 @@ namespace NE_Science
         {
             base.OnLoad(node);
             NE_Helper.log("MSL OnLoad");
-            cirSlot = getLabEquipmentSlot(node.GetNode(CIR_CONFIG_NODE_NAME));
-            firSlot = getLabEquipmentSlot(node.GetNode(FIR_CONFIG_NODE_NAME));
-            printerSlot = getLabEquipmentSlot(node.GetNode(DPR_CONFIG_NODE_NAME));
+            cirSlot = getLabEquipmentSlotByType(node, CIR_LAB_EQUIPMENT_TYPE);
+            firSlot = getLabEquipmentSlotByType(node, FIR_LAB_EQUIPMENT_TYPE);
+            printerSlot = getLabEquipmentSlotByType(node, PRINTER_LAB_EQUIPMENT_TYPE);
         }
 
         public override void OnSave(ConfigNode node)
         {
             base.OnSave(node);
             NE_Helper.log("MSL OnSave");
-            node.AddNode(getConfigNodeForSlot(CIR_CONFIG_NODE_NAME, cirSlot));
-            node.AddNode(getConfigNodeForSlot(FIR_CONFIG_NODE_NAME, firSlot));
-            node.AddNode(getConfigNodeForSlot(DPR_CONFIG_NODE_NAME, printerSlot));
+            node.AddNode(cirSlot.getConfigNode());
+            node.AddNode(firSlot.getConfigNode());
+            node.AddNode(printerSlot.getConfigNode());
 
         }
 
@@ -324,7 +322,7 @@ namespace NE_Science
 
             if (!cirSlot.isEquipmentInstalled())
             {
-                Events["installCIR"].active = checkForRackModul(EquipmentRacks.CIR);
+                Events["installCIR"].active = checkForRackModule(EquipmentRacks.CIR);
                 Fields["cirStatus"].guiActive = false;
             }
             else
@@ -334,7 +332,7 @@ namespace NE_Science
                 Fields["cirStatus"].guiActive = true;
                 if (Events["moveCIRExp"].active)
                 {
-                    Events["moveCIRExp"].guiName = "Move " + cirSlot.getExperiment().getAbbreviation();
+                    Events["moveCIRExp"].guiName = Localizer.Format("#ne_Move_1", cirSlot.getExperiment().getAbbreviation());
                 }
 
                 if (cirSlot.canActionRun())
@@ -345,16 +343,16 @@ namespace NE_Science
                 Events["actionCIRExp"].active = cirSlot.canActionRun();
                 if (!cirSlot.experimentSlotFree())
                 {
-                    cirStatus = cirSlot.getExperiment().getAbbreviation() + ": " + cirSlot.getExperiment().getStateString();
+                    cirStatus = cirSlot.getExperiment().getAbbreviation() + ": " + cirSlot.getExperiment().stateString();
                 }
                 else
                 {
-                    cirStatus = "No Experiment";
+                    cirStatus = Localizer.GetStringByTag("#ne_No_Experiment");
                 }
             }
             if (!firSlot.isEquipmentInstalled())
             {
-                Events["installFIR"].active = checkForRackModul(EquipmentRacks.FIR);
+                Events["installFIR"].active = checkForRackModule(EquipmentRacks.FIR);
                 Fields["ffrStatus"].guiActive = false;
             }
             else
@@ -364,7 +362,7 @@ namespace NE_Science
                 Fields["ffrStatus"].guiActive = true;
                 if (Events["moveFIRExp"].active)
                 {
-                    Events["moveFIRExp"].guiName = "Move " + firSlot.getExperiment().getAbbreviation();
+                    Events["moveFIRExp"].guiName = Localizer.Format("#ne_Move_1", firSlot.getExperiment().getAbbreviation());
                 }
                 if (firSlot.canActionRun())
                 {
@@ -374,17 +372,17 @@ namespace NE_Science
                 Events["actionFIRExp"].active = firSlot.canActionRun();
                 if (!firSlot.experimentSlotFree())
                 {
-                    ffrStatus = firSlot.getExperiment().getAbbreviation() + ": " + firSlot.getExperiment().getStateString();
+                    ffrStatus = firSlot.getExperiment().getAbbreviation() + ": " + firSlot.getExperiment().stateString();
 
                 }
                 else
                 {
-                    ffrStatus = "No Experiment";
+                    ffrStatus = Localizer.GetStringByTag("#ne_No_Experiment");
                 }
             }
             if (!printerSlot.isEquipmentInstalled())
             {
-                Events["installPrinter"].active = checkForRackModul(EquipmentRacks.PRINTER);
+                Events["installPrinter"].active = checkForRackModule(EquipmentRacks.PRINTER);
                 Fields["prStatus"].guiActive = false;
             }
             else
@@ -394,7 +392,7 @@ namespace NE_Science
                 Fields["prStatus"].guiActive = true;
                 if (Events["movePRExp"].active)
                 {
-                    Events["movePRExp"].guiName = "Move " + printerSlot.getExperiment().getAbbreviation();
+                    Events["movePRExp"].guiName = Localizer.Format("#ne_Move_1", printerSlot.getExperiment().getAbbreviation());
                 }
 
                 if (printerSlot.canActionRun())
@@ -405,11 +403,11 @@ namespace NE_Science
                 Events["actionPRExp"].active = printerSlot.canActionRun();
                 if (!printerSlot.experimentSlotFree())
                 {
-                    prStatus = printerSlot.getExperiment().getAbbreviation() + ": " + printerSlot.getExperiment().getStateString();
+                    prStatus = printerSlot.getExperiment().getAbbreviation() + ": " + printerSlot.getExperiment().stateString();
                 }
                 else
                 {
-                    prStatus = "No Experiment";
+                    prStatus = Localizer.GetStringByTag("#ne_No_Experiment");
                 }
             }
 
@@ -434,113 +432,105 @@ namespace NE_Science
             }
             if (ret.Length == 0)
             {
-                ret = "none";
+                ret = Localizer.GetStringByTag("#ne_none");
             }
             return ret;
         }
 
-        private bool checkForRackModul(EquipmentRacks equipmentRack)
+        private bool checkForRackModule(EquipmentRacks equipmentRack)
         {
-            List<EquipmentRackContainer> moduls = new List<EquipmentRackContainer>(GameObject.FindObjectsOfType(typeof(EquipmentRackContainer)) as EquipmentRackContainer[]);
-            foreach (EquipmentRackContainer modul in moduls)
-            {
-                if (modul.vessel == this.vessel && modul.getRackType() == equipmentRack)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return getRackModule(equipmentRack) != null;
         }
 
-        private EquipmentRackContainer getRackModul(EquipmentRacks equipmentRack)
+        private EquipmentRackContainer getRackModule(EquipmentRacks equipmentRack)
         {
-            List<EquipmentRackContainer> moduls = new List<EquipmentRackContainer>(GameObject.FindObjectsOfType(typeof(EquipmentRackContainer)) as EquipmentRackContainer[]);
+            EquipmentRackContainer[] modules = GameObject.FindObjectsOfType(typeof(EquipmentRackContainer)) as EquipmentRackContainer[];
 
-            foreach (EquipmentRackContainer modul in moduls)
+            for (int idx = 0, count = modules.Length; idx < count; idx++)
             {
-                if (modul.vessel == this.vessel && modul.getRackType() == equipmentRack)
+                var module = modules[idx];
+                if (module.vessel == this.vessel && module.getRackType() == equipmentRack)
                 {
-                    return modul;
+                    return module;
                 }
             }
 
             return null;
         }
 
-        [KSPEvent(guiActive = true, guiName = "Install CIR", active = false)]
+        [KSPEvent(guiActive = true, guiName = "#ne_Install_CIR", active = false)]
         public void installCIR()
         {
-            EquipmentRackContainer modul = getRackModul(EquipmentRacks.CIR);
-            if (modul != null)
+            EquipmentRackContainer module = getRackModule(EquipmentRacks.CIR);
+            if (module != null)
             {
-                installEquipmentRack(modul.install());
+                installEquipmentRack(module.install());
             }
             else
             {
-                displayStatusMessage("Equipment Rack Module not found!");
+                displayStatusMessage(Localizer.GetStringByTag("#ne_Equipment_Rack_Module_not_found"));
             }
         }
 
-        [KSPEvent(guiActive = true, guiName = "Install FIR", active = false)]
+        [KSPEvent(guiActive = true, guiName = "#ne_Install_FIR", active = false)]
         public void installFIR()
         {
-            EquipmentRackContainer modul = getRackModul(EquipmentRacks.FIR);
-            if (modul != null)
+            EquipmentRackContainer module = getRackModule(EquipmentRacks.FIR);
+            if (module != null)
             {
-                installEquipmentRack(modul.install());
+                installEquipmentRack(module.install());
             }
             else
             {
-                displayStatusMessage("Equipment Rack Module not found!");
+                displayStatusMessage(Localizer.GetStringByTag("#ne_Equipment_Rack_Module_not_found"));
             }
         }
 
-        [KSPEvent(guiActive = true, guiName = "Install 3D-Printer", active = false)]
+        [KSPEvent(guiActive = true, guiName = "#ne_Install_3DP", active = false)]
         public void installPrinter()
         {
-            EquipmentRackContainer modul = getRackModul(EquipmentRacks.PRINTER);
-            if (modul != null)
+            EquipmentRackContainer module = getRackModule(EquipmentRacks.PRINTER);
+            if (module != null)
             {
-                installEquipmentRack(modul.install());
+                installEquipmentRack(module.install());
             }
             else
             {
-                displayStatusMessage("Equipment Rack Module not found!");
+                displayStatusMessage(Localizer.GetStringByTag("#ne_Equipment_Rack_Module_not_found"));
             }
         }
 
-        [KSPEvent(guiActive = true, guiName = "Move FIR Experiment", active = false)]
+        [KSPEvent(guiActive = true, guiName = "#ne_Move_FIR_Experiment", active = false)]
         public void moveFIRExp()
         {
             firSlot.moveExperiment(part.vessel);
         }
 
-        [KSPEvent(guiActive = true, guiName = "Action FIR Experiment", active = false)]
+        [KSPEvent(guiActive = true, guiName = "#ne_Action_FIR_Experiment", active = false)]
         public void actionFIRExp()
         {
             firSlot.experimentAction();
         }
 
-        [KSPEvent(guiActive = true, guiName = "Move CIR Experiment", active = false)]
+        [KSPEvent(guiActive = true, guiName = "#ne_Move_CIR_Experiment", active = false)]
         public void moveCIRExp()
         {
             cirSlot.moveExperiment(part.vessel);
         }
 
-        [KSPEvent(guiActive = true, guiName = "Action CIR Experiment", active = false)]
+        [KSPEvent(guiActive = true, guiName = "#ne_Action_CIR_Experiment", active = false)]
         public void actionCIRExp()
         {
             cirSlot.experimentAction();
         }
 
-        [KSPEvent(guiActive = true, guiName = "Move Printer Experiment", active = false)]
+        [KSPEvent(guiActive = true, guiName = "#ne_Move_3DP_Experiment", active = false)]
         public void movePRExp()
         {
             printerSlot.moveExperiment(part.vessel);
         }
 
-        [KSPEvent(guiActive = true, guiName = "Action Printer Experiment", active = false)]
+        [KSPEvent(guiActive = true, guiName = "#ne_Action_3DP_Experiment", active = false)]
         public void actionPRExp()
         {
             printerSlot.experimentAction();
@@ -549,8 +539,9 @@ namespace NE_Science
         public override string GetInfo()
         {
             String ret = base.GetInfo();
-            ret += (ret == "" ? "" : "\n") + "Lab Time per hour: " + LabTimePerHour;
-            ret += "\nYou can install equipment racks in this lab to run experiments.";
+            ret += (ret == "" ? "" : "\n") + Localizer.Format("#ne_Lab_Time_per_hour_1", LabTimePerHour);
+            ret += "\n";
+            ret += Localizer.GetStringByTag("#ne_You_can_install_equipment_racks_in_this_lab_to_run_experiments");
             return ret;
         }
 

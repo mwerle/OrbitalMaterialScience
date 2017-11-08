@@ -16,12 +16,12 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using UnityEngine;
 using KSP;
 using Contracts;
 using Contracts.Parameters;
+using KSP.Localization;
 
 namespace NE_Science.Contracts.Parameters
 {
@@ -30,6 +30,11 @@ namespace NE_Science.Contracts.Parameters
 
         private CelestialBody targetBody = null;
         private ExperimentData experiment = null;
+
+        // Cache experiment storage aboard vessel
+        private Guid vesselId = Guid.Empty;
+        private int vesselPartCount = 0;
+        private ExperimentStorage[] expStorage = null;
 
         public ExperimentDataDoExperimentParameter()
         {
@@ -52,9 +57,11 @@ namespace NE_Science.Contracts.Parameters
         protected override string GetTitle()
         {
             if (targetBody == null)
-                return "Run experiment " + experiment.getAbbreviation() + " in orbit";
-            else
-                return "Run experiment " + experiment.getAbbreviation() + " in orbit around " + targetBody.theName;
+            {
+                return Localizer.Format("#ne_Run_experiment_1_in_orbit", experiment.getAbbreviation());
+            } else {
+                return Localizer.Format("#ne_Run_experiment_1_in_orbit_around_2", experiment.getAbbreviation(), targetBody.GetDisplayName());
+            }
         }
 
         private float lastUpdate = 0;
@@ -73,6 +80,29 @@ namespace NE_Science.Contracts.Parameters
             lastUpdate = UnityEngine.Time.realtimeSinceStartup;
             Vessel vessel = FlightGlobals.ActiveVessel;
             if (vessel != null)
+            {
+                ExperimentStorage[] ess = getVesselExperimentStorage(vessel);
+                if (ess.Length > 0)
+                {
+                    for (int idx = 0, count = ess.Length; idx < count; idx++)
+                    {
+                        var es = ess[idx];
+                        ScienceData[] data = es.GetData();
+                        for (int dataIdx = 0, dataCount = data.Length; dataIdx < dataCount; dataIdx++)
+                        {
+                            var datum = data[dataIdx];
+                            if (datum.subjectID.ToLower().Contains(experiment.getId().ToLower()+"@" + targetBody.name.ToLower() + "inspace"))
+                            {
+                                SetComplete();
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+
+            /* MKW - Commenting this out and leaving it here because there's partially unimplemented logic which may
+            ** need to be added later; not sure what Nehemia was trying to do there (see below).
                 foreach (Part part in vessel.Parts)
                 {
                     ExperimentStorage[] ess = part.GetComponents<ExperimentStorage>();
@@ -90,6 +120,9 @@ namespace NE_Science.Contracts.Parameters
                                 }
                             }
                         }
+                        //
+                        // MKW - What was the code below supposed to achieve? As it stands it does nothing..
+                        // 
                         OMSExperiment e = part.FindModuleImplementing<OMSExperiment>();
                         if (e != null)
                         {
@@ -100,19 +133,43 @@ namespace NE_Science.Contracts.Parameters
                         }
                     }
                 }
+            */
             SetIncomplete();
+        }
+
+        private ExperimentStorage[] getVesselExperimentStorage(Vessel vessel)
+        {
+            var parts = vessel.parts;
+            if (expStorage == null || vessel.id != vesselId || parts.Count != vesselPartCount)
+            {
+                // Create/Refresh cache
+                List<ExperimentStorage> l = new List<ExperimentStorage>();
+                for (int idx = 0, count = parts.Count; idx < count; idx++)
+                {
+                    ExperimentStorage[] ess = vessel.parts[idx].GetComponents<ExperimentStorage>();
+                    l.AddRange(ess);
+                }
+                expStorage = l.ToArray();
+                vesselId = vessel.id;
+                vesselPartCount = parts.Count;
+            }
+            return expStorage;
         }
 
         protected override void OnLoad(ConfigNode node)
         {
             int bodyID = NE_Helper.GetValueAsInt(node, KEESExperimentContract.TARGET_BODY);
-            foreach (var body in FlightGlobals.Bodies)
+            for (int idx = 0, count = FlightGlobals.Bodies.Count; idx < count; idx++)
             {
+                var body = FlightGlobals.Bodies[idx];
                 if (body.flightGlobalsIndex == bodyID)
+                {
                     targetBody = body;
+                }
             }
             experiment = ExperimentData.getExperimentDataFromNode(node.GetNode(ExperimentData.CONFIG_NODE_NAME));
         }
+
         protected override void OnSave(ConfigNode node)
         {
             int bodyID = targetBody.flightGlobalsIndex;

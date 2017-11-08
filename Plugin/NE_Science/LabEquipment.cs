@@ -14,11 +14,9 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Orbital Material Science.  If not, see <http://www.gnu.org/licenses/>.
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using UnityEngine;
+using KSP.Localization;
 
 namespace NE_Science
 {
@@ -369,11 +367,11 @@ namespace NE_Science
                 case EquipmentRacks.CIR:
                 case EquipmentRacks.FIR:
                 case EquipmentRacks.PRINTER:
-                    desc +=  "For MSL-1000";
+                    desc +=  Localizer.Format("#ne_For_1", "MSL-1000");
                     break;
                 case EquipmentRacks.MSG:
                 case EquipmentRacks.USU:
-                    desc += "For MPL-600";
+                    desc +=  Localizer.Format("#ne_For_1", "MPL-600");
                     break;
             }
             return desc;

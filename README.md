@@ -34,24 +34,28 @@ Each component can be downloaded and installed separately, or the entire collect
 Resources
 ---------
 
-* The [Forum Thread](http://forum.kerbalspaceprogram.com/index.php?/topic/73723-090-orbital-material-science-version-06/) contains an in-depth overview and explanation of the mod, **with screenshots**!
+* [Micha's Release forum thread](http://forum.kerbalspaceprogram.com/index.php?showtopic=149298) covers my maintenance build releases and a brief usage summary of the mod, with links to downloads and other resources.
 
-  * The [Unofficial Builds forum thread] (http://forum.kerbalspaceprogram.com/index.php?/topic/106924-11-n3h3mias-science-mods-unofficial-experimental-build/) covers my maintenance builds of this mod while Nehemia is MIA.
+  * **N3h3miah**'s original [Forum Thread](http://forum.kerbalspaceprogram.com/index.php?showtopic=73723) contains an in-depth overview and explanation of the mod, **with screenshots**!
+
+* [Micha's Builds forum thread](http://forum.kerbalspaceprogram.com/index.php?showtopic=106924) covers my maintenance builds of this mod while Nehemia is MIA.
 
 Requirements
 ------------
 
-* Kemini requires the [ModuleManager] (https://github.com/sarbian/ModuleManager) mod.
+* Kemini requires the [ModuleManager](https://github.com/sarbian/ModuleManager) mod.
 
-* KEES requires the [KIS] (https://github.com/KospY/KIS) mod.
+* KEES requires the [KIS](https://github.com/KospY/KIS) mod.
 
 The remaining components are standalone, although may be enhanced by ModuleManager.
 
 Related and Recommended Mods
 ----------------------------
 
-* [K2 Command Pod] (http://forum.kerbalspaceprogram.com/index.php?/topic/94581-104-k2-command-pod-two-kerbal-stock-alike-pod-v133/) - works very well with Kemini and KEES.
+* [K2 Command Pod](http://forum.kerbalspaceprogram.com/index.php?showtopic=94581) - works very well with Kemini and KEES.
 
-* [Universal Storage] (http://www.kingtiger.co.uk/kingtiger/wordpress/universal-storage-a-mod-for-kerbal-space-program/) - when installed, additional US wedges are available for storing experiments.
+* [Corvus Command Pod](http://forum.kerbalspaceprogram.com/index.php?showtopic=163101) - works very well with Kemini and KEES.
 
-* [Connected Living Spaces] (https://github.com/codepoetpbowden/ConnectedLivingSpace) - various parts are compatible with CLS and allow Kerbals to move through them.
+* [Universal Storage](http://www.kingtiger.co.uk/kingtiger/wordpress/universal-storage-a-mod-for-kerbal-space-program/) - when installed, additional US wedges are available for storing experiments.
+
+* [Connected Living Spaces](https://github.com/codepoetpbowden/ConnectedLivingSpace) - various parts are compatible with CLS and allow Kerbals to move through them.

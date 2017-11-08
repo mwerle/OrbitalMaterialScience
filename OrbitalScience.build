@@ -12,13 +12,13 @@
   <property name="KEES.dir" value="${build.dir}/KEES/" />
   <property name="GameData.dir" value="GameData/NehemiahInc" />
 
-  <property name="OMS.Version" value="0.7_alpha_mw-7" />
-  <property name="All.Version" value="0.2_alpha_mw-7" />
-  <property name="KLS.Version" value="0.2_alpha_mw-7" />
-  <property name="Kemini.Version" value="0.2_alpha_mw-7" />
-  <property name="KEES.Version" value="0.3_alpha_mw-7" />
-  <property name="Common.Version" value="0.2_alpha_mw-7" />
-  <property name="MPP.Version" value="0.2_alpha_mw-7" />
+  <property name="OMS.Version" value="0.7_beta_2" />
+  <property name="All.Version" value="0.2_beta_2" />
+  <property name="KLS.Version" value="0.2_beta_2" />
+  <property name="Kemini.Version" value="0.2_beta_2" />
+  <property name="KEES.Version" value="0.3_beta_2" />
+  <property name="Common.Version" value="0.2_beta_2" />
+  <property name="MPP.Version" value="0.2_beta_2" />
 
   <property name="CurrMod.dir" value="${build.dir}" />
   

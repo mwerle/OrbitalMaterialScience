@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using KSP.Localization;
 
 namespace NE_Science
 {
@@ -10,7 +9,7 @@ namespace NE_Science
 
         private Guid cachedVesselID;
         private int partCount;
-        private List<MEP_Module> physicsLabCache = null;
+        private MEP_Module[] physicsLabCache = null;
 
         protected MEPExperimentData(string id, string type, string name, string abb, EquipmentRacks eq, float mass, float cost, int numSteps)
             : base(id, type, name, abb, eq, mass, cost, numSteps)
@@ -25,21 +24,16 @@ namespace NE_Science
         public override List<Lab> getFreeLabsWithEquipment(Vessel vessel)
         {
             List<Lab> ret = new List<Lab>();
-            List<MEP_Module> allPhysicsLabs;
-            if (cachedVesselID == vessel.id && partCount == vessel.parts.Count && physicsLabCache != null)
+            if (physicsLabCache == null || cachedVesselID != vessel.id || partCount != vessel.parts.Count)
             {
-                allPhysicsLabs = physicsLabCache;
-            }
-            else
-            {
-                allPhysicsLabs = new List<MEP_Module>(UnityFindObjectsOfType(typeof(MEP_Module)) as MEP_Module[]);
-                physicsLabCache = allPhysicsLabs;
+                physicsLabCache = UnityFindObjectsOfType(typeof(MEP_Module)) as MEP_Module[];
                 cachedVesselID = vessel.id;
                 partCount = vessel.parts.Count;
                 NE_Helper.log("Lab Cache refresh");
             }
-            foreach (MEP_Module lab in allPhysicsLabs)
+            for (int idx = 0, count = physicsLabCache.Length; idx < count; idx++)
             {
+                var lab = physicsLabCache[idx];
                 if (lab.vessel == vessel && lab.hasEquipmentFreeExperimentSlot(neededEquipment))
                 {
                     ret.Add(lab);
@@ -58,21 +52,21 @@ namespace NE_Science
     public class MEE1_ExperimentData : MEPExperimentData
     {
         public MEE1_ExperimentData(float mass, float cost)
-            : base("NE_MEE1", "MEE1", "Material Exposure Experiment 1", "MEE1", EquipmentRacks.EXPOSURE, mass, cost, 2)
+            : base("NE_MEE1", "MEE1", "#ne_oms_mee1_title", "MEE1", EquipmentRacks.EXPOSURE, mass, cost, 2)
         {
-            setExperimentStep(Resources.LAB_TIME, 1, "Preparation", 0);
-            setExperimentStep(Resources.EXPOSURE_TIME, 20, "Exposure", 1);
+            setExperimentStep(Resources.LAB_TIME, 1, Localizer.GetStringByTag("#ne_Preparation"), 0);
+            setExperimentStep(Resources.EXPOSURE_TIME, 20, Localizer.GetStringByTag("#ne_Exposure"), 1);
         }
     }
 
     public class MEE2_ExperimentData : MEPExperimentData
     {
         public MEE2_ExperimentData(float mass, float cost)
-            : base("NE_MEE2", "MEE2", "Material Exposure Experiment 2", "MEE2", EquipmentRacks.EXPOSURE, mass, cost, 3)
+            : base("NE_MEE2", "MEE2", "#ne_oms_mee2_title", "MEE2", EquipmentRacks.EXPOSURE, mass, cost, 3)
         {
-            setExperimentStep(Resources.LAB_TIME, 1, "Preparation", 0);
-            setExperimentStep(Resources.EXPOSURE_TIME, 40, "Exposure", 1);
-            setExperimentStep(Resources.LAB_TIME, 2, "Store Samples", 2);
+            setExperimentStep(Resources.LAB_TIME, 1, Localizer.GetStringByTag("#ne_Preparation"), 0);
+            setExperimentStep(Resources.EXPOSURE_TIME, 40, Localizer.GetStringByTag("#ne_Exposure"), 1);
+            setExperimentStep(Resources.LAB_TIME, 2, Localizer.GetStringByTag("#ne_Store_Samples"), 2);
         }
     }
 }

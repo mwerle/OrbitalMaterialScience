@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using UnityEngine;
@@ -54,8 +53,8 @@ internal class DependancyChecker : MonoBehaviour
 
     static Dictionary<string, AssemblyInfo> assemblies = new Dictionary<string, AssemblyInfo> 
     {
-        { "ModuleManager", new AssemblyInfo(2, 7, 0, false) },
-        { "KIS", new AssemblyInfo(1, 3, 0) },
+        { "ModuleManager", new AssemblyInfo(2, 8, 0, false) },
+        { "KIS", new AssemblyInfo(1, 5, 0) },
     };
 
     static public bool HasKIS { get { return assemblies["KIS"].isPresent; } }
@@ -63,7 +62,10 @@ internal class DependancyChecker : MonoBehaviour
     static public bool HasModuleManager { get { return assemblies["ModuleManager"].isPresent; } }
 
     public void Start()
-    {        
+    {
+        // MKW - these foreach() statements are actually ok, since they iterate over arrays
+        // Ideally they should be replaced as well for consistency, but the syntactic sugar is nice in the second loop so let's leave them in.
+        // Also, they are only run once on program startup.
         foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
             // Some assemblies now append a version number to their name (here's looking at YOU, ModuleManager!

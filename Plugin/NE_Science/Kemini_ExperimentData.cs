@@ -1,6 +1,6 @@
 ﻿/*
  *   This file is part of Orbital Material Science.
- *   
+ *
  *   Orbital Material Science is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -16,45 +16,39 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace NE_Science
 {
     /*
-  * Experiments for the Kemini Research Program
-  */
+    * Experiments for the Kemini Research Program
+    */
     public class KeminiExperimentData : StepExperimentData
     {
-
         private Guid cachedVesselID;
         private int partCount;
-        private List<Kemini_Module> KeminiLabCache = null;
-        
-        protected KeminiExperimentData(string id, string type, string name, string abb, float mass, float cost)
+        private Kemini_Module[] KeminiLabCache = null;
+
+        public KeminiExperimentData(string id, string type, string name, string abb, float mass, float cost, float labTime)
             : base(id, type, name, abb, EquipmentRacks.KEMINI, mass, cost)
         {
             storageType = ExperimentFactory.KEMINI_EXPERIMENTS;
+            step = new ResourceExperimentStep(this, Resources.LAB_TIME, labTime, "", 0);
         }
 
         public override List<Lab> getFreeLabsWithEquipment(Vessel vessel)
         {
             List<Lab> ret = new List<Lab>();
-            List<Kemini_Module> allKeminiLabs;
-            if (cachedVesselID == vessel.id && partCount == vessel.parts.Count && KeminiLabCache != null)
+            if (KeminiLabCache == null || cachedVesselID != vessel.id || partCount != vessel.parts.Count)
             {
-                allKeminiLabs = KeminiLabCache;
-            }
-            else
-            {
-                allKeminiLabs = new List<Kemini_Module>(UnityFindObjectsOfType(typeof(Kemini_Module)) as Kemini_Module[]);
-                KeminiLabCache = allKeminiLabs;
+                KeminiLabCache = UnityFindObjectsOfType(typeof(Kemini_Module)) as Kemini_Module[];
                 cachedVesselID = vessel.id;
                 partCount = vessel.parts.Count;
                 NE_Helper.log("Lab Cache refresh");
             }
-            foreach (Kemini_Module lab in allKeminiLabs)
+            for (int idx = 0, count = KeminiLabCache.Length; idx < count; idx++)
             {
+                var lab = KeminiLabCache[idx];
                 if (lab.vessel == vessel && lab.hasEquipmentInstalled(neededEquipment) && lab.hasEquipmentFreeExperimentSlot(neededEquipment))
                 {
                     ret.Add(lab);
@@ -80,8 +74,9 @@ namespace NE_Science
             if (state == ExperimentState.FINISHED)
             {
                 ExperimentStorage[] storages = store.getPartGo().GetComponents<ExperimentStorage>();
-                foreach (ExperimentStorage es in storages)
+                for (int idx = 0, count = storages.Length; idx < count; idx++)
                 {
+                    var es = storages[idx];
                     if (es.isEmpty())
                     {
                         moveTo(es);
@@ -90,50 +85,4 @@ namespace NE_Science
             }
         }
     }
-
-    public class KeminiD5_ExperimentData : KeminiExperimentData
-    {
-        public KeminiD5_ExperimentData(float mass, float cost)
-            : base("NE_Kemini_D5", "KeminiD5", "Kemini D5: Star Occultation Navigation", "D5", mass, cost)
-        {
-            step = new ResourceExperimentStep(this, Resources.LAB_TIME, 0.1f, "", 0);
-        }
-    }
-
-    public class KeminiD8_ExperimentData : KeminiExperimentData
-    {
-        public KeminiD8_ExperimentData(float mass, float cost)
-            : base("NE_Kemini_D8", "KeminiD8", "Kemini D8: Spacecraft Radiation Level", "D8", mass, cost)
-        {
-            step = new ResourceExperimentStep(this, Resources.LAB_TIME, 0.15f, "", 0);
-        }
-    }
-
-    public class KeminiMSC3_ExperimentData : KeminiExperimentData
-    {
-        public KeminiMSC3_ExperimentData(float mass, float cost)
-            : base("NE_Kemini_MSC3", "KeminiMSC3", "Kemini MSC3: Tri-Axis Magnetometer", "MSC3", mass, cost)
-        {
-            step = new ResourceExperimentStep(this, Resources.LAB_TIME, 0.13f, "", 0);
-        }
-    }
-
-    public class KeminiD7_ExperimentData : KeminiExperimentData
-    {
-        public KeminiD7_ExperimentData(float mass, float cost)
-            : base("NE_Kemini_D7", "KeminiD7", "Kemini D7: Space Object Radiometry", "D7", mass, cost)
-        {
-            step = new ResourceExperimentStep(this, Resources.LAB_TIME, 0.23f, "", 0);
-        }
-    }
-    
-    public class KeminiD10_ExperimentData : KeminiExperimentData
-    {
-        public KeminiD10_ExperimentData(float mass, float cost)
-            : base("NE_Kemini_D10", "KeminiD10", "Kemini D10: Ion-sensing Attitude Control", "D10", mass, cost)
-        {
-            step = new ResourceExperimentStep(this, Resources.LAB_TIME, 0.21f, "", 0);
-        }
-    }
-
 }

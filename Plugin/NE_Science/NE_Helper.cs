@@ -18,9 +18,6 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace NE_Science
@@ -33,43 +30,35 @@ namespace NE_Science
         private const string DEBUG_VALUE = "Debug";
         private static bool debug = true;
 
-
         void Start()
         {
-            if (String.IsNullOrEmpty(SETTINGS_FILE)) {
-                SETTINGS_FILE = KSPUtil.ApplicationRootPath + "GameData/NehemiahInc/NE_Science_Common/Resources/settings.cfg";
-            }
-            ConfigNode settings = getSettingsNode();
+            loadOrCreateSettings();
+            DontDestroyOnLoad(this);
+        }
+
+        private void loadOrCreateSettings()
+        {
             bool d = false;
             try
             {
-                d = bool.Parse(settings.GetValue(DEBUG_VALUE));
+                if (String.IsNullOrEmpty(SETTINGS_FILE)) {
+                    SETTINGS_FILE = KSPUtil.ApplicationRootPath + "GameData/NehemiahInc/NE_Science_Common/Resources/settings.cfg";
+                }
+                ConfigNode settings = ConfigNode.Load(SETTINGS_FILE);
+                if (settings == null)
+                {
+                    settings.AddValue(DEBUG_VALUE, false);
+                    settings.Save(SETTINGS_FILE);
+                } else {
+                    d = bool.Parse(settings.GetValue(DEBUG_VALUE));
+                }
             }
-            catch (FormatException e)
+            catch (Exception e)
             {
                 d = true;
                 NE_Helper.logError("Loading Settings: " + e.Message);
             }
             NE_Helper.debug = d;
-            DontDestroyOnLoad(this);
-        }
-
-        private ConfigNode getSettingsNode()
-        {
-            ConfigNode node = ConfigNode.Load(SETTINGS_FILE);
-            if (node == null)
-            {
-                return createSettings();
-            }
-            return node;
-        }
-
-        private ConfigNode createSettings(){
-
-            ConfigNode node = new ConfigNode();
-            node.AddValue(DEBUG_VALUE, false);
-            node.Save(SETTINGS_FILE);
-            return node;
         }
 
         /// <summary>
@@ -220,8 +209,61 @@ namespace NE_Science
             Debug.LogError("[NE] Error: " + errMsg);
         }
 
+        // Returns the part which is currently under the mouse cursor
+        // Thanks to KospY (http://forum.kerbalspaceprogram.com/index.php?/topic/99180-mouse-over-a-part/)
+        // <returns>Part currently under the mouse cursor
+        // <returns>null if no part is under the mouse cursor
+        public static Part GetPartUnderCursor()
+        {
+            RaycastHit hit;
+            Part part = null;
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 1000, 557059))
+            {
+                part = hit.collider.gameObject.GetComponentInParent<Part>();
+            }
+            return part;
+        }
+
+
+        /// <summary>Acquires NEOS input lock on UI interactions.</summary>
+        public static void LockUI()
+        {
+            InputLockManager.SetControlLock(ControlTypes.ALLBUTCAMERAS, "NEOS");
+            NE_Helper.log("NEOS UI lock acquired");
+        }
+
+        /// <summary>Releases KIS input lock on UI interactions.</summary>
+        public static void UnlockUI()
+        {
+            InputLockManager.RemoveControlLock("NEOS");
+            NE_Helper.log("NEOS UI lock released");
+        }
+
+        /// <summary>
+        /// Blocks until end of frame and then runs <em>action</em>.
+        /// </summary>
+        /// Ideally this should be called as a coroutine to allow the main logic to continue running.
+        /// <param name="action">The action to run.</param>
+        /// <returns></returns>
+        private static System.Collections.IEnumerator _runAtEndOfFrame(Action action)
+        {
+            yield return null;
+            action();
+        }
+
+        /// <summary>
+        /// Schedule an action to be executed at the end of the frame.
+        /// </summary>
+        /// Note that the action will run as a coroutine, so any shared state must be protected by a lock.
+        /// <param name="behaviour">The context in which to run the action.</param>
+        /// <param name="action">The action to run at the end of the frame.</param>
+        public static void RunOnEndOfFrame(MonoBehaviour behaviour, Action action)
+        {
+            behaviour.StartCoroutine(_runAtEndOfFrame(action));
+        }
     } // END class NE_Helper
 
+    
     public delegate void GameObjectVisitor(GameObject go, int indent);
 
     /// <summary>
@@ -254,7 +296,7 @@ namespace NE_Science
                 if (maxIndent > 0 && indent/3 > maxIndent)
                 {
                     break;
-                }
+                }       
             }
         }
     } // END class GOExtensions

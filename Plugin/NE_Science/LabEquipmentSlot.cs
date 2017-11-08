@@ -1,6 +1,6 @@
 ﻿/*
  *   This file is part of Orbital Material Science.
- *   
+ *
  *   Orbital Material Science is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace NE_Science
@@ -104,9 +103,9 @@ namespace NE_Science
 
         public static LabEquipmentSlot getLabEquipmentSlotFromConfigNode(ConfigNode node, Lab lab)
         {
-            if (node.name != CONFIG_NODE_NAME)
+            if (node == null || node.name != CONFIG_NODE_NAME)
             {
-                NE_Helper.logError("getLabEquipmentFromNode: invalid Node: " + node.name);
+                NE_Helper.logError("getLabEquipmentFromNode: invalid Node: " + node == null? "NULL" : node.name);
                 return new LabEquipmentSlot(EquipmentRacks.NONE);
             }
             EquipmentRacks type = EquipmentRacksFactory.getType(node.GetValue(TYPE_VALUE));

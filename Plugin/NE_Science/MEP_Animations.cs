@@ -1,6 +1,6 @@
 ﻿/*
  *   This file is part of Orbital Material Science.
- * 
+ *
  *   Orbital Material Science is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -43,18 +42,30 @@ namespace NE_Science
             }
 
             lab = gameObject.GetComponent<MEP_Module>();
-
-            foreach (Light child in gameObject.GetComponentsInChildren(typeof(Light)))
+            if (lab == null)
             {
-                if (child.name == "rotationLight")
-                {
-                    warnLight = child;
-                }
-                else if (child.name == "WarnPointLlight")
-                {
-                    warnPointLight = child;
-                }
+                NE_Helper.logError("MEP_Animation: MEP_Module not found!");
+                return;
+            }
 
+            var lights = gameObject.GetComponentsInChildren(typeof(Light)) as Light[];
+            if (lights == null)
+            {
+                NE_Helper.logError("MEP_Animation: No lights found in MEP_Module!");
+                return;
+            }
+
+            for (int idx = 0, count = lights.Length; idx < count; idx++)
+            {
+                var light = lights[idx];
+                if (light.name == "rotationLight")
+                {
+                    warnLight = light;
+                }
+                else if (light.name == "WarnPointLlight")
+                {
+                    warnPointLight = light;
+                }
             }
         }
 
@@ -77,8 +88,6 @@ namespace NE_Science
                     error = false;
                 }
             }
-
-
         }
 
         private void switchLightsOff()

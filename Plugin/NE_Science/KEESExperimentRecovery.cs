@@ -17,7 +17,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using KSP;
 
@@ -42,8 +41,9 @@ namespace NE_Science.Contracts.Parameters
 
         public virtual bool protovesselHasDoneExperiment(ProtoVessel pv, AvailablePart experiment, CelestialBody targetBody, double contractAccepted)
         {
-            foreach (ProtoPartSnapshot part in pv.protoPartSnapshots)
+            for (int i = 0, count = pv.protoPartSnapshots.Count; i < count; i++)
             {
+                var part = pv.protoPartSnapshots[i];
                 if (part.partName == experiment.name)
                 {
                     return experimentFound(part, experiment, targetBody, contractAccepted);
@@ -56,8 +56,9 @@ namespace NE_Science.Contracts.Parameters
         {
             NE_Helper.log("ProtoVessel recovery: Experiment found");
             string moduleName = experimentModulname[experiment.name];
-            foreach (ProtoPartModuleSnapshot module in part.modules)
+            for (int i = 0, count = part.modules.Count; i < count; i++)
             {
+                var module = part.modules[i];
                 NE_Helper.log("ProtoVessel recovery Modulename: " + module.moduleName);
                 if (module.moduleName == moduleName)
                 {
@@ -74,8 +75,10 @@ namespace NE_Science.Contracts.Parameters
 
         protected bool containsDoneExperimentData(ConfigNode partConf, CelestialBody targetBody)
         {
-            foreach (ConfigNode scienceData in partConf.GetNodes(SCIENCE_DATA))
+            var nodes = partConf.GetNodes(SCIENCE_DATA);
+            for (int idx = 0, count = nodes.Length; idx < count; idx++)
             {
+                var scienceData = nodes[idx];
                 if (!scienceData.HasValue(SUBJECT_ID))
                     continue;
                 string subjectID = scienceData.GetValue(SUBJECT_ID);
@@ -94,34 +97,19 @@ namespace NE_Science.Contracts.Parameters
      */
     public class KEESExperimentRecovery : OMSExperimentRecovery
     {
-        protected const string KEES_PC = "NE.KEES.PC";
         protected const string KIS_CONTAINER = "ModuleKISInventory";
-        protected const string CONTENT_PART = "CONTENT_PART";
 
         public override bool protovesselHasDoneExperiment(ProtoVessel pv, AvailablePart experiment, CelestialBody targetBody, double contractAccepted)
         {
             NE_Helper.log("KEES-Experiement stategy");
-            foreach (ProtoPartSnapshot part in pv.protoPartSnapshots)
+            for (int i = 0, count = pv.protoPartSnapshots.Count; i < count; i++)
             {
+                var part = pv.protoPartSnapshots[i];
                 NE_Helper.log("KEES-Experiement stategy, Part: " + part.partName);
                 if (part.partName == experiment.name) {
                     if (experimentFound (part, experiment, targetBody, contractAccepted))
                         return true;
-                } else if (isKISContainerPart (part)) {
-                    if (payloadCarrierFound (part, experiment, targetBody, contractAccepted))
-                        return true;
-                }
-            }
-            return false;
-        }
-
-        private bool isKISContainerPart(ProtoPartSnapshot part)
-        {
-            foreach (ProtoPartModuleSnapshot module in part.modules)
-            {
-                NE_Helper.log("ProtoVessel recovery Modulename: " + module.moduleName);
-                if (module.moduleName == KIS_CONTAINER)
-                {
+                } else if (payloadCarrierFound (part, experiment, targetBody, contractAccepted)) {
                     return true;
                 }
             }
@@ -131,9 +119,9 @@ namespace NE_Science.Contracts.Parameters
         private bool payloadCarrierFound(ProtoPartSnapshot payloadCarrier, AvailablePart experiment, CelestialBody targetBody, double contractAccepted)
         {
             NE_Helper.log("ProtoVessel recovery: payload carrier found");
-            string experiementModuleName = experimentModulname[experiment.name];
-            foreach (ProtoPartModuleSnapshot module in payloadCarrier.modules)
+            for (int i = 0, count = payloadCarrier.modules.Count; i < count; i++)
             {
+                var module = payloadCarrier.modules[i];
                 NE_Helper.log("ProtoVessel recovery Modulename: " + module.moduleName);
                 if (module.moduleName == KIS_CONTAINER)
                 {
@@ -156,17 +144,33 @@ namespace NE_Science.Contracts.Parameters
         private ConfigNode findExperimentModulInPC(ProtoPartModuleSnapshot kisModule, AvailablePart experiment)
         {
             ConfigNode partConf = kisModule.moduleValues;
-            foreach (ConfigNode item in partConf.GetNodes("ITEM"))
+            var itemNodes = partConf.GetNodes("ITEM");
+            for (int itemIdx = 0, itemCount = itemNodes.Length; itemIdx < itemCount; itemIdx++)
             {
+                var item = itemNodes[itemIdx];
                 NE_Helper.log("ConfigNode ITEM: " + item.GetValue("partName"));
-                if (item.GetValue ("partName") == experiment.name) {
-                    foreach (ConfigNode part in item.GetNodes("PART")) {
-                        NE_Helper.log("ConfigNode PART: " + part.GetValue("name"));
-                        if (part.GetValue ("name") == experiment.name) {
-                            foreach (ConfigNode module in part.GetNodes("MODULE")) {
-                                if (module.GetValue ("name") == experimentModulname [experiment.name])
-                                    return module;
-                            }
+                if (itemNodes[itemIdx].GetValue("partName") != experiment.name)
+                {
+                    continue;
+                }
+
+                var partNodes = item.GetNodes("PART");
+                for (int partIdx = 0, partCount = partNodes.Length; partIdx < partCount; partIdx++)
+                {
+                    var part = partNodes[partIdx];
+                    NE_Helper.log("ConfigNode PART: " + part.GetValue("name"));
+                    if (part.GetValue("name") != experiment.name)
+                    {
+                        continue;
+                    }
+
+                    var moduleNodes = part.GetNodes("MODULE");
+                    for (int moduleIdx = 0, moduleCount = moduleNodes.Length; moduleIdx < moduleCount; moduleIdx++)
+                    {
+                        var module = moduleNodes[moduleIdx];
+                        if (module.GetValue ("name") == experimentModulname [experiment.name])
+                        {
+                            return module;
                         }
                     }
                 }

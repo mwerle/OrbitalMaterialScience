@@ -16,7 +16,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace NE_Science
@@ -38,12 +37,60 @@ namespace NE_Science
         public const string OMS_EXPERIMENTS = "OMS";
         public const string KEMINI_EXPERIMENTS = "KEMINI";
 
-        static readonly List<string> omsRegistry = new List<string>() { "NE.TEST", "NE.CCFE", "NE.CFE",
+        static readonly string[] omsRegistry = { "NE.TEST", "NE.CCFE", "NE.CFE",
             "NE.FLEX", "NE.CFI", "NE.MIS1", "NE.MIS2", "NE.MIS3", "NE.ExpExp1", "NE.ExpExp2", "NE.CVB",
             "NE.PACE", "NE.ADUM", "NE.SpiU"};
 
-        static readonly List<string> keminiRegistry = new List<string>() { "NE.KeminiD5", "NE.KeminiD8",
-            "NE.KeminiMSC3", "NE.KeminiD7", "NE.KeminiD10"};
+        //
+        // TODO - add experiments cache; see if we can hook into the unlock/purchase events
+        // some of these APIs get called a LOT, causing heaps of foreach() and list creation
+        // on every frame.
+        //
+
+        /// <summary>
+        /// Kemini Experiment Registry
+        /// The Kemini Experiment Registry is loaded from a configuration file,
+        /// allowing users to easily add additional Kemini experiments to the
+        /// game.
+        /// </summary>
+        private static List<ConfigNode> keminiRegister = null;
+
+        private static List<ConfigNode> KeminiRegister
+        {
+            /// <summary>
+            /// Returns the Kemini Experiment Register, loading it if necessary.
+            /// </summary>
+            /// <returns>ConfigNode containing the Kemini Experiment Register</returns>
+            get
+            {
+                if (keminiRegister == null)
+                {
+                    /* Find all Kemini experiments and add them to our registry. */
+                    keminiRegister = new List<ConfigNode>();
+                    ConfigNode[] experiments = GameDatabase.Instance.GetConfigNodes("EXPERIMENT_DEFINITION");
+                    for( int idx = 0; idx < experiments.Length; idx++)
+                    {
+                        ConfigNode ed = experiments[idx];
+                        string experimentId = ed.GetValue("id");
+                        if (experimentId != null && experimentId.StartsWith("NE_Kemini"))
+                        {
+                            string experimentPartName = experimentId.Replace('_','.');
+                            if ( PartLoader.getPartInfoByName(experimentPartName) != null )
+                            {
+                                string experimentTitle = ed.GetValue("title");
+                                string experimentShortName = ed.GetValue("shortDisplayName");
+                                string experimentAbbreviation = ed.GetValue("abbreviation");
+                                keminiRegister.Add(ed);
+                            } else {
+                                NE_Helper.logError("Kemini Configuration mismatch - experiment " + experimentId + " defined, but no matching part found.");
+                            }
+                        }
+                    }
+                    NE_Helper.log("Loaded Kemini Experiment register; it contains " + keminiRegister?.Count + " experiment definitions.");
+                }
+                return keminiRegister;
+            }
+        }
 
         /** Returns a list of all purchased experiments.
          * If includeExperimental is true, it includes unpurchased parts as long as the required tech is available. */
@@ -52,8 +99,9 @@ namespace NE_Science
             List<ExperimentData> list = new List<ExperimentData>();
             List<AvailablePart> parts = getAvailableExperimentParts(type, includeExperimental);
 
-            foreach (var part in parts)
+            for (int idx = 0, count = parts.Count; idx < count; idx++)
             {
+                var part = parts[idx];
                 Part pPf = part.partPrefab;
                 NE_ExperimentModule exp = pPf.GetComponent<NE_ExperimentModule>();
                 float mass = pPf.mass;  //pPf.GetModuleMass(0);
@@ -64,10 +112,27 @@ namespace NE_Science
             return list;
         }
 
+        /// <summary>
+        /// Retrieves the Kemini register as an array of strings of part names
+        /// </summary>
+        /// The Kemini Register is stored in a text file
+        /// <returns>string array containing all Kemini parts</returns>
+        private static string[] getKeminiRegister()
+        {
+            string[] experiments = new string[KeminiRegister.Count];
+            for (int idx = 0; idx < KeminiRegister.Count; idx++)
+            {
+                ConfigNode n = KeminiRegister[idx];
+                // MKW HACK/TODO: Part names can't contain underscores; refactor in a future release. For now we can use wildcard.
+                experiments[idx] = n.GetValue("id").Replace('_', '.');
+            }
+            return experiments;
+        }
+
         public static List<AvailablePart> getAvailableExperimentParts(string type, bool includeExperimental = false)
         {
-            List<string> partsRegistry = null;
-            List<AvailablePart> list = new List<AvailablePart>();
+            string[] partsRegistry = null;
+            List<AvailablePart> list = null;
 
             switch (type)
             {
@@ -75,15 +140,18 @@ namespace NE_Science
                     partsRegistry = omsRegistry;
                     break;
                 case KEMINI_EXPERIMENTS:
-                    partsRegistry = keminiRegistry;
+                    //partsRegistry = keminiRegistry;
+                    partsRegistry = getKeminiRegister();
                     break;
                 default:
                     return list;
             }
+            // Avoid multiple allocations; the collection is small enough that the memory overhead is better than the reallocation overhead
+            list = new List<AvailablePart>(partsRegistry.Length);
 
-            foreach (var pn in partsRegistry)
+            for (int idx = 0, count = partsRegistry.Length; idx < count; idx++)
             {
-                AvailablePart part = PartLoader.getPartInfoByName(pn);
+                AvailablePart part = PartLoader.getPartInfoByName(partsRegistry[idx]);
                 if (part == null) continue;
                 /*
                 bool isPurchased = ResearchAndDevelopment.PartModelPurchased (part);
@@ -107,7 +175,7 @@ namespace NE_Science
         public static AvailablePart getPartForExperiment(string type, ExperimentData exp)
         {
             AvailablePart ap = null;
-            List<string> partsRegistry = null;
+            string[] partsRegistry = null;
 
             switch (type)
             {
@@ -115,12 +183,12 @@ namespace NE_Science
                     partsRegistry = omsRegistry;
                     break;
                 case KEMINI_EXPERIMENTS:
-                    partsRegistry = keminiRegistry;
+                    partsRegistry = getKeminiRegister();
                     break;
             }
-            foreach (var pn in partsRegistry)
+            for (int idx = 0, count = partsRegistry.Length; idx < count; idx++)
             {
-                ap = PartLoader.getPartInfoByName(pn);
+                ap = PartLoader.getPartInfoByName(partsRegistry[idx]);
                 if (ap != null)
                 {
                     NE_ExperimentModule e = ap.partPrefab.GetComponent<NE_ExperimentModule>();
@@ -137,6 +205,9 @@ namespace NE_Science
         {
             switch (type)
             {
+                //
+                // OMS/KLS Experiments
+                //
                 case "Test":
                     return new TestExperimentData(mass, cost);
                 case "CCF":
@@ -161,26 +232,34 @@ namespace NE_Science
                     return new CVB_ExperimentData(mass, cost);
                 case "PACE":
                     return new PACE_ExperimentData(mass, cost);
-                case "KeminiD5":
-                    return new KeminiD5_ExperimentData(mass, cost);
-                case "KeminiD8":
-                    return new KeminiD8_ExperimentData(mass, cost);
-                case "KeminiMSC3":
-                    return new KeminiMSC3_ExperimentData(mass, cost);
-                case "KeminiD7":
-                    return new KeminiD7_ExperimentData(mass, cost);
-                case "KeminiD10":
-                    return new KeminiD10_ExperimentData(mass, cost);
+
                 case "ADUM":
                     return new ADUM_ExperimentData(mass, cost);
                 case "SpiU":
                     return new SpiU_ExperimentData(mass, cost);
                 case "":
                     return ExperimentData.getNullObject();
-                default:
-                    NE_Helper.logError("Unknown ExperimentData Type '" + type + "'.");
-                    return ExperimentData.getNullObject();
             }
+
+            // Try to find in Kemini Register
+            for (int idx = 0; idx < KeminiRegister.Count; idx++)
+            {
+                if (KeminiRegister[idx].GetValue("type") == type)
+                {
+                    ConfigNode n = KeminiRegister[idx];
+                    return new KeminiExperimentData(
+                        n.GetValue("id"),
+                        n.GetValue("type"),
+                        n.GetValue("title"),
+                        n.GetValue("abbreviation"),
+                        mass,
+                        cost,
+                        NE_Helper.GetValueAsFloat(n, "labTime"));
+                }
+            }
+
+            NE_Helper.logError("Unknown ExperimentData Type '" + type + "'.");
+            return ExperimentData.getNullObject();
         }
     }
 }

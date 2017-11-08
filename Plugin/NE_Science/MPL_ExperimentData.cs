@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace NE_Science
@@ -13,7 +12,7 @@ namespace NE_Science
 
         private Guid cachedVesselID;
         private int partCount;
-        private List<MPL_Module> physicsLabCache = null;
+        private MPL_Module[] physicsLabCache = null;
 
         protected MPLExperimentData(string id, string type, string name, string abb, EquipmentRacks eq, float mass, float cost)
             : base(id, type, name, abb, eq, mass, cost)
@@ -22,21 +21,16 @@ namespace NE_Science
         public override List<Lab> getFreeLabsWithEquipment(Vessel vessel)
         {
             List<Lab> ret = new List<Lab>();
-            List<MPL_Module> allPhysicsLabs;
-            if (cachedVesselID == vessel.id && partCount == vessel.parts.Count && physicsLabCache != null)
+            if (physicsLabCache == null || cachedVesselID != vessel.id || partCount != vessel.parts.Count)
             {
-                allPhysicsLabs = physicsLabCache;
-            }
-            else
-            {
-                allPhysicsLabs = new List<MPL_Module>(UnityFindObjectsOfType(typeof(MPL_Module)) as MPL_Module[]);
-                physicsLabCache = allPhysicsLabs;
+                physicsLabCache = UnityFindObjectsOfType(typeof(MPL_Module)) as MPL_Module[];
                 cachedVesselID = vessel.id;
                 partCount = vessel.parts.Count;
                 NE_Helper.log("Lab Cache refresh");
             }
-            foreach (MPL_Module lab in allPhysicsLabs)
+            for (int idx = 0, count = physicsLabCache.Length; idx < count; idx++)
             {
+                var lab = physicsLabCache[idx];
                 if (lab.vessel == vessel && lab.hasEquipmentInstalled(neededEquipment) && lab.hasEquipmentFreeExperimentSlot(neededEquipment))
                 {
                     ret.Add(lab);
@@ -55,7 +49,7 @@ namespace NE_Science
     public class CCF_ExperimentData : MPLExperimentData
     {
         public CCF_ExperimentData(float mass, float cost)
-            : base("NE_CCF", "CCF", "Capillary Channel Flow Experiment", "CCF", EquipmentRacks.MSG, mass, cost)
+            : base("NE_CCF", "CCF", "#ne_oms_ccf_title", "CCF", EquipmentRacks.MSG, mass, cost)
         {
             step = new ResourceExperimentStep(this, Resources.MSG_TIME, 22, "", 0);
         }
@@ -64,7 +58,7 @@ namespace NE_Science
     public class CFE_ExperimentData : MPLExperimentData
     {
         public CFE_ExperimentData(float mass, float cost)
-            : base("NE_CFE", "CFE", "Capillary Flow Experiment", "CFE", EquipmentRacks.MSG, mass, cost)
+            : base("NE_CFE", "CFE", "#ne_oms_cfe_title", "CFE", EquipmentRacks.MSG, mass, cost)
         {
             step = new ResourceExperimentStep(this, Resources.MSG_TIME, 40, "", 0);
         }
@@ -73,7 +67,7 @@ namespace NE_Science
     public class ADUM_ExperimentData : KerbalResearchExperimentData
     {
         public ADUM_ExperimentData(float mass, float cost)
-            : base("NE_ADUM", "ADUM", "Advanced Diagnostic Ultrasound in Microgravity", "ADUM", EquipmentRacks.USU, mass, cost, 4)
+            : base("NE_ADUM", "ADUM", "#ne_kls_adium_title", "ADUM", EquipmentRacks.USU, mass, cost, 4)
         {
             setExperimentSteps(Resources.ULTRASOUND_GEL, 2.5f);
         }
@@ -82,7 +76,7 @@ namespace NE_Science
     public class SpiU_ExperimentData : KerbalResearchExperimentData
     {
         public SpiU_ExperimentData(float mass, float cost)
-            : base("NE_SpiU", "SpiU", "Sonographic Astronaut Vertebral Examination", "SpiU", EquipmentRacks.USU, mass, cost, 6)
+            : base("NE_SpiU", "SpiU", "#ne_kls_spiu_title", "SpiU", EquipmentRacks.USU, mass, cost, 6)
         {
             setExperimentSteps(Resources.ULTRASOUND_GEL, 3f);
         }

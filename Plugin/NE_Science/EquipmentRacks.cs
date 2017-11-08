@@ -16,7 +16,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -24,27 +23,27 @@ namespace NE_Science
 {
     public class EquipmentRackRegistry
     {
-        static readonly List<KeyValuePair<EquipmentRacks, String>> racks = new List<KeyValuePair<EquipmentRacks, string>> { new KeyValuePair<EquipmentRacks, String>(EquipmentRacks.PRINTER, "NE.3PR"),
-            new KeyValuePair<EquipmentRacks, String>(EquipmentRacks.CIR, "NE.CIR"), new KeyValuePair<EquipmentRacks, String>(EquipmentRacks.FIR, "NE.FIR"), new KeyValuePair<EquipmentRacks, String>(EquipmentRacks.MSG, "NE.MSG"),
-            new KeyValuePair<EquipmentRacks, String>(EquipmentRacks.USU, "NE.USU")};
+        static readonly KeyValuePair<EquipmentRacks, String>[] racks = 
+        {
+            new KeyValuePair<EquipmentRacks, String>(EquipmentRacks.PRINTER, "NE.3PR"),
+            new KeyValuePair<EquipmentRacks, String>(EquipmentRacks.CIR, "NE.CIR"),
+            new KeyValuePair<EquipmentRacks, String>(EquipmentRacks.FIR, "NE.FIR"),
+            new KeyValuePair<EquipmentRacks, String>(EquipmentRacks.MSG, "NE.MSG"),
+            new KeyValuePair<EquipmentRacks, String>(EquipmentRacks.USU, "NE.USU")
+        };
 
         public static List<LabEquipment> getAvailableRacks()
         {
             List<LabEquipment> list = new List<LabEquipment>();
-            foreach (KeyValuePair<EquipmentRacks, string> p in racks)
+            for (int idx = 0, count = racks.Length; idx < count; idx++)
             {
+                var p = racks[idx];
                 AvailablePart part = PartLoader.getPartInfoByName(p.Value);
-                if (part != null)
+                if (part != null && ResearchAndDevelopment.PartModelPurchased(part))
                 {
-                    Part pPf = part.partPrefab;
-                    LabEquipmentModule lem = pPf.GetComponent<LabEquipmentModule>();
-                    if (ResearchAndDevelopment.PartModelPurchased(part))
-                    {
-                        list.Add(getLabEquipment(part.partPrefab, p.Key));
-                    }
+                    list.Add(getLabEquipment(part.partPrefab, p.Key));
                 }
             }
-
             return list;
         }
 
@@ -84,7 +83,6 @@ namespace NE_Science
                     return EquipmentRacks.KEMINI;
                 default:
                     return EquipmentRacks.NONE;
-
             }
         }
     }

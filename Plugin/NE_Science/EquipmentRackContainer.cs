@@ -1,6 +1,6 @@
 ﻿/*
  *   This file is part of Orbital Material Science.
- *   
+ *
  *   Orbital Material Science is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -14,11 +14,11 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Orbital Material Science.  If not, see <http://www.gnu.org/licenses/>.
  */
-using System;
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
+using KSP.Localization;
 
 namespace NE_Science
 {
@@ -26,7 +26,7 @@ namespace NE_Science
     {
         private const float EMPTY_MASS = 0.4f;
 
-        [KSPField(isPersistant = false, guiActive = true, guiActiveEditor= true ,guiName = "Contains")]
+        [KSPField(isPersistant = false, guiActive = true, guiActiveEditor= true ,guiName = "#ne_Contains")]
         public string status = "";
 
         private Material contMat = null;
@@ -35,9 +35,6 @@ namespace NE_Science
 
         private EquipmentContainerTextureFactory texFac = new EquipmentContainerTextureFactory();
         private List<LabEquipment> availableRacks = new List<LabEquipment>();
-        private bool showGui = false;
-        private Rect addWindowRect = new Rect(Screen.width / 2 - 220, Screen.height / 2 - 220, 250, 500);
-        private Vector2 addScrollPos = new Vector2();
 
         public override void OnLoad(ConfigNode node)
         {
@@ -66,11 +63,11 @@ namespace NE_Science
             status = leq.getName();
             if (leq.getType() == EquipmentRacks.NONE)
             {
-                Events["chooseEquipment"].guiName = "Add Lab Equipment";
+                Events["chooseEquipment"].guiName = Localizer.GetStringByTag("#ne_Add_Lab_Equipment");
             }
             else
             {
-                Events["chooseEquipment"].guiName = "Remove Equipment";
+                Events["chooseEquipment"].guiName = Localizer.GetStringByTag("#ne_Remove_Equipment");
             }
             RefreshMassAndCost();
             setTexture(leq);
@@ -102,55 +99,87 @@ namespace NE_Science
             }
         }
 
-        [KSPEvent(guiActiveEditor = true, guiName = "Add Lab Equipment", active = false)]
+        [KSPEvent(guiActiveEditor = true, guiName = "#ne_Add_Lab_Equipment", active = false)]
         public void chooseEquipment()
         {
             if (leq.getType() == EquipmentRacks.NONE)
             {
                 availableRacks = EquipmentRackRegistry.getAvailableRacks();
-                showGui = true;
+                showAddGui();
             }
             else
             {
                 setEquipment(LabEquipment.getNullObject());
-                Events["chooseEquipment"].guiName = "Add Lab Equipment";
+                Events["chooseEquipment"].guiName = Localizer.GetStringByTag("#ne_Add_Lab_Equipment");
             }
         }
 
         void OnGUI()
         {
-            if (showGui)
-            {
-                showAddGui();
-            }
         }
 
+        /* +------------------------------------------------+
+         * |                 Add Lab Equipment              |
+         * +------------------------------------------------+
+         * | | [3DPR] 3D Printer                        |^| |
+         * | |                                          | | |
+         * | |                                          | | |
+         * | |                                          | | |
+         * | |                                          |v| |
+         * |                  [Close]                       |
+         * +------------------------------------------------+
+        */
         private void showAddGui()
         {
-            addWindowRect = GUI.ModalWindow(7909031, addWindowRect, showAddGui, "Add Lab Equipment");
+            // TODO: Add tool-tip or description about which lab the equipment requires
+
+            // This is a list of content items to add to the dialog
+            List<DialogGUIBase> dialog = new List<DialogGUIBase>();
+            var noPad = new RectOffset();
+            DialogGUIButton b;
+            DialogGUILabel l;
+            DialogGUIHorizontalLayout hl;
+            DialogGUIVerticalLayout vl;
+
+            // Window Contents - scroll list of available and tested Kerbals
+            vl = new DialogGUIVerticalLayout(true, false);
+            vl.padding = new RectOffset(6, 24, 6, 6); // Padding between border and contents - ensure we don't overlay content over scrollbar
+            vl.spacing = 4; // Spacing between elements
+            vl.AddChild(new DialogGUIContentSizer(ContentSizeFitter.FitMode.Unconstrained, ContentSizeFitter.FitMode.PreferredSize, true));
+
+            for (int idx = 0, count = availableRacks.Count; idx < count; idx++)
+            {
+                var e = availableRacks[idx];
+
+                b = new DialogGUIButton<LabEquipment>(e.getAbbreviation(), onAddEquipment, e, true);
+                b.size = new Vector2(60, 30);
+                l = new DialogGUILabel(e.getDescription(), true, false);
+                hl = new DialogGUIHorizontalLayout(false, false, 4, new RectOffset(), TextAnchor.MiddleCenter, b, l);
+
+                vl.AddChild(hl);
+            }
+
+            hl = new DialogGUIHorizontalLayout(true, true, new DialogGUIScrollList(Vector2.one, false, true, vl));
+            dialog.Add(hl);
+
+            // Add a centered "Cancel" button
+            dialog.Add(new DialogGUIHorizontalLayout(new DialogGUIBase[]
+            {
+                new DialogGUIFlexibleSpace(),
+                new DialogGUIButton("#ne_Cancel", null, true),
+                new DialogGUIFlexibleSpace(),
+            }));
+
+            // Actually create and show the dialog
+            Rect pos = new Rect(0.5f, 0.5f, 400, 400);
+            PopupDialog.SpawnPopupDialog(
+                new MultiOptionDialog("", "", "#ne_Add_Lab_Equipment", HighLogic.UISkin, pos, dialog.ToArray()),
+                false, HighLogic.UISkin);
         }
 
-        void showAddGui(int id)
+        private void onAddEquipment(LabEquipment e)
         {
-            GUILayout.BeginVertical();
-            addScrollPos = GUILayout.BeginScrollView(addScrollPos, GUILayout.Width(210), GUILayout.Height(450));
-            foreach (LabEquipment e in availableRacks)
-            {
-                if (GUILayout.Button(new GUIContent(e.getName(), e.getDescription())))
-                {
-                    setEquipment(e);
-                    showGui = false;
-                }
-            }
-            GUI.skin.label.wordWrap = true;
-            GUILayout.Label(GUI.tooltip, GUILayout.Height(100));
-            GUILayout.EndScrollView();
-            if (GUILayout.Button("Close"))
-            {
-                showGui = false;
-            }
-            GUILayout.EndVertical();
-            GUI.DragWindow();
+            setEquipment(e);
         }
 
         public EquipmentRacks getRackType()
@@ -167,7 +196,7 @@ namespace NE_Science
 
         public override string GetInfo()
         {
-            return "Choose from the available lab equipment." ;
+            return Localizer.GetStringByTag("#ne_Choose_from_the_available_lab_equipment");
         }
 
         private void changeTexture(GameDatabase.TextureInfo newTexture)
@@ -247,7 +276,7 @@ namespace NE_Science
         { EquipmentRacks.CIR,  new KeyValuePair<string,string>("NehemiahInc/OMS/Parts/LabEquipmentContainer/", "ContainerCIR_Texture") },
         { EquipmentRacks.FIR,  new KeyValuePair<string,string>("NehemiahInc/OMS/Parts/LabEquipmentContainer/", "ContainerFIR_Texture") },
         { EquipmentRacks.MSG,  new KeyValuePair<string,string>("NehemiahInc/OMS/Parts/LabEquipmentContainer/", "ContainerMSG_Texture") },
-        { EquipmentRacks.EXPOSURE, new KeyValuePair<string,string>("NehemiahInc/MultiPurposeParts/Parts/LabEquipmentContainer/", "ContainerTexture") }, 
+        { EquipmentRacks.EXPOSURE, new KeyValuePair<string,string>("NehemiahInc/MultiPurposeParts/Parts/LabEquipmentContainer/", "ContainerTexture") },
         { EquipmentRacks.USU,  new KeyValuePair<string,string>("NehemiahInc/KerbalLifeScience/Parts/LabEquipmentContainer/", "ContainerUSU_Texture" )}};
 
 

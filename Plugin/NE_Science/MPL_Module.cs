@@ -1,4 +1,4 @@
-﻿/*
+/*
  *   This file is part of Orbital Material Science.
  *
  *   Part of the code may originate from Station Science ba ether net http://forum.kerbalspaceprogram.com/threads/54774-0-23-5-Station-Science-(fourth-alpha-low-tech-docking-port-experiment-pod-models)
@@ -18,18 +18,17 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using UnityEngine;
+using KSP.Localization;
 
 namespace NE_Science
 {
     public class MPL_Module : Lab
     {
 
-        private const string MSG_CONFIG_NODE_NAME = "NE_MSG_LabEquipmentSlot";
-        private const string USU_CONFIG_NODE_NAME = "NE_USU_LabEquipmentSlot";
+        private const string MSG_LAB_EQUIPMENT_TYPE = "MSG";
+        private const string USU_LAB_EQUIPMENT_TYPE = "USU";
 
         [KSPField(isPersistant = false)]
         public float LabTimePerHour = 0;
@@ -56,16 +55,16 @@ namespace NE_Science
         {
             base.OnLoad(node);
             NE_Helper.log("MPL OnLoad");
-            msgSlot = getLabEquipmentSlot(node.GetNode(MSG_CONFIG_NODE_NAME));
-            usuSlot = getLabEquipmentSlot(node.GetNode(USU_CONFIG_NODE_NAME));
+            msgSlot = getLabEquipmentSlotByType(node, MSG_LAB_EQUIPMENT_TYPE);
+            usuSlot = getLabEquipmentSlotByType(node, USU_LAB_EQUIPMENT_TYPE);
         }
 
         public override void OnSave(ConfigNode node)
         {
             base.OnSave(node);
             NE_Helper.log("MPL OnSave");
-            node.AddNode(getConfigNodeForSlot(MSG_CONFIG_NODE_NAME, msgSlot));
-            node.AddNode(getConfigNodeForSlot(USU_CONFIG_NODE_NAME, usuSlot));
+            node.AddNode(msgSlot.getConfigNode());
+            node.AddNode(usuSlot.getConfigNode());
 
         }
 
@@ -366,7 +365,7 @@ namespace NE_Science
 
             if (!msgSlot.isEquipmentInstalled())
             {
-                Events["installMSG"].active = checkForRackModul(EquipmentRacks.MSG);
+                Events["installMSG"].active = checkForRackModule(EquipmentRacks.MSG);
                 Fields["msgStatus"].guiActive = false;
             }
             else
@@ -376,7 +375,7 @@ namespace NE_Science
                 Fields["msgStatus"].guiActive = true;
                 if (Events["moveMSGExp"].active)
                 {
-                    Events["moveMSGExp"].guiName = "Move " + msgSlot.getExperiment().getAbbreviation();
+                    Events["moveMSGExp"].guiName = Localizer.Format("#ne_Move_1", msgSlot.getExperiment().getAbbreviation());
                 }
 
                 if (msgSlot.canActionRun())
@@ -387,17 +386,17 @@ namespace NE_Science
                 Events["actionMSGExp"].active = msgSlot.canActionRun();
                 if (!msgSlot.experimentSlotFree())
                 {
-                    msgStatus = msgSlot.getExperiment().getAbbreviation() + ": " + msgSlot.getExperiment().getStateString();
+                    msgStatus = msgSlot.getExperiment().getAbbreviation() + ": " + msgSlot.getExperiment().stateString();
                 }
                 else
                 {
-                    msgStatus = "No Experiment";
+                    msgStatus = Localizer.GetStringByTag("#ne_No_Experiment");
                 }
             }
 
             if (!usuSlot.isEquipmentInstalled())
             {
-                Events["installUSU"].active = checkForRackModul(EquipmentRacks.USU);
+                Events["installUSU"].active = checkForRackModule(EquipmentRacks.USU);
                 Fields["usuStatus"].guiActive = false;
             }
             else
@@ -407,7 +406,7 @@ namespace NE_Science
                 Fields["usuStatus"].guiActive = true;
                 if (Events["moveUSUExp"].active)
                 {
-                    Events["moveUSUExp"].guiName = "Move " + usuSlot.getExperiment().getAbbreviation();
+                    Events["moveUSUExp"].guiName = Localizer.Format("#ne_Move_1", usuSlot.getExperiment().getAbbreviation());
                 }
 
                 if (usuSlot.canActionRun())
@@ -418,11 +417,11 @@ namespace NE_Science
                 Events["actionUSUExp"].active = usuSlot.canActionRun();
                 if (!usuSlot.experimentSlotFree())
                 {
-                    usuStatus = usuSlot.getExperiment().getAbbreviation() + ": " + usuSlot.getExperiment().getStateString();
+                    usuStatus = usuSlot.getExperiment().getAbbreviation() + ": " + usuSlot.getExperiment().stateString();
                 }
                 else
                 {
-                    usuStatus = "No Experiment";
+                    usuStatus = Localizer.GetStringByTag("#ne_No_Experiment");
                 }
             }
 
@@ -430,100 +429,89 @@ namespace NE_Science
 
         private string getEquipmentString()
         {
-            string ret = "";
+            StringBuilder sb = new StringBuilder();
             if (msgSlot.isEquipmentInstalled())
             {
-                if (ret.Length > 0) ret += ", ";
-                ret += "MSG";
+                sb.Append("MSG");
             }
             if (usuSlot.isEquipmentInstalled())
             {
-                if (ret.Length > 0) ret += ", ";
-                ret += "USU";
+                if (sb.Length > 0) sb.Append(", ");
+                sb.Append("USU");
             }
-            if (ret.Length == 0)
+            if (sb.Length == 0)
             {
-                ret = "none";
+                sb.Append(Localizer.GetStringByTag("#ne_none"));
             }
-            return ret;
+            return sb.ToString();
         }
 
-        private bool checkForRackModul(EquipmentRacks equipmentRack)
+        private bool checkForRackModule(EquipmentRacks equipmentRack)
         {
-            List<EquipmentRackContainer> moduls = new List<EquipmentRackContainer>(GameObject.FindObjectsOfType(typeof(EquipmentRackContainer)) as EquipmentRackContainer[]);
-            foreach (EquipmentRackContainer modul in moduls)
-            {
-                if (modul.vessel == this.vessel && modul.getRackType() == equipmentRack)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return getRackModule(equipmentRack) != null;
         }
 
-        private EquipmentRackContainer getRackModul(EquipmentRacks equipmentRack)
+        private EquipmentRackContainer getRackModule(EquipmentRacks equipmentRack)
         {
-            List<EquipmentRackContainer> moduls = new List<EquipmentRackContainer>(GameObject.FindObjectsOfType(typeof(EquipmentRackContainer)) as EquipmentRackContainer[]);
-
-            foreach (EquipmentRackContainer modul in moduls)
+            EquipmentRackContainer[] modules = GameObject.FindObjectsOfType(typeof(EquipmentRackContainer)) as EquipmentRackContainer[];
+            for (int idx = 0, count = modules.Length; idx < count; idx++)
             {
-                if (modul.vessel == this.vessel && modul.getRackType() == equipmentRack)
+                var module = modules[idx];
+                if (module.vessel == this.vessel && module.getRackType() == equipmentRack)
                 {
-                    return modul;
+                    return module;
                 }
             }
-
             return null;
         }
 
-        [KSPEvent(guiActive = true, guiName = "Install MSG", active = false)]
+        [KSPEvent(guiActive = true, guiName = "#ne_Install_MSG", active = false)]
         public void installMSG()
         {
-            EquipmentRackContainer modul = getRackModul(EquipmentRacks.MSG);
-            if (modul != null)
+            EquipmentRackContainer module = getRackModule(EquipmentRacks.MSG);
+            if (module != null)
             {
-                installEquipmentRack(modul.install());
+                installEquipmentRack(module.install());
             }
             else
             {
-                displayStatusMessage("Equipment Rack Module not found!");
+                displayStatusMessage(Localizer.GetStringByTag("#ne_Equipment_Rack_Module_not_found"));
             }
         }
 
-        [KSPEvent(guiActive = true, guiName = "Move MSG Experiment", active = false)]
+        [KSPEvent(guiActive = true, guiName = "#ne_Move_MSG_Experiment", active = false)]
         public void moveMSGExp()
         {
             msgSlot.moveExperiment(part.vessel);
         }
 
-        [KSPEvent(guiActive = true, guiName = "Action MSG Experiment", active = false)]
+        [KSPEvent(guiActive = true, guiName = "#ne_Action_MSG_Experiment", active = false)]
         public void actionMSGExp()
         {
             msgSlot.experimentAction();
         }
 
-        [KSPEvent(guiActive = true, guiName = "Install USU", active = false)]
+        [KSPEvent(guiActive = true, guiName = "#ne_Install_USU", active = false)]
         public void installUSU()
         {
-            EquipmentRackContainer modul = getRackModul(EquipmentRacks.USU);
+            EquipmentRackContainer modul = getRackModule(EquipmentRacks.USU);
             if (modul != null)
             {
                 installEquipmentRack(modul.install());
             }
             else
             {
-                displayStatusMessage("Equipment Rack Module not found!");
+                displayStatusMessage(Localizer.GetStringByTag("#ne_Equipment_Rack_Module_not_found"));
             }
         }
 
-        [KSPEvent(guiActive = true, guiName = "Move USU Experiment", active = false)]
+        [KSPEvent(guiActive = true, guiName = "#ne_Move_USU_Experiment", active = false)]
         public void moveUSUExp()
         {
             usuSlot.moveExperiment(part.vessel);
         }
 
-        [KSPEvent(guiActive = true, guiName = "Action USU Experiment", active = false)]
+        [KSPEvent(guiActive = true, guiName = "#ne_Action_USU_Experiment", active = false)]
         public void actionUSUExp()
         {
             usuSlot.experimentAction();
@@ -532,8 +520,9 @@ namespace NE_Science
         public override string GetInfo()
         {
             String ret = base.GetInfo();
-            ret += (ret == "" ? "" : "\n") + "Lab Time per hour: " + LabTimePerHour;
-            ret += "\nYou can install equipment racks in this lab to run experiments.";
+            ret += (ret == "" ? "" : "\n") + Localizer.Format("#ne_Lab_Time_per_hour_1", LabTimePerHour);
+            ret += "\n";
+            ret += Localizer.GetStringByTag("#ne_You_can_install_equipment_racks_in_this_lab_to_run_experiments");
             return ret;
         }
 

@@ -1,8 +1,8 @@
 ﻿/*
  *   This file is part of Orbital Material Science.
- *   
+ *
  *   Part of the code may originate from Station Science ba ether net http://forum.kerbalspaceprogram.com/threads/54774-0-23-5-Station-Science-(fourth-alpha-low-tech-docking-port-experiment-pod-models)
- * 
+ *
  *   Orbital Material Science is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -19,9 +19,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
+using KSP.Localization;
 
 namespace NE_Science
 {
@@ -61,12 +60,48 @@ namespace NE_Science
             }
         }
 
-        [KSPField(isPersistant = false, guiActive = false, guiName = "Lab Status")]
+        [KSPField(isPersistant = false, guiActive = false, guiName = "#ne_Lab_Status")]
         public string labStatus = "";
 
         public virtual void installExperiment(ExperimentData exp)
         {
 
+        }
+
+        protected LabEquipmentSlot getLabEquipmentSlotByType(ConfigNode configNode, string type)
+        {
+            LabEquipmentSlot rv = null;
+
+            if (configNode == null)
+            {
+                NE_Helper.logError("Lab getLabEquipmentSlotByType: parent node null");
+                goto done;
+            }
+
+            // Find a NE_LabEquipmentSlot of the correct type
+            ConfigNode cn = configNode.GetNode(LabEquipmentSlot.CONFIG_NODE_NAME, "type", type);
+            if (cn == null)
+            {
+                // Pre-Kemini-0.3 savegames have another level of nesting of ConfigNodes so let's recursively look into the child-nodes
+                foreach(ConfigNode child in configNode.nodes)
+                {
+                    rv = getLabEquipmentSlotByType(child, type);
+                    if (rv != null)
+                    {
+                        goto done;
+                    }
+                }
+
+                // Not found, so let's raise an error
+                NE_Helper.logError("Lab getLabEquipmentSlotByType: node " + configNode.name
+                    + " does not contain a " + LabEquipmentSlot.CONFIG_NODE_NAME
+                    + " node of type " + type);
+                goto done;
+            }
+            rv = LabEquipmentSlot.getLabEquipmentSlotFromConfigNode(cn, this);
+
+        done:
+            return rv != null? rv : new LabEquipmentSlot(EquipmentRacks.NONE);
         }
 
         protected LabEquipmentSlot getLabEquipmentSlot(ConfigNode configNode)
@@ -137,15 +172,15 @@ namespace NE_Science
         {
             if (!doResearch)
             {
-                displayStatusMessage("Paused");
+                displayStatusMessage(Localizer.GetStringByTag("#ne_Paused"));
             }
             else if (minimumCrew > 0 && part.protoModuleCrew.Count < minimumCrew)
             {
-                displayStatusMessage("Understaffed (" + part.protoModuleCrew.Count + "/" + minimumCrew + ")");
+                displayStatusMessage(Localizer.Format("#ne_Understaffed_1_of_2", part.protoModuleCrew.Count, minimumCrew));
             }
             else if (OMSExperiment.checkBoring(vessel, false))
             {
-                displayStatusMessage("Go to space!");
+                displayStatusMessage(Localizer.GetStringByTag("#ne_Go_to_space"));
             }
             else
             {
@@ -187,12 +222,12 @@ namespace NE_Science
             }
         }
 
-        [KSPEvent(guiActive = true, guiName = "Resume Research", active = true)]
+        [KSPEvent(guiActive = true, guiName = "#ne_Resume_Research", active = true)]
         public void startResearch()
         {
             if (part.protoModuleCrew.Count < minimumCrew)
             {
-                ScreenMessages.PostScreenMessage("Not enough crew in this module.", 6, ScreenMessageStyle.UPPER_CENTER);
+                ScreenMessages.PostScreenMessage("#ne_Not_enough_crew_in_this_module.", 6, ScreenMessageStyle.UPPER_CENTER);
                 return;
             }
             doResearch = true;
@@ -201,7 +236,7 @@ namespace NE_Science
             updateStatus();
         }
 
-        [KSPEvent(guiActive = true, guiName = "Pause Research", active = true)]
+        [KSPEvent(guiActive = true, guiName = "#ne_Pause_Research", active = true)]
         public void stopResearch()
         {
             doResearch = false;
@@ -210,19 +245,19 @@ namespace NE_Science
             updateStatus();
         }
 
-        [KSPAction("Resume Research")]
+        [KSPAction("#ne_Resume_Research")]
         public void startResearchingAction(KSPActionParam param)
         {
             startResearch();
         }
 
-        [KSPAction("Pause Research")]
+        [KSPAction("#ne_Pause_Research")]
         public void stopGeneratingAction(KSPActionParam param)
         {
             stopResearch();
         }
 
-        [KSPAction("Toggle Research")]
+        [KSPAction("#ne_Toggle_Research")]
         public void toggleResearchAction(KSPActionParam param)
         {
             if (doResearch)
@@ -231,15 +266,15 @@ namespace NE_Science
                 startResearch();
         }
 
-        
+
 
         public override void OnFixedUpdate()
         {
             if (isActive())
             {
-                foreach (Generator gen in generators)
+                for (int idx = 0, count = generators.Count; idx < count; idx++)
                 {
-                    gen.doTimeStep(TimeWarp.fixedDeltaTime + owed_time);
+                    generators[idx].doTimeStep(TimeWarp.fixedDeltaTime + owed_time);
                 }
                 owed_time = 0;
                 LastActive = Planetarium.GetUniversalTime();
@@ -254,8 +289,8 @@ namespace NE_Science
         {
             string ret = "";
             if (minimumCrew > 0)
-                ret += "Researchers required: " + minimumCrew;
-            
+                ret += Localizer.Format("#ne_Researchers_required_1", minimumCrew);
+
             return ret;
         }
 
@@ -423,7 +458,9 @@ namespace NE_Science
             public void produce(double timeStep)
             {
                 if (timeStep == 0)
+                {
                     last_produced = 0;
+                }
                 else
                 {
                     last_produced = ratePerSecond * timeStep;
@@ -445,7 +482,10 @@ namespace NE_Science
             foreach (Rate rate in rates.Values)
             {
                 double step = rate.getMaxStep();
-                if (step < ret) ret = step;
+                if (step < ret)
+                {
+                    ret = step;
+                }
             }
             return ret;
         }

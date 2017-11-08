@@ -17,12 +17,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using UnityEngine;
 using KSP;
 using Contracts;
 using Contracts.Parameters;
+using KSP.Localization;
 
 namespace NE_Science.Contracts.Parameters
 {
@@ -50,7 +50,8 @@ namespace NE_Science.Contracts.Parameters
         }
         protected override string GetTitle()
         {
-            return "Return and recover experiment " + experiment.getAbbreviation() + " on Kerbin";
+            return Localizer.Format("#ne_return_and_recover_experiment_1_on_2",
+                experiment.getAbbreviation(), Planetarium.fetch.Home.GetDisplayName());
         }
 
         protected override void OnRegister()
@@ -95,10 +96,12 @@ namespace NE_Science.Contracts.Parameters
 
         private bool protovesselHasDoneExperiment(ProtoVessel pv, ExperimentData experiment, CelestialBody targetBody)
         {
-            foreach (ProtoPartSnapshot part in pv.protoPartSnapshots)
+            for (int partIdx = 0, partCount = pv.protoPartSnapshots.Count; partIdx < partCount; partIdx++)
             {
-                foreach (ProtoPartModuleSnapshot module in part.modules)
+                var part = pv.protoPartSnapshots[partIdx];
+                for (int moduleIdx = 0, moduleCount = part.modules.Count; moduleIdx < moduleCount; moduleIdx++)
                 {
+                    var module = part.modules[moduleIdx];
                     if (module.moduleName == "ExperimentStorage")
                     {
                         ConfigNode moduleConfi = module.moduleValues;
@@ -120,18 +123,21 @@ namespace NE_Science.Contracts.Parameters
         protected override void OnLoad(ConfigNode node)
         {
             int bodyID = NE_Helper.GetValueAsInt(node, KEESExperimentContract.TARGET_BODY);
-            foreach (var body in FlightGlobals.Bodies)
+            for (int idx = 0, count = FlightGlobals.Bodies.Count; idx < count; idx++)
             {
+                var body = FlightGlobals.Bodies[idx];
                 if (body.flightGlobalsIndex == bodyID)
+                {
                     targetBody = body;
+                }
             }
             experiment = ExperimentData.getExperimentDataFromNode(node.GetNode(ExperimentData.CONFIG_NODE_NAME));
         }
+
         protected override void OnSave(ConfigNode node)
         {
             int bodyID = targetBody.flightGlobalsIndex;
             node.AddValue(KeminiExperimentContract.TARGET_BODY, bodyID);
-
             node.AddNode(experiment.getNode());
         }
     }

@@ -18,13 +18,13 @@ using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Contracts;
 using Contracts.Parameters;
 using Contracts.Agents;
 using KSP;
 using KSPAchievements;
+using KSP.Localization;
 
 namespace NE_Science.Contracts
 {
@@ -96,8 +96,12 @@ namespace NE_Science.Contracts
             {
                 return 0;
             }
-            foreach (var kcon in ContractSystem.Instance.GetCurrentContracts<KeminiExperimentContract>()) {
-                if (kcon.ContractState == Contract.State.Active || kcon.ContractState == Contract.State.Offered) {
+            var contracts = ContractSystem.Instance.GetCurrentContracts<KeminiExperimentContract>();
+            for (int idx = 0, count = contracts.Length; idx < count; idx++)
+            {
+                var kcon = contracts[idx];
+                if (kcon.ContractState == Contract.State.Active || kcon.ContractState == Contract.State.Offered)
+                {
                     ret++;
                 }
             }
@@ -115,8 +119,10 @@ namespace NE_Science.Contracts
             {
                 return 0;
             }
-            foreach (Contract con in ContractSystem.Instance.Contracts)
+            var contracts = ContractSystem.Instance.Contracts;
+            for (int idx = 0, count = contracts.Count; idx < count; idx++)
             {
+                var con = contracts[idx];
                 KeminiExperimentContract keminiCon = con as KeminiExperimentContract;
                 if (keminiCon != null && (keminiCon.ContractState == Contract.State.Active ||
                     keminiCon.ContractState == Contract.State.Offered ||
@@ -124,7 +130,7 @@ namespace NE_Science.Contracts
                   (expData == null || keminiCon.experiment != null) &&
                   (body == null || keminiCon.targetBody != null) &&
                   ((expData == null || expData.getId() == keminiCon.experiment.getId()) &&
-                   (body == null || body.theName == keminiCon.targetBody.theName)))
+                   (body == null || body.bodyName == keminiCon.targetBody.bodyName)))
                     ret += 1;
             }
             return ret;
@@ -133,21 +139,23 @@ namespace NE_Science.Contracts
         private ExperimentData getTargetExperiment()
         {
             List<ExperimentData> unlockedExperiments = ExperimentFactory.getAvailableExperiments(ExperimentFactory.KEMINI_EXPERIMENTS, true);
-            List<ExperimentData> unlookedNoContract = new List<ExperimentData>();
-            foreach (ExperimentData exp in unlockedExperiments)
+            List<ExperimentData> unlockedNoContract = new List<ExperimentData>();
+
+            for (int idx = 0, count = unlockedExperiments.Count; idx < count; idx++)
             {
+                var exp = unlockedExperiments[idx];
                 if (activeAndDoneContracts(exp, targetBody) == 0)
                 {
-                    unlookedNoContract.Add(exp);
+                    unlockedNoContract.Add(exp);
                 }
             }
-            if (unlookedNoContract.Count == 0)
+            if (unlockedNoContract.Count == 0)
             {
                 return null;
             }
             else
             {
-                return unlookedNoContract[UnityEngine.Random.Range(0, unlookedNoContract.Count)];
+                return unlockedNoContract[UnityEngine.Random.Range(0, unlockedNoContract.Count)];
             }
         }
 
@@ -191,32 +199,41 @@ namespace NE_Science.Contracts
 
         protected override string GetTitle()
         {
-            return "Run experiment " + experiment.getAbbreviation() + " in orbit around " + targetBody.theName + " and return it to Kerbin";
+            return Localizer.Format("#ne_Run_experiment_1_in_orbit_around_2_and_return_it_to_3",
+                experiment.getAbbreviation(), targetBody.GetDisplayName(), Planetarium.fetch.Home.GetDisplayName()
+            );
         }
 
         protected override string GetDescription()
         {
-            //those 3 strings appear to do nothing
-            return TextGen.GenerateBackStories(Agent.Name, Agent.GetMindsetString(), "science", "station", "expand knowledge", new System.Random().Next());
+            // Topic and Subject are unused in the standard StoryDefs.cfg for "CollectScience" missions
+            return TextGen.GenerateBackStories("CollectScience", Agent.Name, "", "", MissionSeed, true, true, true);
         }
 
         protected override string GetSynopsys()
         {
-            return "Run experiment " + experiment.getName() + " in orbit around " + targetBody.theName;
+            return Localizer.Format("#ne_Run_experiment_1_in_orbit_around_2",
+                experiment.getAbbreviation(), targetBody.GetDisplayName()
+            );
         }
 
         protected override string MessageCompleted()
         {
-            return "You have succesfully run the experiment " + experiment.getAbbreviation() + " in orbit around " + targetBody.theName;
+            return Localizer.Format("#ne_You_have_succesfully_run_the_experiment_1_in_orbit_around_2",
+                experiment.getAbbreviation(), targetBody.GetDisplayName()
+            );
         }
 
         protected override void OnLoad(ConfigNode node)
         {
             int bodyID = NE_Helper.GetValueAsInt(node, KEESExperimentContract.TARGET_BODY);
-            foreach (var body in FlightGlobals.Bodies)
+            for (int idx = 0, count = FlightGlobals.Bodies.Count; idx < count; idx++)
             {
+                var body = FlightGlobals.Bodies[idx];
                 if (body.flightGlobalsIndex == bodyID)
+                {
                     targetBody = body;
+                }
             }
             setTargetExperiment((KeminiExperimentData)KeminiExperimentData.getExperimentDataFromNode(node.GetNode(ExperimentData.CONFIG_NODE_NAME)));
         }
@@ -234,25 +251,15 @@ namespace NE_Science.Contracts
          */
         public override bool MeetRequirements()
         {
-            CelestialBodySubtree kerbinProgress = null;
-
-            if (!DependancyChecker.HasModuleManager) {
-                return false;
-            }
-
-            foreach (var node in ProgressTracking.Instance.celestialBodyNodes)
-            {
-                if (node.Body == Planetarium.fetch.Home)
-                {
-                    kerbinProgress = node;
-                    break;
-                }
-            }
-            if (kerbinProgress == null)
+            // Must have "ModuleManager" mod installed (otherwise Kemini is disabled)
+            if (!DependancyChecker.HasModuleManager)
             {
                 return false;
             }
-            return kerbinProgress.returnFromOrbit.IsCompleteManned;
+
+            // Must have successfully reached orbit and landed a kerballed craft
+            var progress = ProgressTracking.Instance.GetBodyTree(Planetarium.fetch.Home);
+            return progress != null &&  progress.returnFromOrbit.IsCompleteManned;
         }
 
         private void addExperimentalParts()

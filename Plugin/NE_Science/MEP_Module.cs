@@ -1,8 +1,8 @@
 ﻿/*
  *   This file is part of Orbital Material Science.
- *   
+ *
  *   Part of the code may originate from Station Science by ether net http://forum.kerbalspaceprogram.com/threads/54774-0-23-5-Station-Science-(fourth-alpha-low-tech-docking-port-experiment-pod-models)
- * 
+ *
  *   Orbital Material Science is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -18,17 +18,16 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
+using KSP.Localization;
 
 namespace NE_Science
 {
     class MEP_Module : Lab
     {
         private const string MEP_STATE_VALUE = "Mep_State";
-        private const string SLOT_CONFIG_NODE_NAME = "EquipmentSlot";
+        private const string EXPOSURE_LAB_EQUIPMENT_TYPE = "EXPOSURE";
 
         public MEPLabStatus MEPlabState = MEPLabStatus.NOT_READY;
 
@@ -44,7 +43,7 @@ namespace NE_Science
         [KSPField(isPersistant = true)]
         public int armOps = 0;
 
-        [KSPField(isPersistant = true, guiActive = true, guiName = "Experiment")]
+        [KSPField(isPersistant = true, guiActive = true, guiName = "#ne_Experiment")]
         public string experimentName = "No Experiment";
 
         private string deployAnimName = "Deploy";
@@ -62,8 +61,7 @@ namespace NE_Science
             {
                 MEPlabState = MEPLabStatusFactory.getType(stateString);
             }
-            exposureSlot = getLabEquipmentSlot(node.GetNode(SLOT_CONFIG_NODE_NAME));
-            
+            exposureSlot = getLabEquipmentSlotByType(node, EXPOSURE_LAB_EQUIPMENT_TYPE);
         }
 
 
@@ -72,7 +70,7 @@ namespace NE_Science
             base.OnSave(node);
             NE_Helper.log("MEP OnSave");
             node.AddValue(MEP_STATE_VALUE, MEPlabState);
-            node.AddNode(getConfigNodeForSlot(SLOT_CONFIG_NODE_NAME, exposureSlot));
+            node.AddNode(exposureSlot.getConfigNode());
         }
 
         public override void OnStart(StartState state)
@@ -120,10 +118,9 @@ namespace NE_Science
                     Events["DeployPlatform"].guiActive = false;
                     break;
             }
-
         }
 
-        [KSPEvent(guiName = "Fix robotic arm", externalToEVAOnly = true, guiActiveUnfocused = true, unfocusedRange = 3.0f)]
+        [KSPEvent(guiName = "#ne_Fix_robotic_arm", externalToEVAOnly = true, guiActiveUnfocused = true, unfocusedRange = 3.0f)]
         public void FixArm()
         {
             Events["FixArm"].guiActiveUnfocused = false;
@@ -133,11 +130,11 @@ namespace NE_Science
                 case MEPLabStatus.ERROR_ON_START:
                     MEPlabState = MEPLabStatus.RUNNING;
                     playAnimation(errorOnStartAnimName, -1f, 1f);
-                    ScreenMessages.PostScreenMessage("Robotic arm fixed. Experiment will start soon.", 2, ScreenMessageStyle.UPPER_CENTER);
+                    ScreenMessages.PostScreenMessage("#ne_Robotic_arm_fixed_Experiment_will_start_soon", 2, ScreenMessageStyle.UPPER_CENTER);
                     StartCoroutine(playAninimationAfter(5.8f,startExpAnimName, 1f, 0));
                     break;
                 case MEPLabStatus.ERROR_ON_STOP:
-                    ScreenMessages.PostScreenMessage("Robotic arm fixed.", 2, ScreenMessageStyle.UPPER_CENTER);
+                    ScreenMessages.PostScreenMessage("#ne_Robotic_arm_fixed", 2, ScreenMessageStyle.UPPER_CENTER);
                     playAnimation(errorOnStopAnimName, 1f, 0f);
                     StartCoroutine(waitForAnimation(5.8f));
                     break;
@@ -147,18 +144,17 @@ namespace NE_Science
         System.Collections.IEnumerator playAninimationAfter(float seconds, string animation, float speed, float normalizedTime)
         {
             yield return new WaitForSeconds(seconds);
-            playAnimation(animation, speed, normalizedTime);  
+            playAnimation(animation, speed, normalizedTime);
         }
 
         System.Collections.IEnumerator waitForAnimation(float seconds)
         {
             yield return new WaitForSeconds(seconds);
             MEPlabState = MEPLabStatus.RUNNING;
-
         }
 
 
-        [KSPEvent(guiActive = true, guiName = "Deploy Platform", active = true)]
+        [KSPEvent(guiActive = true, guiName = "#ne_Deploy_Platform", active = true)]
         public void DeployPlatform()
         {
             switch (MEPlabState)
@@ -166,12 +162,12 @@ namespace NE_Science
                 case MEPLabStatus.NOT_READY:
                     playAnimation(deployAnimName, 1f, 0);
                     MEPlabState = MEPLabStatus.READY;
-                    Events["DeployPlatform"].guiName = "Retract Platform";
+                    Events["DeployPlatform"].guiName = Localizer.GetStringByTag("#ne_Retract_Platform");
                     break;
                 case MEPLabStatus.READY:
                     playAnimation(deployAnimName, -1f, 1);
                     MEPlabState = MEPLabStatus.NOT_READY;
-                    Events["DeployPlatform"].guiName = "Deploy Platform";
+                    Events["DeployPlatform"].guiName = Localizer.GetStringByTag("#ne_Deploy_Platform");
                     break;
             }
         }
@@ -181,7 +177,7 @@ namespace NE_Science
             if (exp.getEquipmentNeeded() == EquipmentRacks.EXPOSURE)
             {
                 exposureSlot.installExperiment(exp);
-                experimentName = exp.getAbbreviation() + ": " + exp.getStateString();
+                experimentName = exp.getAbbreviation() + ": " + exp.stateString();
             }
         }
 
@@ -215,34 +211,34 @@ namespace NE_Science
             switch (MEPlabState)
             {
                 case MEPLabStatus.NOT_READY:
-                    displayStatusMessage("Platform retracted");
+                    displayStatusMessage(Localizer.GetStringByTag("#ne_Platform_retracted"));
                     break;
                 case MEPLabStatus.READY:
                     Events["DeployPlatform"].guiActive = true;
                     Events["FixArm"].guiActiveUnfocused = false;
-                    displayStatusMessage("Idle");
+                    displayStatusMessage(Localizer.GetStringByTag("#ne_Idle"));
                     break;
                 case MEPLabStatus.RUNNING:
                     Fields["labStatus"].guiActive = false;
                     Events["DeployPlatform"].guiActive = false;
                     Events["FixArm"].guiActiveUnfocused = false;
-                    displayStatusMessage("Running");
+                    displayStatusMessage(Localizer.GetStringByTag("#ne_Running"));
                     break;
                 case MEPLabStatus.ERROR_ON_START:
                 case MEPLabStatus.ERROR_ON_STOP:
                     Events["DeployPlatform"].guiActive = false;
                     Events["FixArm"].guiActiveUnfocused = true;
-                    displayStatusMessage("Robotic Arm Failure");
+                    displayStatusMessage(Localizer.GetStringByTag("#ne_Robotic_Arm_Failure"));
                     break;
             }
 
             Fields["experimentName"].guiActive = !exposureSlot.experimentSlotFree();
-            experimentName = exposureSlot.getExperiment().getAbbreviation() + ": " + exposureSlot.getExperiment().getStateString();
+            experimentName = exposureSlot.getExperiment().getAbbreviation() + ": " + exposureSlot.getExperiment().stateString();
 
             Events["moveExp"].active = exposureSlot.canExperimentMove(part.vessel);
             if (Events["moveExp"].active)
             {
-                Events["moveExp"].guiName = "Move " + exposureSlot.getExperiment().getAbbreviation();
+                Events["moveExp"].guiName = Localizer.Format("#ne_Move_1", exposureSlot.getExperiment().getAbbreviation());
             }
 
             Events["actionExp"].active = exposureSlot.canActionRun();
@@ -250,7 +246,7 @@ namespace NE_Science
             {
                 Events["actionExp"].guiName = exposureSlot.getActionString();
             }
-            
+
 
             Events["FixArm"].active = Events["FixArm"].guiActiveUnfocused;
         }
@@ -266,19 +262,17 @@ namespace NE_Science
         {
             playAnimation(errorOnStopAnimName, -1f, 1);
             StartCoroutine(ErrorCallback(5.5f, MEPLabStatus.ERROR_ON_STOP));
-
         }
 
         System.Collections.IEnumerator ErrorCallback(float seconds, MEPLabStatus targetState)
         {
             yield return new WaitForSeconds(seconds);
-            ScreenMessages.PostScreenMessage("Warning: robotic arm failure", 6, ScreenMessageStyle.UPPER_CENTER);
+            ScreenMessages.PostScreenMessage("#ne_Warning_robotic_arm_failure", 6, ScreenMessageStyle.UPPER_CENTER);
             MEPlabState = targetState;
         }
 
         private bool isSuccessfull()
         {
-
             if (failures)
             {
                 if (failurePercentage > 100)
@@ -302,6 +296,7 @@ namespace NE_Science
 
         private void playAnimation(string animName, float speed, float time)
         {
+            // MKW TODO - remove "FirstOrDefault" Linq statement
             Animation anim = part.FindModelAnimators(animName).FirstOrDefault();
             if (anim != null)
             {
@@ -319,7 +314,7 @@ namespace NE_Science
        public override string GetInfo()
         {
             String ret = base.GetInfo();
-            ret += (ret == "" ? "" : "\n") + "Exposure Time per hour: " + ExposureTimePerHour;
+            ret += (ret == "" ? "" : "\n") + Localizer.Format("#ne_Exposure_Time_per_hour_1", ExposureTimePerHour);
             return ret;
         }
 
@@ -328,13 +323,13 @@ namespace NE_Science
            return exposureSlot.experimentSlotFree();
        }
 
-       [KSPEvent(guiActive = true, guiName = "Move Experiment", active = false)]
+       [KSPEvent(guiActive = true, guiName = "#ne_Move_Experiment", active = false)]
        public void moveExp()
        {
            exposureSlot.moveExperiment(part.vessel);
        }
 
-       [KSPEvent(guiActive = true, guiName = "Action Experiment", active = false)]
+       [KSPEvent(guiActive = true, guiName = "#ne_Action_Experiment", active = false)]
        public void actionExp()
        {
            if (exposureSlot.isExposureAction())
@@ -354,8 +349,6 @@ namespace NE_Science
                            MEPlabState = MEPLabStatus.READY;
                            break;
                    }
-
-
                }
                else
                {
@@ -395,7 +388,6 @@ namespace NE_Science
 
     public class MEPLabStatusFactory
     {
-
         public static MEPLabStatus getType(string p)
         {
             switch (p)
@@ -414,7 +406,6 @@ namespace NE_Science
                     return MEPLabStatus.NONE;
                 default:
                     return MEPLabStatus.NOT_READY;
-
             }
         }
     }

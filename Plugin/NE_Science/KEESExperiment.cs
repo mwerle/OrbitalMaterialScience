@@ -1,8 +1,8 @@
 ﻿/*
  *   This file is part of Orbital Material Science.
- *   
+ *
  *   Part of the code may originate from Station Science ba ether net http://forum.kerbalspaceprogram.com/threads/54774-0-23-5-Station-Science-(fourth-alpha-low-tech-docking-port-experiment-pod-models)
- * 
+ *
  *   Orbital Material Science is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -19,19 +19,18 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
+using KSP.Localization;
 
 namespace NE_Science
 {
     public class KEESExperiment : OMSExperiment
     {
         /* Overload from OMSExperiment */
-        new public string notReadyStatus = "Not installed";
-        new public string readyStatus = "Ready";
-        new public string errorStatus = "Experiment Ruined";
+        new public string notReadyStatus = Localizer.GetStringByTag("#ne_Not_installed");
+        new public string readyStatus = Localizer.GetStringByTag("#ne_Ready");
+        new public string errorStatus = Localizer.GetStringByTag("#ne_Experiment_Ruined");
 
         [KSPField(isPersistant = false)]
         public int exposureTimeRequired;
@@ -123,12 +122,12 @@ namespace NE_Science
         }
 
 
-        [KSPEvent(guiActive = true, guiName = "Start Experiment", active = false)]
+        [KSPEvent(guiActive = true, guiName = "#ne_Start_Experiment", active = false)]
         public void StartExperiment()
         {
             if (GetScienceCount() > 0)
             {
-                ScreenMessages.PostScreenMessage("Experiment already finalized.", 6, ScreenMessageStyle.UPPER_CENTER);
+                ScreenMessages.PostScreenMessage("#ne_Experiment_already_finalized", 6, ScreenMessageStyle.UPPER_CENTER);
                 return;
             }
             if (checkBoring(vessel, true)) return;
@@ -136,7 +135,7 @@ namespace NE_Science
             if (experimentStarted())
             {
                 createResources();
-                ScreenMessages.PostScreenMessage("Started experiment!", 6, ScreenMessageStyle.UPPER_CENTER);
+                ScreenMessages.PostScreenMessage("#ne_Started_experiment", 6, ScreenMessageStyle.UPPER_CENTER);
             }
         }
 
@@ -157,7 +156,7 @@ namespace NE_Science
             {
                 if (msg)
                 {
-                    ScreenMessages.PostScreenMessage("Experiment not finished yet!", 6, ScreenMessageStyle.UPPER_CENTER);
+                    ScreenMessages.PostScreenMessage("#ne_Experiment_not_finished_yet", 6, ScreenMessageStyle.UPPER_CENTER);
                 }
             }
             return false;
@@ -244,7 +243,7 @@ namespace NE_Science
 
         public virtual void checkFinished()
         {
-            
+
             if(isFinished())
             {
                 finished();
@@ -270,8 +269,7 @@ namespace NE_Science
         public void checkBiomeChange()
         {
             double numExposureTime = getResourceAmount("ExposureTime");
-            int sciCount = GetScienceCount();
-
+            //int sciCount = GetScienceCount(); // MKW - what was this for?
 
             var subject = ScienceHelper.getScienceSubject(experimentID, vessel);
             string subjectId = ((subject == null) ? "" : subject.id);
@@ -293,7 +291,7 @@ namespace NE_Science
                 }
                 else
                 {
-                    notReadyStatus = "Not installed on a PEC";
+                    notReadyStatus = Localizer.GetStringByTag("#ne_Not_installed_on_a_PEC");
                 }
             }
             else
@@ -301,7 +299,7 @@ namespace NE_Science
                 if (!docked)
                 {
                     labLost();
-                    notReadyStatus = "Not installed on a PEC";
+                    notReadyStatus = Localizer.GetStringByTag("#ne_Not_installed_on_a_PEC");
                 }
             }
         }
@@ -317,7 +315,7 @@ namespace NE_Science
         {
             Events["StartExperiment"].active = false;
             Events["DeployExperiment"].active = false;
-            ScreenMessages.PostScreenMessage("Location changed mid-experiment! " + part.partInfo.title + " ruined.", 6, ScreenMessageStyle.UPPER_CENTER);
+            ScreenMessages.PostScreenMessage(Localizer.Format("#ne_Location_changed_mid_experiment_1_ruined", part.partInfo.title), 6, ScreenMessageStyle.UPPER_CENTER);
             stopResearch();
             playAnimation(deployAnimation, -1, 1);
             state = ERROR;
@@ -327,7 +325,7 @@ namespace NE_Science
         {
             Events["StartExperiment"].active = false;
             Events["DeployExperiment"].active = false;
-            ScreenMessages.PostScreenMessage("Warning: " + part.partInfo.title + " has detached from the station without being finalized.", 2, ScreenMessageStyle.UPPER_CENTER);
+            ScreenMessages.PostScreenMessage(Localizer.Format("#ne_Warning_1_has_detached_from_station_without_being_finalized",part.partInfo.title), 2, ScreenMessageStyle.UPPER_CENTER);
             stopResearch();
             playAnimation(deployAnimation, -1, 1);
             state = NOT_READY;
@@ -368,7 +366,7 @@ namespace NE_Science
 
         public virtual void resetExp()
         {
-            ScreenMessages.PostScreenMessage("Reseting Experiment " + part.partInfo.title, 2, ScreenMessageStyle.UPPER_CENTER);
+            ScreenMessages.PostScreenMessage(Localizer.Format("#ne_Resetting_Experiment_1", part.partInfo.title), 2, ScreenMessageStyle.UPPER_CENTER);
             Events["StartExperiment"].active = false;
             Events["DeployExperiment"].active = false;
             stopResearch();
@@ -377,10 +375,9 @@ namespace NE_Science
 
         public override string GetInfo()
         {
-            String ret = "Exposure time required: " + exposureTimeRequired;
-
-            if (ret != "") ret += "\n";
-            ret += "You need to install the experiment on a KEES PEC.";
+            String ret = Localizer.Format("#ne_Exposure_time_required_1", exposureTimeRequired);
+            ret += "\n";
+            ret += Localizer.GetStringByTag("#ne_You_need_to_install_the_experiment_on_a_KEES_PEC");
 
             return ret;
         }
@@ -398,6 +395,7 @@ namespace NE_Science
 
         private void playAnimation(string animName, float speed, float time)
         {
+            // MKW TODO - remove "FirstOrDefault" Linq statement
             Animation anim = part.FindModelAnimators(animName).FirstOrDefault();
             if (anim != null)
             {
@@ -417,7 +415,7 @@ namespace NE_Science
         {
             Events["StartExperiment"].active = false;
             Events["DeployExperiment"].active = false;
-            ScreenMessages.PostScreenMessage("Warning: " + part.partInfo.title + " has detached from the vessel.", 2, ScreenMessageStyle.UPPER_CENTER);
+            ScreenMessages.PostScreenMessage(Localizer.Format("#ne_Warning_1_has_detached_from_the_vessel", part.partInfo.title), 2, ScreenMessageStyle.UPPER_CENTER);
             stopResearch();
             playAnimation(deployAnimation, -1, 1);
             state = ERROR;

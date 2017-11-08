@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace NE_Science
@@ -91,8 +90,13 @@ namespace NE_Science
             ExperimentSituations situation = getScienceSituation(vessel);
             CelestialBody body = vessel.mainBody;
             string biome = "";
-            if(vessel.LandedOrSplashed) biome = vessel.landedAt;
-            ScienceSubject subject = ResearchAndDevelopment.GetExperimentSubject(experiment, situation, body, biome);
+            string displayBiome = "";
+            if(vessel.LandedOrSplashed)
+            {
+                biome = vessel.landedAt;
+                displayBiome = vessel.displaylandedAt;
+            }
+            ScienceSubject subject = ResearchAndDevelopment.GetExperimentSubject(experiment, situation, body, biome, displayBiome);
             return subject;
         }
     }
