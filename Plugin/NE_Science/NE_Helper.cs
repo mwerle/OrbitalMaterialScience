@@ -22,7 +22,7 @@ using UnityEngine;
 
 namespace NE_Science
 {
-    [KSPAddon(KSPAddon.Startup.EveryScene, true)]
+    [KSPAddon(KSPAddon.Startup.MainMenu, true)]
     class NE_Helper : MonoBehaviour
     {
 
@@ -263,7 +263,7 @@ namespace NE_Science
         }
     } // END class NE_Helper
 
-    
+
     public delegate void GameObjectVisitor(GameObject go, int indent);
 
     /// <summary>
@@ -274,11 +274,11 @@ namespace NE_Science
         // Dump object
         private static void internal_PrintComponents(GameObject go, int indent)
         {
-            NE_Helper.log("{0}{1} has components:", indent > 0 ? new string('-', indent) + ">" : "", go.name);
+            NE_Helper.log("{0}{1} has components:", indent > 0 ? new string('-', indent-2) + "> " : "", go.name);
 
             var components = go.GetComponents<Component>();
             foreach (var c in components)
-                NE_Helper.log("{0}: {1}", new string('.', indent + 3) + "c", c.GetType().FullName);
+                NE_Helper.log("{0}: {1} ({2})", new string('.', indent + 3) + "c", c.GetType().FullName, c.name);
         }
 
         public static void PrintComponents(this UnityEngine.GameObject go, int maxIndent = 0)
@@ -296,7 +296,7 @@ namespace NE_Science
                 if (maxIndent > 0 && indent/3 > maxIndent)
                 {
                     break;
-                }       
+                }
             }
         }
     } // END class GOExtensions
