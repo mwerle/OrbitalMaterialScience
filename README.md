@@ -1,5 +1,8 @@
-Nehemia's Science Mods (OrbitalMaterialScience)
-===============================================
+Nehemia Engineering Orbital Science (NEOS)
+==========================================
+
+(WAS: Orbital Material Science)
+-------------------------------
 
 Overview
 --------
@@ -8,21 +11,21 @@ This is really a collection of several mods which all have a common theme - orbi
 
 There are 4 major components:
 
-1. Kemini - In-capsule experiments for the MK1 pod intended for very early career mode play.
+1. **Kemini** - In-capsule experiments for the MK1 pod intended for very early career mode play.
 
-2. KEES - Kerbal Environmental Effects Study
+2. **KEES** - Kerbal Environmental Effects Study
 
    This set of experiments uses an external carrier (which must be attached in-orbit using KIS) onto which exposure experiments can be loaded (again using KIS). It is intended to be attached to a small orbital station with different experiments launched and installed over time.
    
    Components can be brought to orbit using either a special carrier included in the mod, or standard KIS containers.
     
-3. OMS - Orbital Material Sciences
+3. **OMS** - Orbital Material Sciences
 
    This set of experiments is the most ambitious, requiring various stages to complete and is intended for large, long-duration orbital complexes.
 
    First, an orbital Lab must be launched. There are three labs, an MPL-600, MSL-1000, and MEP-825.  Each lab (except for the MEP-825) needs to have lab equipment installed in it (which must be launched separately) before experiments can be installed and run. Lab equipment is specific to a lab, and experiments are specific to lab equipment - so ensure you have the correct equipment before launching experiments!
    
-4. KLS - Kerbal Life Sciences
+4. **KLS** - Kerbal Life Sciences
 
    Additional equipment and experiments for the MPL-600 lab.
    
@@ -30,6 +33,15 @@ There are 4 major components:
 
 Each component can be downloaded and installed separately, or the entire collection can be downloaded as one mod.
 
+
+Contributing
+------------
+
+Please see the [Contribution Guidelines for this project](Contributing.md) which provide an overview of how this project is laid out and how to support it.
+
+Also make sure you agree with the [Project License](LICENSE) before starting any work.
+
+A list of contributors can be [found here](CONTRIBUTORS.md).
 
 Resources
 ---------

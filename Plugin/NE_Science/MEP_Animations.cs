@@ -91,7 +91,7 @@ namespace NE_Science
                     switchLightsOn();
                     error = true;
                 }
-                warnLight.transform.Rotate(Time.deltaTime * 180, 0, 0);
+                warnLight?.transform.Rotate(Time.deltaTime * 180, 0, 0);
             }
             else
             {

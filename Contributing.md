@@ -1,5 +1,5 @@
 # NEOS - Contributing
-Nehemia Engineering Orbital Science - previously knows as OrbitalMaterialScience (OMS).
+**N**ehemia **E**ngineering **O**rbital **S**cience - previously knows as OrbitalMaterialScience (OMS).
 
 This document outlines some information useful if you wish to contribute to this mod. Any and all help, especially modelling, is greatly appreciated.
 
@@ -81,12 +81,21 @@ Model textures must be exported in the **MDM** format to ensure that they can be
 
 After generating the final files, textures should be converted to **DDS** format. While various utilities exist, the easiest by far is the [KSP to DDS textured converter][42] although it is currently only available for Windows.
 
+### KSPedia
+The KSPedia unity project additionally requires the "TextMeshPro" utility and a small patch available on the forum. Both of these should already be present if you clone this repository.
+
+Please see DMagic's excellent [forum post][43] for more details on how to create KSPedia articles.
+
 [40]: https://unity3d.com/unity/qa/patch-releases?version=5.4
 [41]: http://forum.kerbalspaceprogram.com/index.php?showtopic=135228
 [42]: http://forum.kerbalspaceprogram.com/index.php?showtopic=88972
+[43]: http://forum.kerbalspaceprogram.com/index.php?showtopic=137628
 
 ## Part Configurations
 The actual KSP Part and Experiment Configurations are maintained directly in the **GameData** directory.
+
+## Localization
+The localization files are also maintained directly in the **GameData** directory.
 
 ## Making a Release
 Version information is maintained in various **.version** files in the **GameData** directory hierarchy. Update as required; at the very least the "Build Version" should be incremented.
