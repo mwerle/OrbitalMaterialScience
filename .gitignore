@@ -35,6 +35,16 @@ UpgradeLog*.XML
 UpgradeLog*.htm
 
 #############
+## Unity
+#############
+Unity Projects/**/[Ll]ibrary/
+Unity Projects/**/[Tt]emp/
+Unity Projects/**/[Oo]bj/
+Unity Projects/**/[Bb]uild/
+Unity Projects/**/[Bb]uilds/
+Unity Projects/**/Assets/AssetStoreTools*
+
+#############
 ## Windows detritus
 #############
 
