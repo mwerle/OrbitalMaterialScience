@@ -61,6 +61,8 @@ The modelling tool used to create these is [Blender][30]. For consistencies sake
 
 **IMPORTANT:** Models are saved (for import into Unity) in **ASCII FBX format** for ultimate interoperability and kindness to Git.
 
+[See more](Models/Modelling.md)
+
 [30]: https://www.blender.org/
 
 ## Unity Projects
@@ -74,12 +76,17 @@ For the sake of interoperability, the *PartTools.cfg* file should be edited manu
 
 **IMPORTANT:** Ensure that each project is configured to use *"Visible Meta Files"* (Edit -> Project Settings -> Editor) and that the meta-files are added to Git.  The "Library" folder should not be added! Furthermore the *"Asset Serialisation"* setting should be set to *"Force Text"*. 
 
+[See more](Unity%20Projects/Unity.md)
+
 ### Textures
 Model textures must be exported in the **MDM** format to ensure that they can be replaced with other formats with different file extensions.
 
-**IMPORTANT:** Only the textures which are actually attached to the model are exported by *PartTools*. As each experiment has its own texture which overwrites the default model texture, the experiment textures must be manually copied into the output directory if they have been modified.
+**IMPORTANT:** Only the textures which are actually attached to the model are exported by *PartTools*.
+As many of the parts in NEOS have multiple textures which override the default model texture at runtime, the various textures must be manually copied into the output directory.
 
-After generating the final files, textures should be converted to **DDS** format. While various utilities exist, the easiest by far is the [KSP to DDS textured converter][42] although it is currently only available for Windows.
+After generating the final files, textures should be converted to **DDS** format. While various utilities exist, the easiest by far is the [KSP to DDS texture converter][42] although it is currently only available for Windows.
+
+[See more](Textures/Textures.md)
 
 ### KSPedia
 The KSPedia unity project additionally requires the "TextMeshPro" utility and a small patch available on the forum. Both of these should already be present if you clone this repository.
