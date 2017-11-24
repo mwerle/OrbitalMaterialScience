@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: KEES_Experiment
-  m_Shader: {fileID: 4800000, guid: 006a02235764773478998a79f8e09f85, type: 3}
+  m_Shader: {fileID: 4800000, guid: ac859b44038643d40b88f24aceac191c, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_CustomRenderQueue: -1
@@ -39,6 +39,9 @@ Material:
       second: 1
     m_Colors:
     - first:
+        name: _BurnColor
+      second: {r: 1, g: 1, b: 1, a: 1}
+    - first:
         name: _Color
       second: {r: 0.8, g: 0.8, b: 0.8, a: 1}
     - first:
@@ -47,3 +50,6 @@ Material:
     - first:
         name: _SpecColor
       second: {r: 0.6102941, g: 0.6102941, b: 0.6102941, a: 1}
+    - first:
+        name: _TemperatureColor
+      second: {r: 0, g: 0, b: 0, a: 0}

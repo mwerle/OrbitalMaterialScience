@@ -432,7 +432,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1128063389}
-  - 114: {fileID: 1128063390}
   m_Layer: 0
   m_Name: KEES Experiment
   m_TagString: Untagged
@@ -454,21 +453,6 @@ Transform:
   - {fileID: 1249052661}
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &1128063390
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1128063388}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -453068767, guid: 90118262cf80c7549ab37dd61d08c605, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  modelName: KEES_Experiment
-  filePath: NehemiahInc/KEES/Parts/Experiment
-  production: 1
-  textureFormat: 3
 --- !u!4 &1249052661 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 7d73f1c2dbeb1ac409e828be63753763, type: 3}
