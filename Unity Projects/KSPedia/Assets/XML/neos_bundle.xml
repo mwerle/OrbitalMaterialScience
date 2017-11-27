@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KSPBundleDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" UrlName="neos" Name="neos" CreatedTime="-8586899694557955174">
+  <Author>Micha</Author>
+  <Info>NEOS KSPedia</Info>
+  <Assets>
+    <Asset Name="kees - pc" Path="Assets/KSPedia Assets/KEES/kees - pc.png" Type="Texture2D" Url="KSPedia Assets/KEES/kees - pc" AutoLoad="false" />
+    <Asset Name="kees - pec" Path="Assets/KSPedia Assets/KEES/kees - pec.png" Type="Texture2D" Url="KSPedia Assets/KEES/kees - pec" AutoLoad="false" />
+    <Asset Name="kees-fig2.1_attach_pec" Path="Assets/KSPedia Assets/KEES/kees-fig2.1_attach_pec.png" Type="Texture2D" Url="KSPedia Assets/KEES/kees-fig2" AutoLoad="false" />
+    <Asset Name="kees-fig2.2_pec_attached" Path="Assets/KSPedia Assets/KEES/kees-fig2.2_pec_attached.png" Type="Texture2D" Url="KSPedia Assets/KEES/kees-fig2" AutoLoad="false" />
+    <Asset Name="kees-fig4.1_experiment_running" Path="Assets/KSPedia Assets/KEES/kees-fig4.1_experiment_running.png" Type="Texture2D" Url="KSPedia Assets/KEES/kees-fig4" AutoLoad="false" />
+    <Asset Name="kees-fig4.2_experiment_finished" Path="Assets/KSPedia Assets/KEES/kees-fig4.2_experiment_finished.png" Type="Texture2D" Url="KSPedia Assets/KEES/kees-fig4" AutoLoad="false" />
+    <Asset Name="kees-fig4.3_experiment_finalized" Path="Assets/KSPedia Assets/KEES/kees-fig4.3_experiment_finalized.png" Type="Texture2D" Url="KSPedia Assets/KEES/kees-fig4" AutoLoad="false" />
+    <Asset Name="kees-odc" Path="Assets/KSPedia Assets/KEES/kees-odc.png" Type="Texture2D" Url="KSPedia Assets/KEES/kees-odc" AutoLoad="false" />
+    <Asset Name="kees-posa1" Path="Assets/KSPedia Assets/KEES/kees-posa1.png" Type="Texture2D" Url="KSPedia Assets/KEES/kees-posa1" AutoLoad="false" />
+    <Asset Name="kees-posa2" Path="Assets/KSPedia Assets/KEES/kees-posa2.png" Type="Texture2D" Url="KSPedia Assets/KEES/kees-posa2" AutoLoad="false" />
+    <Asset Name="kees-ppmd" Path="Assets/KSPedia Assets/KEES/kees-ppmd.png" Type="Texture2D" Url="KSPedia Assets/KEES/kees-ppmd" AutoLoad="false" />
+    <Asset Name="kees-unlock_parts" Path="Assets/KSPedia Assets/KEES/kees-unlock_parts.png" Type="Texture2D" Url="KSPedia Assets/KEES/kees-unlock_parts" AutoLoad="false" />
+    <Asset Name="kees_0_titlepage" Path="Assets/KSPedia Assets/KEES/kees_0_titlepage.prefab" Type="GameObject" Url="KSPedia Assets/KEES/kees_0_titlepage" AutoLoad="false" />
+    <Asset Name="kees_1_building_craft" Path="Assets/KSPedia Assets/KEES/kees_1_building_craft.prefab" Type="GameObject" Url="KSPedia Assets/KEES/kees_1_building_craft" AutoLoad="false" />
+    <Asset Name="kees_2_orbital_assembly" Path="Assets/KSPedia Assets/KEES/kees_2_orbital_assembly.prefab" Type="GameObject" Url="KSPedia Assets/KEES/kees_2_orbital_assembly" AutoLoad="false" />
+    <Asset Name="kees_3_mount_experiment" Path="Assets/KSPedia Assets/KEES/kees_3_mount_experiment.prefab" Type="GameObject" Url="KSPedia Assets/KEES/kees_3_mount_experiment" AutoLoad="false" />
+    <Asset Name="kees_4_run_experiment" Path="Assets/KSPedia Assets/KEES/kees_4_run_experiment.prefab" Type="GameObject" Url="KSPedia Assets/KEES/kees_4_run_experiment" AutoLoad="false" />
+    <Asset Name="kees_fig3.1_mount_experiment" Path="Assets/KSPedia Assets/KEES/kees_fig3.1_mount_experiment.png" Type="Texture2D" Url="KSPedia Assets/KEES/kees_fig3" AutoLoad="false" />
+    <Asset Name="kees_fig3.2_experiment_mounted" Path="Assets/KSPedia Assets/KEES/kees_fig3.2_experiment_mounted.png" Type="Texture2D" Url="KSPedia Assets/KEES/kees_fig3" AutoLoad="false" />
+    <Asset Name="kees_vab_add_parts" Path="Assets/KSPedia Assets/KEES/kees_vab_add_parts.png" Type="Texture2D" Url="KSPedia Assets/KEES/kees_vab_add_parts" AutoLoad="false" />
+    <Asset Name="KLS_Choose_Test_Subject2" Path="Assets/KSPedia Assets/KLS/KLS_Choose_Test_Subject2.png" Type="Texture2D" Url="KSPedia Assets/KLS/KLS_Choose_Test_Subject2" AutoLoad="false" />
+    <Asset Name="KLS_Equipment_USU" Path="Assets/KSPedia Assets/KLS/KLS_Equipment_USU.png" Type="Texture2D" Url="KSPedia Assets/KLS/KLS_Equipment_USU" AutoLoad="false" />
+    <Asset Name="KLS_Finalize_Experiment_Move_Warning2" Path="Assets/KSPedia Assets/KLS/KLS_Finalize_Experiment_Move_Warning2.png" Type="Texture2D" Url="KSPedia Assets/KLS/KLS_Finalize_Experiment_Move_Warning2" AutoLoad="false" />
+    <Asset Name="KLS_Install_Equipment2" Path="Assets/KSPedia Assets/KLS/KLS_Install_Equipment2.png" Type="Texture2D" Url="KSPedia Assets/KLS/KLS_Install_Equipment2" AutoLoad="false" />
+    <Asset Name="KLS_Logo_big" Path="Assets/KSPedia Assets/KLS/KLS_Logo_big.jpg" Type="Texture2D" Url="KSPedia Assets/KLS/KLS_Logo_big" AutoLoad="false" />
+    <Asset Name="kls_0_titlepage" Path="Assets/KSPedia Assets/KLS/kls_0_titlepage.prefab" Type="GameObject" Url="KSPedia Assets/KLS/kls_0_titlepage" AutoLoad="false" />
+    <Asset Name="kls_1_running experiments" Path="Assets/KSPedia Assets/KLS/kls_1_running experiments.prefab" Type="GameObject" Url="KSPedia Assets/KLS/kls_1_running experiments" AutoLoad="false" />
+    <Asset Name="Kemini - Run Test 1" Path="Assets/KSPedia Assets/Kemini/Kemini - Run Test 1.png" Type="Texture2D" Url="KSPedia Assets/Kemini/Kemini - Run Test 1" AutoLoad="false" />
+    <Asset Name="Kemini - Run Test 2 - crop" Path="Assets/KSPedia Assets/Kemini/Kemini - Run Test 2 - crop.png" Type="Texture2D" Url="KSPedia Assets/Kemini/Kemini - Run Test 2 - crop" AutoLoad="false" />
+    <Asset Name="Kemini - Run Test 3 - crop" Path="Assets/KSPedia Assets/Kemini/Kemini - Run Test 3 - crop.png" Type="Texture2D" Url="KSPedia Assets/Kemini/Kemini - Run Test 3 - crop" AutoLoad="false" />
+    <Asset Name="Kemini - Run Test 4 - crop" Path="Assets/KSPedia Assets/Kemini/Kemini - Run Test 4 - crop.png" Type="Texture2D" Url="KSPedia Assets/Kemini/Kemini - Run Test 4 - crop" AutoLoad="false" />
+    <Asset Name="Kemini - Run Test 5" Path="Assets/KSPedia Assets/Kemini/Kemini - Run Test 5.png" Type="Texture2D" Url="KSPedia Assets/Kemini/Kemini - Run Test 5" AutoLoad="false" />
+    <Asset Name="Kemini Fig1.1 Unlock Experiment" Path="Assets/KSPedia Assets/Kemini/Kemini Fig1.1 Unlock Experiment.png" Type="Texture2D" Url="KSPedia Assets/Kemini/Kemini Fig1" AutoLoad="false" />
+    <Asset Name="Kemini Fig1.2 Add Experiment to Vessel" Path="Assets/KSPedia Assets/Kemini/Kemini Fig1.2 Add Experiment to Vessel.png" Type="Texture2D" Url="KSPedia Assets/Kemini/Kemini Fig1" AutoLoad="false" />
+    <Asset Name="Kemini-experiment_D10" Path="Assets/KSPedia Assets/Kemini/Kemini-experiment_D10.png" Type="Texture2D" Url="KSPedia Assets/Kemini/Kemini-experiment_D10" AutoLoad="false" />
+    <Asset Name="Kemini-experiment_D5" Path="Assets/KSPedia Assets/Kemini/Kemini-experiment_D5.png" Type="Texture2D" Url="KSPedia Assets/Kemini/Kemini-experiment_D5" AutoLoad="false" />
+    <Asset Name="Kemini-experiment_D7" Path="Assets/KSPedia Assets/Kemini/Kemini-experiment_D7.png" Type="Texture2D" Url="KSPedia Assets/Kemini/Kemini-experiment_D7" AutoLoad="false" />
+    <Asset Name="Kemini-experiment_D8" Path="Assets/KSPedia Assets/Kemini/Kemini-experiment_D8.png" Type="Texture2D" Url="KSPedia Assets/Kemini/Kemini-experiment_D8" AutoLoad="false" />
+    <Asset Name="Kemini-experiment_MSC3" Path="Assets/KSPedia Assets/Kemini/Kemini-experiment_MSC3.png" Type="Texture2D" Url="KSPedia Assets/Kemini/Kemini-experiment_MSC3" AutoLoad="false" />
+    <Asset Name="kemini_0_titlepage" Path="Assets/KSPedia Assets/Kemini/kemini_0_titlepage.prefab" Type="GameObject" Url="KSPedia Assets/Kemini/kemini_0_titlepage" AutoLoad="false" />
+    <Asset Name="kemini_1_unlock_experiment" Path="Assets/KSPedia Assets/Kemini/kemini_1_unlock_experiment.prefab" Type="GameObject" Url="KSPedia Assets/Kemini/kemini_1_unlock_experiment" AutoLoad="false" />
+    <Asset Name="kemini_2_run_experiment" Path="Assets/KSPedia Assets/Kemini/kemini_2_run_experiment.prefab" Type="GameObject" Url="KSPedia Assets/Kemini/kemini_2_run_experiment" AutoLoad="false" />
+    <Asset Name="NEOS_Background_Blue" Path="Assets/KSPedia Assets/NEOS_Background_Blue.jpg" Type="Texture2D" Url="KSPedia Assets/NEOS_Background_Blue" AutoLoad="false" />
+    <Asset Name="NEOS_Logo_big" Path="Assets/KSPedia Assets/NEOS_Logo_big.jpg" Type="Texture2D" Url="KSPedia Assets/NEOS_Logo_big" AutoLoad="false" />
+    <Asset Name="KLS_ESC" Path="Assets/KSPedia Assets/OMS/KLS_ESC.png" Type="Texture2D" Url="KSPedia Assets/OMS/KLS_ESC" AutoLoad="false" />
+    <Asset Name="OMS_Crewed_Resupply_Shuttle" Path="Assets/KSPedia Assets/OMS/OMS_Crewed_Resupply_Shuttle.png" Type="Texture2D" Url="KSPedia Assets/OMS/OMS_Crewed_Resupply_Shuttle" AutoLoad="false" />
+    <Asset Name="OMS_Equipment" Path="Assets/KSPedia Assets/OMS/OMS_Equipment.png" Type="Texture2D" Url="KSPedia Assets/OMS/OMS_Equipment" AutoLoad="false" />
+    <Asset Name="OMS_Experiment-CFE1" Path="Assets/KSPedia Assets/OMS/OMS_Experiment-CFE1.png" Type="Texture2D" Url="KSPedia Assets/OMS/OMS_Experiment-CFE1" AutoLoad="false" />
+    <Asset Name="OMS_Experiment_Finalized_info" Path="Assets/KSPedia Assets/OMS/OMS_Experiment_Finalized_info.png" Type="Texture2D" Url="KSPedia Assets/OMS/OMS_Experiment_Finalized_info" AutoLoad="false" />
+    <Asset Name="OMS_Experiment_Finished_info" Path="Assets/KSPedia Assets/OMS/OMS_Experiment_Finished_info.png" Type="Texture2D" Url="KSPedia Assets/OMS/OMS_Experiment_Finished_info" AutoLoad="false" />
+    <Asset Name="OMS_Experiment_Running_info" Path="Assets/KSPedia Assets/OMS/OMS_Experiment_Running_info.png" Type="Texture2D" Url="KSPedia Assets/OMS/OMS_Experiment_Running_info" AutoLoad="false" />
+    <Asset Name="OMS_Finalization_Warning" Path="Assets/KSPedia Assets/OMS/OMS_Finalization_Warning.png" Type="Texture2D" Url="KSPedia Assets/OMS/OMS_Finalization_Warning" AutoLoad="false" />
+    <Asset Name="OMS_Inside_Lab" Path="Assets/KSPedia Assets/OMS/OMS_Inside_Lab.png" Type="Texture2D" Url="KSPedia Assets/OMS/OMS_Inside_Lab" AutoLoad="false" />
+    <Asset Name="OMS_Install_Experiment" Path="Assets/KSPedia Assets/OMS/OMS_Install_Experiment.png" Type="Texture2D" Url="KSPedia Assets/OMS/OMS_Install_Experiment" AutoLoad="false" />
+    <Asset Name="OMS_Install_Lab_Equipment" Path="Assets/KSPedia Assets/OMS/OMS_Install_Lab_Equipment.png" Type="Texture2D" Url="KSPedia Assets/OMS/OMS_Install_Lab_Equipment" AutoLoad="false" />
+    <Asset Name="OMS_Lab-MPL" Path="Assets/KSPedia Assets/OMS/OMS_Lab-MPL.png" Type="Texture2D" Url="KSPedia Assets/OMS/OMS_Lab-MPL" AutoLoad="false" />
+    <Asset Name="OMS_Lab-MSL1000" Path="Assets/KSPedia Assets/OMS/OMS_Lab-MSL1000.png" Type="Texture2D" Url="KSPedia Assets/OMS/OMS_Lab-MSL1000" AutoLoad="false" />
+    <Asset Name="OMS_Lab_Equipment_Container" Path="Assets/KSPedia Assets/OMS/OMS_Lab_Equipment_Container.png" Type="Texture2D" Url="KSPedia Assets/OMS/OMS_Lab_Equipment_Container" AutoLoad="false" />
+    <Asset Name="oms_0_titlepage" Path="Assets/KSPedia Assets/OMS/oms_0_titlepage.prefab" Type="GameObject" Url="KSPedia Assets/OMS/oms_0_titlepage" AutoLoad="false" />
+    <Asset Name="oms_1_building_your_station" Path="Assets/KSPedia Assets/OMS/oms_1_building_your_station.prefab" Type="GameObject" Url="KSPedia Assets/OMS/oms_1_building_your_station" AutoLoad="false" />
+    <Asset Name="oms_2_running experiments" Path="Assets/KSPedia Assets/OMS/oms_2_running experiments.prefab" Type="GameObject" Url="KSPedia Assets/OMS/oms_2_running experiments" AutoLoad="false" />
+    <Asset Name="oms_3_running experiments" Path="Assets/KSPedia Assets/OMS/oms_3_running experiments.prefab" Type="GameObject" Url="KSPedia Assets/OMS/oms_3_running experiments" AutoLoad="false" />
+    <Asset Name="neos_1_introduction" Path="Assets/KSPedia Assets/neos_1_introduction.prefab" Type="GameObject" Url="KSPedia Assets/neos_1_introduction" AutoLoad="false" />
+    <Asset Name="neos_titlepage" Path="Assets/KSPedia Assets/neos_titlepage.prefab" Type="GameObject" Url="KSPedia Assets/neos_titlepage" AutoLoad="false" />
+    <Asset Name="neos_kspedia" Path="Assets/XML/neos_kspedia.xml" Type="TextAsset" Url="XML/neos_kspedia" AutoLoad="false" />
+  </Assets>
+  <Dependencies />
+</KSPBundleDefinition>

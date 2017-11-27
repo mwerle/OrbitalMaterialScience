@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KSPedia xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="neos_kemini" CreatedTime="-8586905891620947956">
+  <Categories>
+    <Category Name="NEOS">
+      <Title>NEOS</Title>
+      <TitleScreen />
+      <Screens />
+      <Subcategories>
+        <Subcategory Name="Kemini">
+          <Title>Kemini</Title>
+          <TitleScreen />
+          <Screens />
+          <Subcategories />
+        </Subcategory>
+      </Subcategories>
+    </Category>
+  </Categories>
+  <Screens />
+</KSPedia>

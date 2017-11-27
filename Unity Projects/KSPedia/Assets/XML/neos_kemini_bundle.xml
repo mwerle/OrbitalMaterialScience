@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KSPBundleDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" UrlName="neos_kemini" Name="neos_kemini" CreatedTime="-8586899694556444000">
+  <Author>Micha</Author>
+  <Info>NEOS KSPedia for Kemini</Info>
+  <Assets>
+    <Asset Name="neos_kemini_kspedia" Path="Assets/XML/neos_kemini_kspedia.xml" Type="TextAsset" Url="XML/neos_kemini_kspedia" AutoLoad="false" />
+  </Assets>
+  <Dependencies />
+</KSPBundleDefinition>

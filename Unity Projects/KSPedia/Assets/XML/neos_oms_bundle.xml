@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KSPBundleDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" UrlName="neos_oms" Name="neos_oms" CreatedTime="-8586899694555010453">
+  <Author>Micha</Author>
+  <Info>KSPedia for NEOS Orbital Material Science</Info>
+  <Assets>
+    <Asset Name="neos_oms_kspedia" Path="Assets/XML/neos_oms_kspedia.xml" Type="TextAsset" Url="XML/neos_oms_kspedia" AutoLoad="false" />
+  </Assets>
+  <Dependencies />
+</KSPBundleDefinition>

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KSPedia xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="neos" CreatedTime="-8586899694604490786">
+  <Categories>
+    <Category Name="NEOS">
+      <Title>Nehemiah Engineering Orbital Science</Title>
+      <TitleScreen>neos_titlepage</TitleScreen>
+      <Screens>
+        <Screen>neos_1_introduction</Screen>
+      </Screens>
+      <Subcategories>
+        <Subcategory Name="Kemini">
+          <Title>Kemini</Title>
+          <TitleScreen>kemini_0_titlepage</TitleScreen>
+          <Screens>
+            <Screen>kemini_1_unlock_experiment</Screen>
+            <Screen>kemini_2_run_experiment</Screen>
+          </Screens>
+          <Subcategories />
+        </Subcategory>
+        <Subcategory Name="KEES">
+          <Title>Kerbal Environmental Effects Studies</Title>
+          <TitleScreen>kees_0_titlepage</TitleScreen>
+          <Screens>
+            <Screen>kees_1_building_craft</Screen>
+            <Screen>kees_2_orbital_assembly</Screen>
+            <Screen>kees_3_mount_experiment</Screen>
+            <Screen>kees_4_run_experiment</Screen>
+          </Screens>
+          <Subcategories />
+        </Subcategory>
+        <Subcategory Name="OMS">
+          <Title>Orbital Material Science</Title>
+          <TitleScreen>oms_0_titlepage</TitleScreen>
+          <Screens>
+            <Screen>oms_1_building_your_station</Screen>
+            <Screen>oms_2_running experiments</Screen>
+            <Screen>oms_3_running experiments</Screen>
+          </Screens>
+          <Subcategories />
+        </Subcategory>
+        <Subcategory Name="KLS">
+          <Title>Kerbal Life Science</Title>
+          <TitleScreen>kls_0_titlepage</TitleScreen>
+          <Screens>
+            <Screen>kls_1_running experiments</Screen>
+          </Screens>
+          <Subcategories />
+        </Subcategory>
+      </Subcategories>
+    </Category>
+  </Categories>
+  <Screens>
+    <Screen Name="oms_3_running experiments">
+      <BundleName>neos</BundleName>
+      <AssetPath>Assets/KSPedia Assets/OMS/oms_3_running experiments.prefab</AssetPath>
+      <Title>Running Experiments cont.</Title>
+      <Background />
+      <Text />
+      <Tooltips />
+    </Screen>
+    <Screen Name="oms_2_running experiments">
+      <BundleName>neos</BundleName>
+      <AssetPath>Assets/KSPedia Assets/OMS/oms_2_running experiments.prefab</AssetPath>
+      <Title>Running Experiments</Title>
+      <Background />
+      <Text />
+      <Tooltips />
+    </Screen>
+    <Screen Name="oms_1_building_your_station">
+      <BundleName>neos</BundleName>
+      <AssetPath>Assets/KSPedia Assets/OMS/oms_1_building_your_station.prefab</AssetPath>
+      <Title>Building your Station</Title>
+      <Background />
+      <Text />
+      <Tooltips />
+    </Screen>
+    <Screen Name="oms_0_titlepage">
+      <BundleName>neos</BundleName>
+      <AssetPath>Assets/KSPedia Assets/OMS/oms_0_titlepage.prefab</AssetPath>
+      <Title>Orbital Material Science</Title>
+      <Background />
+      <Text />
+      <Tooltips />
+    </Screen>
+    <Screen Name="neos_titlepage">
+      <BundleName>neos</BundleName>
+      <AssetPath>Assets/KSPedia Assets/neos_titlepage.prefab</AssetPath>
+      <Title>Nehemiah Engineering Orbital Science</Title>
+      <Background />
+      <Text />
+      <Tooltips />
+    </Screen>
+    <Screen Name="neos_1_introduction">
+      <BundleName>neos</BundleName>
+      <AssetPath>Assets/KSPedia Assets/neos_1_introduction.prefab</AssetPath>
+      <Title>Introduction</Title>
+      <Background />
+      <Text />
+      <Tooltips />
+    </Screen>
+    <Screen Name="kls_1_running experiments">
+      <BundleName>neos</BundleName>
+      <AssetPath>Assets/KSPedia Assets/KLS/kls_1_running experiments.prefab</AssetPath>
+      <Title>Run Experiments</Title>
+      <Background />
+      <Text />
+      <Tooltips />
+    </Screen>
+    <Screen Name="kls_0_titlepage">
+      <BundleName>neos</BundleName>
+      <AssetPath>Assets/KSPedia Assets/KLS/kls_0_titlepage.prefab</AssetPath>
+      <Title>Kerbal Life Science</Title>
+      <Background />
+      <Text />
+      <Tooltips />
+    </Screen>
+    <Screen Name="kemini_2_run_experiment">
+      <BundleName>neos</BundleName>
+      <AssetPath>Assets/KSPedia Assets/Kemini/kemini_2_run_experiment.prefab</AssetPath>
+      <Title>Run Experiment</Title>
+      <Background />
+      <Text />
+      <Tooltips />
+    </Screen>
+    <Screen Name="kemini_1_unlock_experiment">
+      <BundleName>neos</BundleName>
+      <AssetPath>Assets/KSPedia Assets/Kemini/kemini_1_unlock_experiment.prefab</AssetPath>
+      <Title>Unlock Experiment</Title>
+      <Background />
+      <Text />
+      <Tooltips />
+    </Screen>
+    <Screen Name="kemini_0_titlepage">
+      <BundleName>neos</BundleName>
+      <AssetPath>Assets/KSPedia Assets/Kemini/kemini_0_titlepage.prefab</AssetPath>
+      <Title>Kemini</Title>
+      <Background />
+      <Text />
+      <Tooltips />
+    </Screen>
+    <Screen Name="kees_4_run_experiment">
+      <BundleName>neos</BundleName>
+      <AssetPath>Assets/KSPedia Assets/KEES/kees_4_run_experiment.prefab</AssetPath>
+      <Title>Run Experiment</Title>
+      <Background />
+      <Text />
+      <Tooltips />
+    </Screen>
+    <Screen Name="kees_3_mount_experiment">
+      <BundleName>neos</BundleName>
+      <AssetPath>Assets/KSPedia Assets/KEES/kees_3_mount_experiment.prefab</AssetPath>
+      <Title>Mount Experiment</Title>
+      <Background />
+      <Text />
+      <Tooltips />
+    </Screen>
+    <Screen Name="kees_2_orbital_assembly">
+      <BundleName>neos</BundleName>
+      <AssetPath>Assets/KSPedia Assets/KEES/kees_2_orbital_assembly.prefab</AssetPath>
+      <Title>Orbital Assembly</Title>
+      <Background />
+      <Text />
+      <Tooltips />
+    </Screen>
+    <Screen Name="kees_1_building_craft">
+      <BundleName>neos</BundleName>
+      <AssetPath>Assets/KSPedia Assets/KEES/kees_1_building_craft.prefab</AssetPath>
+      <Title>Building your Vessel</Title>
+      <Background />
+      <Text />
+      <Tooltips />
+    </Screen>
+    <Screen Name="kees_0_titlepage">
+      <BundleName>neos</BundleName>
+      <AssetPath>Assets/KSPedia Assets/KEES/kees_0_titlepage.prefab</AssetPath>
+      <Title>KEES</Title>
+      <Background />
+      <Text />
+      <Tooltips />
+    </Screen>
+  </Screens>
+</KSPedia>

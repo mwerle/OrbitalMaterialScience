@@ -4,39 +4,45 @@
   
   <description>Pack the files for the different KSP mods</description>
 
+  <!-- Build directories -->
   <property name="build.dir" value="build" />
-  <property name="OMS.dir" value="${build.dir}/OMS/" />
-  <property name="All.dir" value="${build.dir}/AllInOne/" />
-  <property name="KR.dir" value="${build.dir}/KerbalLifeScience/" />
-  <property name="Kemini.dir" value="${build.dir}/Kemini/" />
+  <property name="NEOS.dir" value="${build.dir}/NEOS/" />
+  <property name="OSS.dir" value="${build.dir}/OSS/" />
+  <property name="KRP.dir" value="${build.dir}/KRP/" />
   <property name="KEES.dir" value="${build.dir}/KEES/" />
   <property name="GameData.dir" value="GameData/NehemiahInc" />
 
-  <property name="OMS.Version" value="0.7_beta_2" />
-  <property name="All.Version" value="0.2_beta_2" />
-  <property name="KLS.Version" value="0.2_beta_2" />
-  <property name="Kemini.Version" value="0.2_beta_2" />
-  <property name="KEES.Version" value="0.3_beta_2" />
-  <property name="Common.Version" value="0.2_beta_2" />
-  <property name="MPP.Version" value="0.2_beta_2" />
+  <!--
+   - OSS - Orbital Station Science (Was: KLS, OMS, and MPP)
+   - KRP - Kemini Research Program
+   - KEES - Kerbal Environmental Effects Study
+   - NEOS - Nehemiah Enginneering Orbital Science (Was: All-in-One)
+  -->
+  <property name="NEOS.Version" value="0.7_beta_3" />
+  <property name="OSS.Version" value="0.7_beta_3" />
+  <property name="KRP.Version" value="0.7_beta_3" />
+  <property name="KEES.Version" value="0.7_beta_3" />
 
   <property name="CurrMod.dir" value="${build.dir}" />
-  
+
+  <target name="init" description="copy generated files into GameData">
+    <call target="copyDll" />
+    <call target="copyKSPedia" />
+  </target>
+
   <target name="clean" description="remove all generated files">
     <delete dir="${build.dir}" />
   </target>
-
-  <target name="all" description="pack the diferent mods" depends="clean">
+  
+  <target name="all" description="pack the diferent mods" depends="clean,init">
     <call target="zips" />
   </target>
   
   <target name="zips" description="pack the diferent mods">
-    <call target="copyDll" />
-    <call target="omsZip" />
-    <call target="klsZip" />
-    <call target="keminiZip" />
+    <call target="neosZip" />
+    <call target="ossZip" />
+    <call target="krpZip" />
     <call target="keesZip" />
-    <call target="allInOneZip" />
   </target>
 
   <target name="copyDll" description="copy the dll from the plugin folder to game data" >
@@ -47,17 +53,11 @@
     </copy>
   </target>
 
-  <target name="copyCommon" description="copy the common files">
-    <mkdir dir="${CurrMod.dir}/NehemiahInc/NE_Science_Common" />
-    <copy todir="${CurrMod.dir}/NehemiahInc/NE_Science_Common" >
-      <fileset basedir="${GameData.dir}/NE_Science_Common"/>
-    </copy>
-  </target>
-
-  <target name="copyMPParts" description="copy the multi purpose parts">
-    <mkdir dir="${CurrMod.dir}/NehemiahInc/MultiPurposeParts" />
-    <copy todir="${CurrMod.dir}/NehemiahInc/MultiPurposeParts" >
-      <fileset basedir="${GameData.dir}/MultiPurposeParts"/>
+  <target name="copyKSPedia" description="copy the KSPedia from the Unity folder to game data" >
+    <copy todir="${GameData.dir}/NE_Science_Common/KSPedia">
+      <fileset basedir="Unity Projects/KSPedia/AssetBundles/">
+        <include name="neos.ksp"/>
+      </fileset>
     </copy>
   </target>
 
@@ -69,119 +69,64 @@
     </copy>
   </target>
 
-  <target name="allInOneZip" description="All mod in one zip">
-
-    <mkdir dir="${All.dir}/NehemiahInc/" />
-
-    <copy todir="${All.dir}/NehemiahInc" >
-      <fileset basedir="${GameData.dir}/OMS">
-        <include name="NE-All.version"/>
-      </fileset>
-    </copy>
-
-    <property name="CurrMod.dir" value="${All.dir}" />
-    <call target="copyCommon"/>
-    <call target="copyModuleManager" />
-    <call target="copyMPParts" />
-    <call target="copyOMS" />
-    <call target="copyKLS" />
-    <call target="copyKemini" />
-    <call target="copyKEES" />
-
-    <zip zipfile="${build.dir}/NehemiahIncSciencePack_${All.Version}.zip" ziplevel="9">
-      <fileset basedir="${All.dir}" >
-        <include name="**/*" />
+  <target name="neosZip" description="All components of Nehemiah Engineering Orbital Science in one zip">
+    <zip zipfile="${build.dir}/NehemiahEngineeringOrbitalScience_${NEOS.Version}.zip" ziplevel="9">
+      <fileset basedir="GameData" >
+        <include name="NehemiahInc/KEES/**" />
+        <include name="NehemiahInc/Kemini/**" />
+        <include name="NehemiahInc/KerbalLifeScience/**" />
+        <include name="NehemiahInc/MultiPurposeParts/**" />
+        <include name="NehemiahInc/NE_Science_Common/**" />
+        <include name="NehemiahInc/OMS/**" />
+        <include name="NehemiahInc/NEOS.version" />
+        <exclude name="**/*.mdb" />
       </fileset>
     </zip>
   </target>
 
-  <target name="omsZip" description="copy the files and folders for the oms mod">
-
-    <property name="CurrMod.dir" value="${OMS.dir}" />
-    <call target="copyCommon"/>
-    <call target="copyModuleManager" />
-    <call target="copyMPParts" />
-
-    <call target="copyOMS" />
-    
-    <zip zipfile="${build.dir}/OrbitalMaterialScience_${OMS.Version}.zip" ziplevel="9">
-      <fileset basedir="${OMS.dir}" >
-        <include name="**/*" />
+  <target name="ossZip" description="copy the files and folders for the Orbital Station Science mod">
+    <zip zipfile="${build.dir}/OrbitalStationScience_${OSS.Version}.zip" ziplevel="9">
+      <fileset basedir="GameData" >
+        <include name="NehemiahInc/KerbalLifeScience/**" />
+        <include name="NehemiahInc/MultiPurposeParts/**" />
+        <include name="NehemiahInc/NE_Science_Common/**" />
+        <include name="NehemiahInc/OMS/**" />
+        <include name="NehemiahInc/NE-OSS.version" />
+        <include name="NehemiahInc/README.md" />
+        <include name="NehemiahInc/LICENSE" />
+        <exclude name="**/*.mdb" />
       </fileset>
     </zip>   
   </target>
 
-    <target name="copyOMS" description="copy the oms files">
-      <mkdir dir="${CurrMod.dir}/NehemiahInc/OMS" />
-      <copy todir="${CurrMod.dir}/NehemiahInc/OMS" >
-        <fileset basedir="${GameData.dir}/OMS"/>
-      </copy>
-    </target>
-
-  <target name="klsZip" description="copy the files and folders for the KerbalLifeScience mod">
-
-    <property name="CurrMod.dir" value="${KR.dir}" />
-    <call target="copyCommon"/>
-    <call target="copyModuleManager" />
-    <call target="copyMPParts" />
-    <call target="copyKLS" />
-
-    <zip zipfile="${build.dir}/KerbalLifeScience_${KLS.Version}.zip" ziplevel="9">
-      <fileset basedir="${KR.dir}">
-        <include name="**/*" />
+  <target name="krpZip" description="copy the files and folders for the Kemini Research Program mod">
+    <zip zipfile="${build.dir}/KeminiResearchProgram_${KRP.Version}.zip" ziplevel="9">
+      <fileset basedir="GameData" >
+        <include name="NehemiahInc/Kemini/**" />
+        <include name="NehemiahInc/NE_Science_Common/**" />
+        <include name="NehemiahInc/NE-KRP.version" />
+        <include name="NehemiahInc/README.md" />
+        <include name="NehemiahInc/LICENSE" />
+        <include name="NehemiahInc/README.md" />
+        <include name="NehemiahInc/LICENSE" />
+        <exclude name="**/*.mdb" />
       </fileset>
     </zip>
-
   </target>
-
-    <target name="copyKLS" description="copy the oms files">
-      <mkdir dir="${CurrMod.dir}/NehemiahInc/KerbalLifeScience" />
-      <copy todir="${CurrMod.dir}/NehemiahInc/KerbalLifeScience" >
-        <fileset basedir="${GameData.dir}/KerbalLifeScience"/>
-      </copy>
-    </target>
-
-  <target name="keminiZip" description="copy the files and folders for the Kemini Research mod">
-
-    <property name="CurrMod.dir" value="${Kemini.dir}" />
-    <call target="copyCommon"/>
-    <call target="copyModuleManager" />
-    <call target="copyKemini" />
-
-      <zip zipfile="${build.dir}/KeminiResearch_${Kemini.Version}.zip" ziplevel="9">
-        <fileset basedir="${Kemini.dir}">
-          <include name="**/*" />
-        </fileset>
-      </zip>
-
-  </target>
-
-    <target name="copyKemini" description="copy the oms files">
-      <mkdir dir="${CurrMod.dir}/NehemiahInc/Kemini" />
-      <copy todir="${CurrMod.dir}/NehemiahInc/Kemini" >
-        <fileset basedir="${GameData.dir}/Kemini"/>
-      </copy>
-    </target>
 
   <target name="keesZip" description="copy the files and folders for the KEES mod">
-    <property name="CurrMod.dir" value="${KEES.dir}" />
-    <call target="copyCommon"/>
-    <call target="copyModuleManager" />
-    <call target="copyKEES" />
-
-    <zip zipfile="${build.dir}/KEES_${KEES.Version}.zip" ziplevel="9">
-      <fileset basedir="${KEES.dir}">
-        <include name="**/*" />
+    <zip zipfile="${build.dir}/KerbalEnvironmentalEffectsStudy_${KEES.Version}.zip" ziplevel="9">
+      <fileset basedir="GameData" >
+        <include name="NehemiahInc/KEES/**" />
+        <include name="NehemiahInc/NE_Science_Common/**" />
+        <include name="NehemiahInc/NE-KEES.version" />
+        <include name="NehemiahInc/README.md" />
+        <include name="NehemiahInc/LICENSE" />
+        <include name="NehemiahInc/README.md" />
+        <include name="NehemiahInc/LICENSE" />
+        <exclude name="**/*.mdb" />
       </fileset>
     </zip>
-
   </target>
 
-    <target name="copyKEES" description="copy the oms files">
-      <mkdir dir="${CurrMod.dir}/NehemiahInc/KEES" />
-      <copy todir="${CurrMod.dir}/NehemiahInc/KEES" >
-        <fileset basedir="${GameData.dir}/KEES"/>
-      </copy>
-    </target>
-  
 </project>
