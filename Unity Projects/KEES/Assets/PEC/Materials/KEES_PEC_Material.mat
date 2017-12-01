@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: KEES_PEC_Material
-  m_Shader: {fileID: 4800000, guid: 4eb23d6a8a22cd2408ed28ac1ce15ed3, type: 3}
+  m_Shader: {fileID: 4800000, guid: 9d70c5341ccdb4f4c8c43701bf65a6d8, type: 3}
   m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 1
   m_CustomRenderQueue: -1
@@ -110,6 +110,9 @@ Material:
         name: _RimFalloff
       second: 0.1
     - first:
+        name: _Shininess
+      second: 0.078125
+    - first:
         name: _SmoothnessTextureChannel
       second: 0
     - first:
@@ -137,6 +140,9 @@ Material:
     - first:
         name: _RimColor
       second: {r: 0, g: 0, b: 0, a: 0}
+    - first:
+        name: _SpecColor
+      second: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - first:
         name: _TemperatureColor
       second: {r: 0, g: 0, b: 0, a: 0}
