@@ -133,13 +133,42 @@ Prefab:
       propertyPath: m_Convex
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 6400000, guid: 4ddb9577bdf01674da6f5d9bd01ed2c4, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 4ddb9577bdf01674da6f5d9bd01ed2c4, type: 3}
+    - target: {fileID: 6400006, guid: 4ddb9577bdf01674da6f5d9bd01ed2c4, type: 3}
+      propertyPath: m_Convex
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6400006, guid: 4ddb9577bdf01674da6f5d9bd01ed2c4, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 2300006, guid: 4ddb9577bdf01674da6f5d9bd01ed2c4, type: 3}
   m_ParentPrefab: {fileID: 100100000, guid: 4ddb9577bdf01674da6f5d9bd01ed2c4, type: 3}
   m_IsPrefabParent: 0
 --- !u!4 &1689412856 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 4ddb9577bdf01674da6f5d9bd01ed2c4, type: 3}
   m_PrefabInternal: {fileID: 1689412855}
+--- !u!1 &1689412857 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 100000, guid: 4ddb9577bdf01674da6f5d9bd01ed2c4, type: 3}
+  m_PrefabInternal: {fileID: 1689412855}
+--- !u!64 &1689412858
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1689412857}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Convex: 1
+  m_Mesh: {fileID: 4300004, guid: 4ddb9577bdf01674da6f5d9bd01ed2c4, type: 3}
 --- !u!1 &1707220334
 GameObject:
   m_ObjectHideFlags: 0

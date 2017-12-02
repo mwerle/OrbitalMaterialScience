@@ -6,15 +6,36 @@ ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
+    100002: Camera
+    100004: Lamp
+    100006: PayloadCarrier
+    100008: PayloadCarrier.collider
+    100010: PayloadCarrier_collider
     400000: //RootNode
+    400002: Camera
+    400004: Lamp
+    400006: PayloadCarrier
+    400008: PayloadCarrier.collider
+    400010: PayloadCarrier_collider
     2300000: //RootNode
+    2300002: PayloadCarrier
+    2300004: PayloadCarrier.collider
+    2300006: PayloadCarrier_collider
     3300000: //RootNode
+    3300002: PayloadCarrier
+    3300004: PayloadCarrier.collider
+    3300006: PayloadCarrier_collider
     4300000: PayloadCarrier
+    4300002: PayloadCarrier.collider
+    4300004: PayloadCarrier_collider
     6400000: //RootNode
+    6400002: PayloadCarrier
+    6400004: PayloadCarrier.collider
+    6400006: PayloadCarrier_collider
   materials:
     importMaterials: 1
-    materialName: 0
-    materialSearch: 1
+    materialName: 1
+    materialSearch: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
@@ -37,7 +58,7 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 100
     meshCompression: 0
-    addColliders: 1
+    addColliders: 0
     importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
