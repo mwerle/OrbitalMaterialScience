@@ -126,9 +126,6 @@ Material:
       second: 1
     m_Colors:
     - first:
-        name: _BurnColor
-      second: {r: 1, g: 1, b: 1, a: 1}
-    - first:
         name: _Color
       second: {r: 0.8, g: 0.8, b: 0.8, a: 1}
     - first:
@@ -136,7 +133,4 @@ Material:
       second: {r: 0, g: 0, b: 0, a: 1}
     - first:
         name: _RimColor
-      second: {r: 0, g: 0, b: 0, a: 0}
-    - first:
-        name: _TemperatureColor
       second: {r: 0, g: 0, b: 0, a: 0}

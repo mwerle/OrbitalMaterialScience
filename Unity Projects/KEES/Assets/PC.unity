@@ -245,6 +245,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modelName: KEES_PayloadCarrier
-  filePath: 
+  filePath: MaterialScience/OrbitalMaterialScience/GameData/NehemiahInc/KEES/Parts/PayloadCarrier
   production: 1
   textureFormat: 3
