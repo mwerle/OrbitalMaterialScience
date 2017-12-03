@@ -18,6 +18,7 @@ using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
 using Contracts;
 using Contracts.Parameters;
@@ -28,6 +29,107 @@ using KSP.Localization;
 
 namespace NE_Science.Contracts
 {
+    /***
+     * This class encapsulates the available KEES Experiments.
+     * The list is loaded once and cached. Note that we can't hard-code the
+     * list since people can define their own experiments now.
+     * 
+     * TODO: Merge with the other experiment registers.
+    ***/
+    public static class KEESExperimentRegister
+    {
+        private static ReadOnlyCollection<Experiment> experimentParts = null;
+
+        /** Returns a collection of all loaded KEES experiments */
+        public static ReadOnlyCollection<Experiment> getExperiments()
+        {
+            if (experimentParts == null)
+            {
+                /* Only load the parts if we haven't loaded them already */
+                try
+                {
+                    /* Find all KEES experiments and add them to our registry for generating contracts. */
+                    List<Experiment> el = new List<Experiment>();
+                    ConfigNode[] experiments = GameDatabase.Instance.GetConfigNodes("EXPERIMENT_DEFINITION");
+                    for( int idx = 0; idx < experiments.Length; idx++)
+                    {
+                        ConfigNode ed = experiments[idx];
+                        string experimentId = ed.GetValue("id");
+                        if (experimentId != null && experimentId.StartsWith("NE_KEES"))
+                        {
+                            string experimentPartName = experimentId.Replace('_','.');
+                            if ( PartLoader.getPartInfoByName(experimentPartName) != null )
+                            {
+                                string experimentTitle = ed.GetValue("title");
+                                string experimentShortName = ed.GetValue("shortDisplayName");
+                                string experimentAbbreviation = ed.GetValue("abbreviation");
+                                el.Add(new Experiment(experimentPartName, experimentTitle, experimentShortName, experimentAbbreviation));
+                            } else {
+                                NE_Helper.logError("KEES Configuration mismatch - experiment " + experimentId + " defined, but no matching part found.");
+                            }
+                        }
+                    }
+                    experimentParts = new ReadOnlyCollection<Experiment>(el);
+                } catch ( Exception e )
+                {
+                    NE_Helper.logError("Could not initialize list of KEES Experiments for the Contract Engine: " + e.Message );
+                    experimentParts = new ReadOnlyCollection<Experiment>(new Experiment[0]);
+                }
+            }
+            return experimentParts;
+        }
+
+        /** Returns a collection of all KEES experiments which have been unlocked in the Science Centre. */
+        public static ReadOnlyCollection<Experiment> getUnlockedExperiments()
+        {
+            List<Experiment> unlockedParts = new List<Experiment>();
+            var ExperimentParts = KEESExperimentRegister.getExperiments();
+            for (int idx = 0, count = ExperimentParts.Count; idx < count; idx++)
+            {
+                var exp = ExperimentParts[idx];
+                if (NE_Helper.IsPartTechAvailable(exp.getPartName()))
+                {
+                    unlockedParts.Add(exp);
+                }
+            }
+            /* MKW: Note we cannot cache this as the user may unlock new parts in-between calls to this function. */
+            return new ReadOnlyCollection<Experiment>(unlockedParts);
+        }
+
+        /** Returns a collection of all loaded KEES experiment names */
+        public static ReadOnlyCollection<string> getExperimentNames()
+        {
+            var list = getExperiments();
+            List<string> en = new List<string>(list.Count);
+            for (int idx = 0; idx < list.Count; idx++ )
+            {
+                en.Add(list[idx].getName());
+            }
+            // MKW TODO: cache
+            return new ReadOnlyCollection<string>(en);
+        }
+
+        /** Returns a collection of all loaded KEES experiment part names */
+        public static ReadOnlyCollection<string> getExperimentPartNames()
+        {
+            var list = getExperiments();
+            List<string> en = new List<string>(list.Count);
+            for (int idx = 0; idx < list.Count; idx++ )
+            {
+                en.Add(list[idx].getPartName());
+            }
+            // MKW TODO: cache
+            return new ReadOnlyCollection<string>(en);
+        }
+
+        /** Returns the module name for KEES experiments */
+        public static string getExperimentModuleName()
+        {
+            return "KEESExperiment";
+        }
+    }
+
+
     public class KEESExperimentContract : Contract
     {
 
@@ -65,73 +167,6 @@ namespace NE_Science.Contracts
                 }
             }
             return null;
-        }
-
-        public static Experiment[] ExperimentParts
-        {
-            get
-            {
-                if (experimentParts == null )
-                {
-                    try
-                    {
-#if false
-                        experimentParts = new Experiment[] {
-                                      new Experiment(KEES_PPMD, Localizer.GetStringByTag("#ne_kees_ppmd_title"), "KEES PPMD", "PPMD"),
-                                      new Experiment(KEES_POSAI, Localizer.GetStringByTag("#ne_kees_posa1_title"), "KEES POSA I", "POSA I"),
-                                      new Experiment(KEES_ODC, Localizer.GetStringByTag("#ne_kees_odc_title"), "KEES ODC", "ODC"),
-                                      new Experiment(KEES_POSAII, Localizer.GetStringByTag("#ne_kees_posa2_title"), "KEES POSA II", "POSA II")
-                                  };
-#elif false
-                        List<Experiment> el = new List<Experiment>();
-                        foreach (AvailablePart p in PartLoader.LoadedPartsList)
-                        {
-                            ConfigNode ke = p.partConfig?.GetNode("MODULE", "name", "KEESExperiment");
-                            if (ke != null)
-                            {
-                                string experimentId = ke.GetValue("experimentID")?.Replace('_','.');
-                                string experimentTitle = findExperiment(experimentId)?.GetValue("title");
-                                //string experimentShortName = experimentId?.Substring(3)?.Replace('.', ' ');
-                                string experimentShortName = ke.GetValue("shortDisplayName");
-                                if (experimentShortName == null)
-                                {
-                                    experimentShortName = experimentId?.Substring(3)?.Replace('.', ' ');
-                                }
-                                el.Add(new Experiment(experimentId, experimentTitle, experimentShortName, experimentShortName));
-                            }
-                        }
-#else
-                        /* Find all KEES experiments and add them to our registry for generating contracts. */
-                        List<Experiment> el = new List<Experiment>();
-                        ConfigNode[] experiments = GameDatabase.Instance.GetConfigNodes("EXPERIMENT_DEFINITION");
-                        for( int idx = 0; idx < experiments.Length; idx++)
-                        {
-                            ConfigNode ed = experiments[idx];
-                            string experimentId = ed.GetValue("id");
-                            if (experimentId != null && experimentId.StartsWith("NE_KEES"))
-                            {
-                                string experimentPartName = experimentId.Replace('_','.');
-                                if ( PartLoader.getPartInfoByName(experimentPartName) != null )
-                                {
-                                    string experimentTitle = ed.GetValue("title");
-                                    string experimentShortName = ed.GetValue("shortDisplayName");
-                                    string experimentAbbreviation = ed.GetValue("abbreviation");
-                                    el.Add(new Experiment(experimentPartName, experimentTitle, experimentShortName, experimentAbbreviation));
-                                } else {
-                                    NE_Helper.logError("KEES Configuration mismatch - experiment " + experimentId + " defined, but no matching part found.");
-                                }
-                            }
-                        }
-#endif
-                        experimentParts = el.ToArray();
-                    } catch ( Exception e )
-                    {
-                        NE_Helper.logError("Could not initialize list of KEES Experiments for the Contract Engine: " + e.Message );
-                        experimentParts = new Experiment[0];
-                    }
-                }
-                return experimentParts;
-            }
         }
 
         protected override bool Generate()
@@ -234,7 +269,7 @@ namespace NE_Science.Contracts
 
         private Experiment getTargetExperiment()
         {
-            List<Experiment> unlockedExperiments = getUnlockedKEESExperiments();
+            var unlockedExperiments = KEESExperimentRegister.getUnlockedExperiments();
             List<Experiment> unlockedNoContract = new List<Experiment>();
             for (int idx = 0, count = unlockedExperiments.Count; idx < count; idx++)
             {
@@ -254,19 +289,6 @@ namespace NE_Science.Contracts
             }
         }
 
-        private List<Experiment> getUnlockedKEESExperiments()
-        {
-            List<Experiment> unlockedParts = new List<Experiment>();
-            for (int idx = 0, count = ExperimentParts.Length; idx < count; idx++)
-            {
-                var exp = ExperimentParts[idx];
-                if (NE_Helper.IsPartTechAvailable(exp.getPartName()))
-                {
-                    unlockedParts.Add(exp);
-                }
-            }
-            return unlockedParts;
-        }
 
         private bool setTargetExperiment(Experiment exp)
         {
@@ -358,7 +380,8 @@ namespace NE_Science.Contracts
 
         private Experiment getExperimentByPartName(string partName)
         {
-            for (int idx = 0, count = ExperimentParts.Length; idx < count; idx++)
+            var ExperimentParts = KEESExperimentRegister.getExperiments();
+            for (int idx = 0, count = ExperimentParts.Count; idx < count; idx++)
             {
                 var exp = ExperimentParts[idx];
                 if (exp.getPartName() == partName)

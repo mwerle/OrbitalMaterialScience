@@ -34,6 +34,12 @@ There are 4 major components:
 Each component can be downloaded and installed separately, or the entire collection can be downloaded as one mod.
 
 
+Changes
+-------
+
+Please see the [Changelog](CHANGELOG.md) for a version history and overview of changes. For the full details, please see the GitHub commit log.
+
+
 Contributing
 ------------
 

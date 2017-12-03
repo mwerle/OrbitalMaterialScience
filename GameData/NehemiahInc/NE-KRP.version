@@ -1,5 +1,5 @@
 {
-    "NAME":"NE-KRP",
+    "NAME":"NE Kemini Research Program (KRP)",
     "URL":"https://raw.githubusercontent.com/mwerle/OrbitalMaterialScience/master/GameData/NehemiahInc/NE-KRP.version",
     "GITHUB":
     {
@@ -11,8 +11,8 @@
     {
         "MAJOR":0,
         "MINOR":7,
-        "PATCH":6,
-        "BUILD":17
+        "PATCH":8,
+        "BUILD":21
     },
     "KSP_VERSION":
     {

@@ -1,6 +1,6 @@
 ﻿/*
  *   This file is part of Orbital Material Science.
- *
+ *   
  *   Orbital Material Science is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -23,22 +23,24 @@ using KSP;
 namespace NE_Science.Contracts.Parameters
 {
     /*
-     * Strategy for finding the experiment in a recoverd vessel.
+     * Strategy for finding the experiment in a recoverd vessel. 
      */
     public class OMSExperimentRecovery
     {
-        /*
-        protected static readonly Dictionary<string, string> experimentModulname =
-          new Dictionary<string, string> {
-              { "NE.KEES.PPMD", "KEESExperiment" },
-              { "NE.KEES.POSA1", "KEESExperiment" },
-              { "NE.KEES.POSA2", "KEESExperiment" },
-              { "NE.KEES.ODC", "KEESExperiment" },
+        /** Returns the experiment module name given a part name.
+         * Checks the KEES and OMS/KLS experiment registers for a matching experiment part. */
+        protected string getExperimentModuleName(string experimentPartName)
+        {
+            /* First check KEES registry */
+            var keesExperiments = KEESExperimentRegister.getExperimentPartNames();
+            if(keesExperiments.Contains(experimentPartName))
+            {
+                return KEESExperimentRegister.getExperimentModuleName();
+            }
+            /* TODO: check OMS/KLS registry */
+            return null;
+        }
 
-          };
-        */
-
-        protected const string KEES_EXPERIMENT = "KEESExperiment";
         protected const string SCIENCE_DATA = "ScienceData";
         protected const string SUBJECT_ID = "subjectID";
 
@@ -57,27 +59,13 @@ namespace NE_Science.Contracts.Parameters
 
         protected bool experimentFound(ProtoPartSnapshot part, AvailablePart experiment, CelestialBody targetBody, double contractAccepted)
         {
-            // MKW TODO : Refactor
             NE_Helper.log("ProtoVessel recovery: Experiment found");
-            //string moduleName = experimentModulname[experiment.name];
-            bool found = false;
-            for (int i = 0; i < KEESExperimentContract.ExperimentParts.Length; i++)
-            {
-                if (KEESExperimentContract.ExperimentParts[i].getPartName() == experiment.name)
-                {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found)
-            {
-                return false;
-            }
+            string moduleName = getExperimentModuleName(experiment.name);
             for (int i = 0, count = part.modules.Count; i < count; i++)
             {
                 var module = part.modules[i];
                 NE_Helper.log("ProtoVessel recovery Modulename: " + module.moduleName);
-                if (module.moduleName == KEES_EXPERIMENT)
+                if (module.moduleName == moduleName)
                 {
                     ConfigNode partConf = module.moduleValues;
                     float completed = NE_Helper.GetValueAsFloat(partConf, OMSExperiment.COMPLETED);
@@ -182,10 +170,13 @@ namespace NE_Science.Contracts.Parameters
                     }
 
                     var moduleNodes = part.GetNodes("MODULE");
+                    var experimentModuleName = getExperimentModuleName(experiment.name);
                     for (int moduleIdx = 0, moduleCount = moduleNodes.Length; moduleIdx < moduleCount; moduleIdx++)
                     {
                         var module = moduleNodes[moduleIdx];
-                        if (module.GetValue ("name") == KEES_EXPERIMENT)
+                        // TODO: MKW - if experiment is a custom-defined one, this line will throw an exception!
+                        // experiment.name will not be a valid index into the experimentModulname array.
+                        if (module.GetValue("name") == experimentModuleName)
                         {
                             return module;
                         }
@@ -196,7 +187,7 @@ namespace NE_Science.Contracts.Parameters
         }
 
         /*
-         * Following is partial layout of KIS container containing KEES experiments:
+         * Following is partial layout of KIS container containing KEES experiments: 
             PART
             {
                 name = NE.KEES.PC
@@ -207,7 +198,7 @@ namespace NE_Science.Contracts.Parameters
                 {
                     name = ModuleKISInventory
                     isEnabled = True
-                    invName =
+                    invName = 
 ...
                     ITEM
                     {
