@@ -133,6 +133,8 @@ App_Data/*.ldf
 
 ############### merge backups (git merge / kdiff3 / ...)#############*.orig
 
+############### Blender#############*.blend1
+
 #############
 ## Unity
 #############
