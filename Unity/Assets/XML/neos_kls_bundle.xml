@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KSPBundleDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" UrlName="neos_kls" Name="neos_kls" CreatedTime="-8586891392678852254">
+  <Author />
+  <Info />
+  <Assets>
+    <Asset Name="neos_kls_bundle" Path="Assets/KSPedia/XML/neos_kls_bundle.xml" Type="TextAsset" Url="KSPedia/XML/neos_kls_bundle" AutoLoad="false" />
+    <Asset Name="neos_kls_kspedia" Path="Assets/KSPedia/XML/neos_kls_kspedia.xml" Type="TextAsset" Url="KSPedia/XML/neos_kls_kspedia" AutoLoad="false" />
+  </Assets>
+  <Dependencies />
+</KSPBundleDefinition>

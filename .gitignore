@@ -138,13 +138,13 @@ App_Data/*.ldf
 #############
 ## Unity
 #############
-Unity\ Projects/**/[Ll]ibrary/
-Unity\ Projects/**/[Tt]emp/
-Unity\ Projects/**/[Oo]bj/
-Unity\ Projects/**/[Bb]uild/
-Unity\ Projects/**/[Bb]uilds/
-Unity\ Projects/**/Assets/AssetStoreTools*
-!Unity\ Projects/**/*.meta
+Unity/**/[Ll]ibrary/
+Unity/**/[Tt]emp/
+Unity/**/[Oo]bj/
+Unity/**/[Bb]uild/
+Unity/**/[Bb]uilds/
+Unity/**/Assets/AssetStoreTools*
+!Unity/**/*.meta
 
 #############
 ## Windows detritus

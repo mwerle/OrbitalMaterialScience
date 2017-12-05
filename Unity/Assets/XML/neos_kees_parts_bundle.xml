@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KSPBundleDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" UrlName="neos_kees_parts" Name="neos_kees_parts" CreatedTime="-8586891392538871662">
+  <Author>Micha</Author>
+  <Info>Parts for the NEOS KEES mod</Info>
+  <Assets>
+    <Asset Name="Experiment" Path="Assets/KEES/Experiment.unity" Type="SceneAsset" Url="KEES/Experiment" AutoLoad="false" />
+    <Asset Name="KEES" Path="Assets/KEES/KEES.unity" Type="SceneAsset" Url="KEES/KEES" AutoLoad="false" />
+    <Asset Name="KEES_Experiment Base UV" Path="Assets/KEES/Materials/KEES_Experiment Base UV.mat" Type="Material" Url="KEES/Materials/KEES_Experiment Base UV" AutoLoad="false" />
+    <Asset Name="KEES_Experiment" Path="Assets/KEES/Materials/KEES_Experiment.mat" Type="Material" Url="KEES/Materials/KEES_Experiment" AutoLoad="false" />
+    <Asset Name="KEES_Experiment_Texture" Path="Assets/KEES/Materials/KEES_Experiment_Texture.mat" Type="Material" Url="KEES/Materials/KEES_Experiment_Texture" AutoLoad="false" />
+    <Asset Name="KEES_Experiment_UV" Path="Assets/KEES/Materials/KEES_Experiment_UV.mat" Type="Material" Url="KEES/Materials/KEES_Experiment_UV" AutoLoad="false" />
+    <Asset Name="KEES_PC_Material" Path="Assets/KEES/Materials/KEES_PC_Material.mat" Type="Material" Url="KEES/Materials/KEES_PC_Material" AutoLoad="false" />
+    <Asset Name="KEES_PEC_Material" Path="Assets/KEES/Materials/KEES_PEC_Material.mat" Type="Material" Url="KEES/Materials/KEES_PEC_Material" AutoLoad="false" />
+    <Asset Name="KEES_Rails" Path="Assets/KEES/Materials/KEES_Rails.mat" Type="Material" Url="KEES/Materials/KEES_Rails" AutoLoad="false" />
+    <Asset Name="RailMat__KEES_Experiment_UV_png" Path="Assets/KEES/Materials/RailMat__KEES_Experiment_UV_png.mat" Type="Material" Url="KEES/Materials/RailMat__KEES_Experiment_UV_png" AutoLoad="false" />
+    <Asset Name="RailMat__KEES_Experiment_UV_png_001" Path="Assets/KEES/Materials/RailMat__KEES_Experiment_UV_png_001.mat" Type="Material" Url="KEES/Materials/RailMat__KEES_Experiment_UV_png_001" AutoLoad="false" />
+    <Asset Name="RailMat__KEES_Experiment_UV_png_002" Path="Assets/KEES/Materials/RailMat__KEES_Experiment_UV_png_002.mat" Type="Material" Url="KEES/Materials/RailMat__KEES_Experiment_UV_png_002" AutoLoad="false" />
+    <Asset Name="RailMat__KEES_Experiment_UV_png_003" Path="Assets/KEES/Materials/RailMat__KEES_Experiment_UV_png_003.mat" Type="Material" Url="KEES/Materials/RailMat__KEES_Experiment_UV_png_003" AutoLoad="false" />
+    <Asset Name="RailMat__KEES_Experiment_UV_png_005" Path="Assets/KEES/Materials/RailMat__KEES_Experiment_UV_png_005.mat" Type="Material" Url="KEES/Materials/RailMat__KEES_Experiment_UV_png_005" AutoLoad="false" />
+    <Asset Name="RailMat__KEES_Experiment_UV_png_006" Path="Assets/KEES/Materials/RailMat__KEES_Experiment_UV_png_006.mat" Type="Material" Url="KEES/Materials/RailMat__KEES_Experiment_UV_png_006" AutoLoad="false" />
+    <Asset Name="KEES_Experiment" Path="Assets/KEES/Models/KEES_Experiment.fbx" Type="GameObject" Url="KEES/Models/KEES_Experiment" AutoLoad="false" />
+    <Asset Name="KEES_PC" Path="Assets/KEES/Models/KEES_PC.fbx" Type="GameObject" Url="KEES/Models/KEES_PC" AutoLoad="false" />
+    <Asset Name="KEES_PEC" Path="Assets/KEES/Models/KEES_PEC.fbx" Type="GameObject" Url="KEES/Models/KEES_PEC" AutoLoad="false" />
+    <Asset Name="KEES_PEC_Texture" Path="Assets/KEES/Models/Materials/KEES_PEC_Texture.mat" Type="Material" Url="KEES/Models/Materials/KEES_PEC_Texture" AutoLoad="false" />
+    <Asset Name="kees_pc_mat" Path="Assets/KEES/Models/Materials/kees_pc_mat.mat" Type="Material" Url="KEES/Models/Materials/kees_pc_mat" AutoLoad="false" />
+    <Asset Name="unnamed" Path="Assets/KEES/Models/Materials/unnamed.mat" Type="Material" Url="KEES/Models/Materials/unnamed" AutoLoad="false" />
+    <Asset Name="PC" Path="Assets/KEES/PC.unity" Type="SceneAsset" Url="KEES/PC" AutoLoad="false" />
+    <Asset Name="PEC" Path="Assets/KEES/PEC.unity" Type="SceneAsset" Url="KEES/PEC" AutoLoad="false" />
+    <Asset Name="KEES_Experiment_Normal" Path="Assets/KEES/Textures/KEES_Experiment_Normal.png" Type="Texture2D" Url="KEES/Textures/KEES_Experiment_Normal" AutoLoad="false" />
+    <Asset Name="KEES_Experiment_Texture" Path="Assets/KEES/Textures/KEES_Experiment_Texture.png" Type="Texture2D" Url="KEES/Textures/KEES_Experiment_Texture" AutoLoad="false" />
+    <Asset Name="KEES_ODC_Normal" Path="Assets/KEES/Textures/KEES_ODC_Normal.png" Type="Texture2D" Url="KEES/Textures/KEES_ODC_Normal" AutoLoad="false" />
+    <Asset Name="KEES_ODC_Texture" Path="Assets/KEES/Textures/KEES_ODC_Texture.png" Type="Texture2D" Url="KEES/Textures/KEES_ODC_Texture" AutoLoad="false" />
+    <Asset Name="KEES_PC_NormalMap" Path="Assets/KEES/Textures/KEES_PC_NormalMap.png" Type="Texture2D" Url="KEES/Textures/KEES_PC_NormalMap" AutoLoad="false" />
+    <Asset Name="KEES_PC_Texture" Path="Assets/KEES/Textures/KEES_PC_Texture.png" Type="Texture2D" Url="KEES/Textures/KEES_PC_Texture" AutoLoad="false" />
+    <Asset Name="KEES_PEC_NormalMap" Path="Assets/KEES/Textures/KEES_PEC_NormalMap.png" Type="Texture2D" Url="KEES/Textures/KEES_PEC_NormalMap" AutoLoad="false" />
+    <Asset Name="KEES_PEC_Texture" Path="Assets/KEES/Textures/KEES_PEC_Texture.png" Type="Texture2D" Url="KEES/Textures/KEES_PEC_Texture" AutoLoad="false" />
+    <Asset Name="KEES_POSAII_Normal" Path="Assets/KEES/Textures/KEES_POSAII_Normal.png" Type="Texture2D" Url="KEES/Textures/KEES_POSAII_Normal" AutoLoad="false" />
+    <Asset Name="KEES_POSAII_Texture" Path="Assets/KEES/Textures/KEES_POSAII_Texture.png" Type="Texture2D" Url="KEES/Textures/KEES_POSAII_Texture" AutoLoad="false" />
+    <Asset Name="KEES_POSAI_Normal" Path="Assets/KEES/Textures/KEES_POSAI_Normal.png" Type="Texture2D" Url="KEES/Textures/KEES_POSAI_Normal" AutoLoad="false" />
+    <Asset Name="KEES_POSAI_Texture" Path="Assets/KEES/Textures/KEES_POSAI_Texture.png" Type="Texture2D" Url="KEES/Textures/KEES_POSAI_Texture" AutoLoad="false" />
+    <Asset Name="KEES_PPMD_Normal" Path="Assets/KEES/Textures/KEES_PPMD_Normal.png" Type="Texture2D" Url="KEES/Textures/KEES_PPMD_Normal" AutoLoad="false" />
+    <Asset Name="KEES_PPMD_Texture" Path="Assets/KEES/Textures/KEES_PPMD_Texture.png" Type="Texture2D" Url="KEES/Textures/KEES_PPMD_Texture" AutoLoad="false" />
+  </Assets>
+  <Dependencies />
+</KSPBundleDefinition>
