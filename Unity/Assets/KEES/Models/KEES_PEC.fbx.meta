@@ -6,10 +6,19 @@ ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
+    100002: PEC
+    100004: Point
+    100006: Sun
     400000: //RootNode
+    400002: PEC
+    400004: Point
+    400006: Sun
     2300000: //RootNode
+    2300002: PEC
     3300000: //RootNode
+    3300002: PEC
     4300000: PEC
+    4300002: KEES_PEC
   materials:
     importMaterials: 1
     materialName: 0

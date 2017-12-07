@@ -108,10 +108,10 @@ Material:
       second: 0.02
     - first:
         name: _RimFalloff
-      second: 0.1
+      second: 0.01
     - first:
         name: _Shininess
-      second: 0.078125
+      second: 0.75
     - first:
         name: _SmoothnessTextureChannel
       second: 0
@@ -137,6 +137,9 @@ Material:
     - first:
         name: _EmissionColor
       second: {r: 0, g: 0, b: 0, a: 1}
+    - first:
+        name: _MainColor
+      second: {r: 1, g: 1, b: 1, a: 1}
     - first:
         name: _RimColor
       second: {r: 0, g: 0, b: 0, a: 0}
