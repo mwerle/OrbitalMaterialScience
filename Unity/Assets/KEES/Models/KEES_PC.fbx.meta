@@ -14,6 +14,8 @@ ModelImporter:
     100012: KEES_Experiment_Rails
     100014: KEES_Experiment_Top
     100016: KEES_PC_Collider
+    100018: KEES_PC.Collider
+    100020: KEES_PC
     400000: //RootNode
     400002: Camera
     400004: Lamp
@@ -23,6 +25,8 @@ ModelImporter:
     400012: KEES_Experiment_Rails
     400014: KEES_Experiment_Top
     400016: KEES_PC_Collider
+    400018: KEES_PC.Collider
+    400020: KEES_PC
     2300000: //RootNode
     2300002: PayloadCarrier
     2300004: PayloadCarrier.collider
@@ -30,6 +34,8 @@ ModelImporter:
     2300008: KEES_Experiment_Rails
     2300010: KEES_Experiment_Top
     2300012: KEES_PC_Collider
+    2300014: KEES_PC.Collider
+    2300016: KEES_PC
     3300000: //RootNode
     3300002: PayloadCarrier
     3300004: PayloadCarrier.collider
@@ -37,6 +43,8 @@ ModelImporter:
     3300008: KEES_Experiment_Rails
     3300010: KEES_Experiment_Top
     3300012: KEES_PC_Collider
+    3300014: KEES_PC.Collider
+    3300016: KEES_PC
     4300000: PayloadCarrier
     4300002: PayloadCarrier.collider
     4300004: PayloadCarrier_collider
@@ -45,6 +53,7 @@ ModelImporter:
     4300010: KEES_Experiment_Rails
     4300012: KEES_PC
     4300014: KEES_PC_Collider
+    4300016: KEES_PC.Collider
     6400000: //RootNode
     6400002: PayloadCarrier
     6400004: PayloadCarrier.collider
@@ -89,9 +98,9 @@ ModelImporter:
     secondaryUVPackMargin: 4
     useFileScale: 1
   tangentSpace:
-    normalSmoothAngle: 60
-    normalImportMode: 0
-    tangentImportMode: 0
+    normalSmoothAngle: 35
+    normalImportMode: 1
+    tangentImportMode: 3
   importAnimation: 0
   copyAvatar: 0
   humanDescription:
