@@ -107,6 +107,18 @@ namespace NE_Science
             return type;
         }
 
+        /** How many units of Product the lab generates per hour. */
+        public float ProductPerHour
+        {
+            get { return productPerHour; }
+        }
+
+        /** How many units of Reactant the lab requires per unit of Product. */
+        public float ReactantPerProduct
+        {
+            get { return reactantPerProduct; }
+        }
+
         /// <summary>
         /// Gets the mass of the equipment plus installed experiments.
         /// </summary>

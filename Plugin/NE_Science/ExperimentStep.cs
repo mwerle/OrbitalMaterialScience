@@ -128,6 +128,11 @@ namespace NE_Science
         {
             return "";
         }
+
+        public virtual float getNeededAmount()
+        {
+            return 0;
+        }
     }
 
     public class ResourceExperimentStep : ExperimentStep
@@ -218,6 +223,11 @@ namespace NE_Science
         public override string getNeededResource()
         {
             return res;
+        }
+
+        public override float getNeededAmount()
+        {
+            return amount;
         }
     }
 

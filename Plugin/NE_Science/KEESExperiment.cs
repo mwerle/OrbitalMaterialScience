@@ -25,6 +25,8 @@ using KSP.Localization;
 
 namespace NE_Science
 {
+    using KAC;
+
     public class KEESExperiment : OMSExperiment
     {
         /* Overload from OMSExperiment */
@@ -344,6 +346,7 @@ namespace NE_Science
                 Events["DeployExperiment"].active = false;
                 state = RUNNING;
                 playAnimation(deployAnimation, 1, 0);
+                addAlarm();
                 return true;
         }
 
@@ -420,6 +423,17 @@ namespace NE_Science
             playAnimation(deployAnimation, -1, 1);
             state = ERROR;
             docked = false;
+        }
+
+        /** Sets KAC alarm for when experiment will be finished. */
+        internal bool addAlarm()
+        {
+            KACWrapper.KACAPI.KACAlarm  a;
+
+            a = NE_Helper.AddExperimentAlarm( exposureTimeRequired * 60 * 60, "KEES Alarm", experiment.experimentTitle, part.vessel);
+            /* TODO: Save alarm ID so we can modify the alarm if the user pauses or stops the experiment. */
+
+            return a != null;
         }
     }
 }

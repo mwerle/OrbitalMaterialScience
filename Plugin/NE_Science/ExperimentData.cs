@@ -156,6 +156,11 @@ namespace NE_Science
             return type;
         }
 
+        public virtual float getTimeRemaining()
+        {
+            return 0;
+        }
+
         protected virtual void load(ConfigNode node)
         {
             state = getState(node.GetValue(STATE_VALUE));
@@ -277,6 +282,17 @@ namespace NE_Science
             rack.getLab().part.mass += getMass();
         }
 
+        internal virtual void onStarted(bool started)
+        {
+            if(started)
+            {
+                state = ExperimentState.RUNNING;
+                /* TODO: configuration whether to auto-create alarms */
+                NE_Helper.AddExperimentAlarm( getTimeRemaining(), "NEOS Alarm", getName(), store.getPart().vessel);
+                /* TODO: Save alarm ID so we can modify the alarm if the user pauses or stops the experiment. */
+            }
+        }
+
         internal void finalize()
         {
             state = ExperimentState.FINALIZED;
@@ -396,6 +412,7 @@ namespace NE_Science
         internal virtual void updateCheck()
         {
         }
+
     }
 
     public class StepExperimentData : ExperimentData
@@ -465,7 +482,7 @@ namespace NE_Science
                 case ExperimentState.INSTALLED:
                     if (step.canStart())
                     {
-                        step.start(startCallback);
+                        step.start(onStarted);
                     }
                     break;
                 case ExperimentState.RUNNING:
@@ -477,17 +494,27 @@ namespace NE_Science
             }
         }
 
-        internal void startCallback(bool started)
-        {
-            if (started)
-            {
-                state = ExperimentState.RUNNING;
-            }
-        }
-
         public override bool isExposureExperiment()
         {
             return step.getNeededResource() == Resources.EXPOSURE_TIME;
+        }
+
+        /** Returns the amount of time remaining to complete this experiment step in seconds. */
+        public override float getTimeRemaining()
+        {
+            LabEquipment le = store as LabEquipment;
+
+            // Experiment can be finished when resources have accumulated
+            // Resources accumulate in the lab
+            // Remaining time is resources left / resources per hour
+
+            // 'amount' - amount of resources required
+            // 'Lab.getResourceAmount(resource)' - amount of resources acquired
+            // 'Lab.ProductPerHour' - resource accumulation per hour
+            //
+            float amountRemaining = step.getNeededAmount() - (float)le.getResourceAmount(step.getNeededResource());
+            float timeRemaining = amountRemaining / le.ProductPerHour;
+            return timeRemaining * 60 * 60; /* Convert hours to seconds */
         }
     }
 
@@ -610,7 +637,7 @@ namespace NE_Science
             {
                 case ExperimentState.INSTALLED:
                     if(steps[activeStep].canStart()){
-                        steps[activeStep].start(startCallback);
+                        steps[activeStep].start(onStarted);
                     }
                     break;
                 case ExperimentState.RUNNING:
@@ -631,14 +658,6 @@ namespace NE_Science
             }
         }
 
-        internal void startCallback(bool started)
-        {
-            if (started)
-            {
-                state = ExperimentState.RUNNING;
-            }
-        }
-
         private bool isLastStep()
         {
             return activeStep == (steps.Length - 1);
@@ -648,6 +667,26 @@ namespace NE_Science
         {
             return steps[activeStep].getNeededResource() == Resources.EXPOSURE_TIME;
         }
+
+        /** Returns the amount of time remaining to complete this experiment step in seconds. */
+        public override float getTimeRemaining()
+        {
+            LabEquipment le = store as LabEquipment;
+
+            // Experiment can be finished when resources have accumulated
+            // Resources accumulate in the lab
+            // Remaining time is resources left / resources per hour
+
+            // 'amount' - amount of resources required
+            // 'Lab.getResourceAmount(resource)' - amount of resources acquired
+            // 'Lab.ProductPerHour' - resource accumulation per hour
+            //
+            float amountRemaining = steps[activeStep].getNeededAmount() - (float)le.getResourceAmount(steps[activeStep].getNeededResource());
+            float timeRemaining = amountRemaining / le.ProductPerHour;
+            return timeRemaining * 60 * 60; /* Convert hours to seconds */
+        }
+
+
     }
 
     public class TestExperimentData : KerbalResearchExperimentData

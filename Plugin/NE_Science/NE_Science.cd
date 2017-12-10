@@ -1,0 +1,693 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="NE_Science.ExperimentData" Collapsed="true">
+    <Position X="8.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QoAA6BFAAJCgZESDBJAAACgAAYCVIBgNCIAGASAAAhA=</HashCode>
+      <FileName>ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.StepExperimentData" Collapsed="true">
+    <Position X="6.5" Y="5.5" Width="1.75" />
+    <InheritanceLine Type="NE_Science.ExperimentData" ManuallyRouted="true" FixedFromPoint="true">
+      <Path>
+        <Point X="9.125" Y="5.036" />
+        <Point X="9.125" Y="5.25" />
+        <Point X="7.375" Y="5.25" />
+        <Point X="7.375" Y="5.5" />
+      </Path>
+    </InheritanceLine>
+    <AssociationLine Name="step" Type="NE_Science.ExperimentStep" ManuallyRouted="true" FixedFromPoint="true">
+      <Path>
+        <Point X="6.5" Y="5.812" />
+        <Point X="3.5" Y="5.812" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>ABAAQBAAAIAAAAACAAAAAAAAAAAgABgAAAAAAAAEAAA=</HashCode>
+      <FileName>ExperimentData.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="step" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="NE_Science.MultiStepExperimentData&lt;T&gt;" Collapsed="true">
+    <Position X="12.25" Y="5.5" Width="2.25" />
+    <InheritanceLine Type="NE_Science.ExperimentData" ManuallyRouted="true" FixedFromPoint="true">
+      <Path>
+        <Point X="9.125" Y="5.036" />
+        <Point X="9.125" Y="5.25" />
+        <Point X="13.375" Y="5.25" />
+        <Point X="13.375" Y="5.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>ABAAQBAAAYAAAAACAAAAAABAAAQAABxgAAAAAAAAAAA=</HashCode>
+      <FileName>ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.TestExperimentData" Collapsed="true">
+    <Position X="11.75" Y="8" Width="1.75" />
+    <InheritanceLine Type="NE_Science.KerbalResearchExperimentData" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="12.125" Y="7.406" />
+        <Point X="12.125" Y="7.706" />
+        <Point X="11.45" Y="7.706" />
+        <Point X="11.45" Y="8.312" />
+        <Point X="11.75" Y="8.312" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.ExperimentStep" Collapsed="true">
+    <Position X="1.5" Y="5.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>CAAACCAIAYAAAAAgAAAAEAgQAQBNABAAAQAEAAADAgA=</HashCode>
+      <FileName>ExperimentStep.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.ResourceExperimentStep" Collapsed="true">
+    <Position X="1.5" Y="6.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAYAAAAAgACIAAAAAAAAggBAAAQAAAAACAAA=</HashCode>
+      <FileName>ExperimentStep.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.MEPResourceExperimentStep" Collapsed="true">
+    <Position X="1" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ExperimentStep.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.KeminiExperimentData" Collapsed="true">
+    <Position X="4" Y="6.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAgAAQAAAAAAAAAAIAAAgAIAIAAAAAAAAA=</HashCode>
+      <FileName>Kemini_ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.KEESExperiment" Collapsed="true">
+    <Position X="10.75" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAABAEA1AEIAIDAMGAIADAAUAACCAEAAoY2QACYAABg=</HashCode>
+      <FileName>KEESExperiment.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.OMSExperiment" Collapsed="true">
+    <Position X="10.75" Y="11.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>KAQBAAAhAgAAAAAABAIAgCAAAQACAAAEAAAIAACAAgA=</HashCode>
+      <FileName>OMSExperiment.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.ExperimentStorage" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="15.25" Y="3.25" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="expData" Type="NE_Science.ExperimentData" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="15.25" Y="3.563" />
+        <Point X="15.015" Y="3.563" />
+        <Point X="15.015" Y="4.625" />
+        <Point X="10" Y="4.625" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>EEAAoIAEBACABBAANgKYBACSIAkFAIJgUIyAEAEEYRA=</HashCode>
+      <FileName>ExperimentStorage.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="expData" />
+    </ShowAsAssociation>
+    <Lollipop Position="1.31" />
+  </Class>
+  <Class Name="NE_Science.NE_ExperimentModule" Collapsed="true">
+    <Position X="20.75" Y="7.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ExperimentFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.ExperimentFactory" Collapsed="true">
+    <Position X="5.5" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQAAAIEAIAAAAAAAAAAKQAAQIAAI=</HashCode>
+      <FileName>ExperimentFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.KEES_Lab" Collapsed="true">
+    <Position X="15" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAEAAAAAAABAAA=</HashCode>
+      <FileName>KEES_Lab.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.Kemini_Module" Collapsed="true">
+    <Position X="16.75" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAEAAAIAAAAEgAABAICEAAEEEAEwAAAAAAIAAA=</HashCode>
+      <FileName>Kemini_Module.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="keminiSlot" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="NE_Science.LabEquipment" Collapsed="true">
+    <Position X="17.75" Y="7.5" Width="2" />
+    <AssociationLine Name="type" Type="NE_Science.EquipmentRacks" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="19.75" Y="7.75" />
+        <Point X="20.5" Y="7.75" />
+        <Point X="20.5" Y="5.786" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="exp" Type="NE_Science.ExperimentData" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="17.75" Y="7.75" />
+        <Point X="16.219" Y="7.75" />
+        <Point X="16.219" Y="4.875" />
+        <Point X="10" Y="4.875" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>CIQB6gEkJgCiYAhABAAATGgAISiVBBAAEAEEAgBDAoo=</HashCode>
+      <FileName>LabEquipment.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="type" />
+      <Field Name="exp" />
+    </ShowAsAssociation>
+    <Lollipop Position="1.091" />
+  </Class>
+  <Class Name="NE_Science.EquipmentRackContainer" Collapsed="true">
+    <Position X="17.75" Y="6" Width="2" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="availableRacks" Type="NE_Science.LabEquipment" FixedFromPoint="true">
+      <Path>
+        <Point X="18.188" Y="6.656" />
+        <Point X="18.188" Y="7.5" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.09" Y="0.021" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>EAQAAAgABAAAAAAAMACJBCACAAQgAMIgEASAEAAAYAA=</HashCode>
+      <FileName>EquipmentRackContainer.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="availableRacks" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="NE_Science.KerbalResearchStep" Collapsed="true">
+    <Position X="2.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAIAAAAAgAAIAAACAAQAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>KerbalResearchExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.Lab" Collapsed="true">
+    <Position X="18.75" Y="14.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AEAAoACABgIAIGAAMAAIDBIAABEEAEQAxQcAFAAABAA=</HashCode>
+      <FileName>Lab.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="NE_Science.NE_Helper" Collapsed="true">
+    <Position X="5.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIACAAAICAAAAAAEAiCDAAAUIIgAIAAQAAAIAAAAAA=</HashCode>
+      <FileName>NE_Helper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.PACE_ExperimentData" Collapsed="true">
+    <Position X="6.75" Y="8" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MSL_ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.MSLExperimentData" Collapsed="true">
+    <Position X="6" Y="6.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAQAAAAAAAAAAIAAAAAIAIAAAAAAAAA=</HashCode>
+      <FileName>MSL_ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.MIS1_ExperimentData" Collapsed="true">
+    <Position X="4.75" Y="8" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MSL_ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.MIS2_ExperimentData" Collapsed="true">
+    <Position X="4.75" Y="8.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MSL_ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.MIS3_ExperimentData" Collapsed="true">
+    <Position X="4.75" Y="9.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MSL_ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.MEPLabStatusFactory" Collapsed="true">
+    <Position X="15.5" Y="11.25" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MEP_Module.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.MEPExperimentData" Collapsed="true">
+    <Position X="13.5" Y="6.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAQAAAAAAAAAAIAAAAAIAIAAAAAAAAQ=</HashCode>
+      <FileName>MEP_ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.MEP_Module" Collapsed="true">
+    <Position X="20.25" Y="12.25" Width="1.5" />
+    <AssociationLine Name="exposureSlot" Type="NE_Science.LabEquipmentSlot" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="20.812" Y="12.25" />
+        <Point X="20.812" Y="9.437" />
+        <Point X="19.5" Y="9.437" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>FARCoEgAAAAAEABIMAAUARICCQEsgnAEoAAAAAAAAgI=</HashCode>
+      <FileName>MEP_Module.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="exposureSlot" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="NE_Science.MEE1_ExperimentData" Collapsed="true">
+    <Position X="13.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MEP_ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.MEE2_ExperimentData" Collapsed="true">
+    <Position X="13.75" Y="8" Width="1.5" />
+    <InheritanceLine Type="NE_Science.MEPExperimentData" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="14.625" Y="7.406" />
+        <Point X="14.625" Y="7.529" />
+        <Point X="13.627" Y="7.529" />
+        <Point X="13.627" Y="8.375" />
+        <Point X="13.75" Y="8.375" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MEP_ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.LabEquipmentModule" Collapsed="true">
+    <Position X="20.75" Y="6.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AEQAAAAAAgAAAAAAAAAAAEAAAAAAAAAAAAAAAARAAAA=</HashCode>
+      <FileName>LabEquipment.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.Contracts.Experiment" Collapsed="true">
+    <Position X="2.25" Y="2" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAABAAAAAAAAAAEAAAgAQCEAAAAAAA=</HashCode>
+      <FileName>KEESExperimentContract.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.FLEX_ExperimentData" Collapsed="true">
+    <Position X="6.75" Y="8.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MSL_ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.KerbalResearchExperimentData" Collapsed="true">
+    <Position X="11" Y="6.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>ABAIYAgAAIAgAAYAAAAAACAAAIBAABAMEIACAAAAAAQ=</HashCode>
+      <FileName>KerbalResearchExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.MSL_Module" Collapsed="true">
+    <Position X="18.5" Y="12.25" Width="1.5" />
+    <AssociationLine Name="cirSlot" Type="NE_Science.LabEquipmentSlot" FixedToPoint="true">
+      <Path>
+        <Point X="19.188" Y="12.25" />
+        <Point X="19.188" Y="9.536" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="firSlot" Type="NE_Science.LabEquipmentSlot" FixedToPoint="true">
+      <Path>
+        <Point X="18.938" Y="12.25" />
+        <Point X="18.938" Y="9.536" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="printerSlot" Type="NE_Science.LabEquipmentSlot" FixedToPoint="true">
+      <Path>
+        <Point X="18.688" Y="12.25" />
+        <Point X="18.688" Y="9.536" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>FEAggEgQBIAMAACQEgCAAJICgEAUIkAEwAAYBABFBEE=</HashCode>
+      <FileName>MSL_Module.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="cirSlot" />
+      <Field Name="firSlot" />
+      <Field Name="printerSlot" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="NE_Science.CCF_ExperimentData" Collapsed="true">
+    <Position X="8.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MPL_ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.MPL_Module" Collapsed="true">
+    <Position X="22" Y="12.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="msgSlot" Type="NE_Science.LabEquipmentSlot" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="22.438" Y="12.25" />
+        <Point X="22.438" Y="7.738" />
+        <Point X="21.399" Y="7.738" />
+        <Point X="21.399" Y="9.125" />
+        <Point X="21.337" Y="9.125" Type="JumpStart" />
+        <Point X="21.171" Y="9.125" Type="JumpEnd" />
+        <Point X="19.5" Y="9.125" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="usuSlot" Type="NE_Science.LabEquipmentSlot" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="22.25" Y="12.25" />
+        <Point X="22.25" Y="7.867" />
+        <Point X="21.482" Y="7.867" Type="JumpStart" />
+        <Point X="21.316" Y="7.867" Type="JumpEnd" />
+        <Point X="21.254" Y="7.867" />
+        <Point X="21.254" Y="9.25" />
+        <Point X="19.5" Y="9.25" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>kABAsAAQAgIICAAAEgCAEJIGAAAEAkAE5AQQBASFAEA=</HashCode>
+      <FileName>MPL_Module.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="msgSlot" />
+      <Field Name="usuSlot" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="NE_Science.MPLExperimentData" Collapsed="true">
+    <Position X="8" Y="6.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAQAAAAAAAAAAIAAAAAIAIAAAAAAAAA=</HashCode>
+      <FileName>MPL_ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.ADUM_ExperimentData" Collapsed="true">
+    <Position X="11.75" Y="8.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MPL_ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.CFE_ExperimentData" Collapsed="true">
+    <Position X="8.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MPL_ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.CFI_ExperimentData" Collapsed="true">
+    <Position X="6.75" Y="9.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MSL_ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.CVB_ExperimentData" Collapsed="true">
+    <Position X="6.75" Y="10.25" Width="1.75" />
+    <InheritanceLine Type="NE_Science.MSLExperimentData" ManuallyRouted="true" FixedToPoint="true">
+      <Path>
+        <Point X="6.875" Y="7.406" />
+        <Point X="6.875" Y="7.7" />
+        <Point X="6.623" Y="7.7" />
+        <Point X="6.623" Y="10.562" />
+        <Point X="6.75" Y="10.562" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MSL_ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.EquipmentRackRegistry" Collapsed="true">
+    <Position X="21.25" Y="6" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAACAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>EquipmentRacks.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.KEES_PayloadCarrier" Collapsed="true">
+    <Position X="9.75" Y="14.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAgAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>KEES_PayloadCarrier.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.KEES_PEC" Collapsed="true">
+    <Position X="8.75" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAQAgAAAAAAAEEAAAQAAAAAAAAAEAAAAABAFAAgA=</HashCode>
+      <FileName>KEES_PEC.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="exp" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="NE_Science.LabEquipmentSlot" Collapsed="true">
+    <Position X="18" Y="9" Width="1.5" />
+    <AssociationLine Name="equ" Type="NE_Science.LabEquipment" FixedToPoint="true">
+      <Path>
+        <Point X="18.688" Y="9" />
+        <Point X="18.688" Y="8.036" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>gAAByAAAAABCAAAAAgAABHgCABAFAAgAAAEAAAAABAI=</HashCode>
+      <FileName>LabEquipmentSlot.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="equ" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="NE_Science.Generator" Collapsed="true">
+    <Position X="22.25" Y="8.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAACAAAACACAAAQAAAAAAAACAAAAAAAAA=</HashCode>
+      <FileName>Lab.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.ESCStorageManifest" Collapsed="true">
+    <Position X="19.25" Y="3.25" Width="2.25" />
+    <AssociationLine Name="storageSlots" Type="NE_Science.ExperimentStorage" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="19.25" Y="3.703" />
+        <Point X="18.875" Y="3.703" />
+        <Point X="18.875" Y="3.562" />
+        <Point X="17" Y="3.562" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>ABAYACAAAAAAAAAAQAAAAAAACAAKAAAAAACAAAAAAAA=</HashCode>
+      <FileName>ESCStorageManifest.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="storageSlots" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="NE_Science.SpiU_ExperimentData" Collapsed="true">
+    <Position X="11.75" Y="9.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MPL_ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.Contracts.Parameters.OMSExperimentRecovery" Collapsed="true">
+    <Position X="12.75" Y="13.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAEAAAAAGIAAAAAAAIAAAAAA=</HashCode>
+      <FileName>KEESExperimentRecovery.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.Contracts.Parameters.KEESReturnExperimentParameter" Collapsed="true">
+    <Position X="0.5" Y="3.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>EAAIAAAAQAAAAAAAAAAAAAACAAABAAAEAGIAQAAACAA=</HashCode>
+      <FileName>KEESReturnExperimentParameter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.Contracts.Parameters.KEESExperimentRecovery" Collapsed="true">
+    <Position X="12.75" Y="14.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAABEAAACAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>KEESExperimentRecovery.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.Contracts.Parameters.KEESDoExperimentParameter" Collapsed="true">
+    <Position X="0.5" Y="4.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>EAAIAAAAQAAAAAAAAAAAAAACAAAAEAAAAGAAQAEAAAA=</HashCode>
+      <FileName>KEESDoExperimentParameter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NE_Science.Contracts.Parameters.ExperimentDataReturnExperimentParameter" Collapsed="true">
+    <Position X="7.5" Y="1.75" Width="3" />
+    <AssociationLine Name="experiment" Type="NE_Science.ExperimentData" FixedToPoint="true">
+      <Path>
+        <Point X="9.25" Y="2.406" />
+        <Point X="9.25" Y="4.5" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>EAAIAAAAQAAAAAAAAAAAAAACAAADAAAEAEIAQAAACAA=</HashCode>
+      <FileName>ExperimentDataReturnExperimentParameter.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="experiment" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="NE_Science.Contracts.Parameters.ExperimentDataDoExperimentParameter" Collapsed="true">
+    <Position X="11" Y="1.75" Width="2.75" />
+    <AssociationLine Name="experiment" Type="NE_Science.ExperimentData" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="11.926" Y="2.406" />
+        <Point X="11.926" Y="2.781" />
+        <Point X="9.625" Y="2.781" />
+        <Point X="9.625" Y="4.5" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="expStorage" Type="NE_Science.ExperimentStorage" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="13.75" Y="2.078" />
+        <Point X="15.5" Y="2.078" />
+        <Point X="15.5" Y="3.25" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>EAAIAAAQQEAAAAAAAAAAAAACAAAAEAAAAEAAQAEABAA=</HashCode>
+      <FileName>ExperimentDataDoExperimentParameter.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="experiment" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Field Name="expStorage" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="NE_Science.Contracts.KeminiExperimentContract" Collapsed="true">
+    <Position X="5" Y="1.75" Width="2.25" />
+    <AssociationLine Name="experiment" Type="NE_Science.ExperimentData" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="6.125" Y="2.406" />
+        <Point X="6.125" Y="2.781" />
+        <Point X="8.75" Y="2.781" />
+        <Point X="8.75" Y="4.5" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>EAAIgQACQAAAAAEAIAAQIQACAABACEAAAHQAQEICggg=</HashCode>
+      <FileName>KeminiExperimentContract.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="experiment" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="NE_Science.Contracts.KEESExperimentRegister" Collapsed="true">
+    <Position X="0.5" Y="0.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABgAAgAAAAIAAAAAAEAAAAAAAIAAAAAA=</HashCode>
+      <FileName>KEESExperimentContract.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="experimentParts" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="NE_Science.Contracts.KEESExperimentContract" Collapsed="true">
+    <Position X="3" Y="0.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>EAAIiYACQAIAAAEQIAAAAQACAABAAEAAAGgAQEIAAgo=</HashCode>
+      <FileName>KEESExperimentContract.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="experiment" />
+    </ShowAsAssociation>
+  </Class>
+  <Interface Name="NE_Science.ExperimentDataStorage" Collapsed="true">
+    <Position X="15" Y="0.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAIAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>ExperimentStorage.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="NE_Science.ExperimentState" Collapsed="true">
+    <Position X="9" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAUAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>ExperimentData.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="NE_Science.MEPLabStatus" Collapsed="true">
+    <Position X="15.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAQEAgAAAAQAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MEP_Module.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="NE_Science.EquipmentRacks" Collapsed="true">
+    <Position X="19.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AhAAAQAAAAAAAAAAAQAIAAAAAAAAAAAAAAAAAAAAQEA=</HashCode>
+      <FileName>EquipmentRacks.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="8.25" />
+</ClassDiagram>

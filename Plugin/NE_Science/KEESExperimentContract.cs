@@ -145,9 +145,6 @@ namespace NE_Science.Contracts
         public const string KEES_POSAII = "NE.KEES.POSA2";
         */
 
-        // MKW TODO: Localize the experiment names for the contract generator
-        private static Experiment[] experimentParts = null;
-
         CelestialBody targetBody = null;
         Experiment experiment = null;
 

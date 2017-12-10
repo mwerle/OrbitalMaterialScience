@@ -22,7 +22,9 @@ using UnityEngine;
 
 namespace NE_Science
 {
+    using KAC;
     [KSPAddon(KSPAddon.Startup.MainMenu, true)]
+
     class NE_Helper : MonoBehaviour
     {
 
@@ -34,6 +36,10 @@ namespace NE_Science
         {
             loadOrCreateSettings();
             DontDestroyOnLoad(this);
+            if (!KACWrapper.APIReady)
+            {
+                KACWrapper.InitKACWrapper();
+            }
         }
 
         private void loadOrCreateSettings()
@@ -260,6 +266,67 @@ namespace NE_Science
         public static void RunOnEndOfFrame(MonoBehaviour behaviour, Action action)
         {
             behaviour.StartCoroutine(_runAtEndOfFrame(action));
+        }
+
+        private static KACWrapper.KACAPI ka = null;
+        /** Wrapper around accessing the Kerbal Alarm Clock API.
+         * This wrapper will initialize the KAC API if necessary.
+         */
+        public static KACWrapper.KACAPI KACAPI {
+            get
+            {
+                if (ka == null)
+                {
+                    if (!KACWrapper.APIReady)
+                    {
+                        /* NB: Re-try initialization here because Start() seems to get called too early.. */
+                        if(!KACWrapper.InitKACWrapper())
+                        {
+                            goto done;
+                        }
+                    }
+                    ka = KACWrapper.KAC;
+                }
+            done:
+                return ka;
+            }
+        }
+
+        /** Adds an alarm for the experiment.
+         * @param timeRemaining The time, in seconds, when the experiment will complete.
+         * @param alarmTitle The title of the alarm, shown in the main KAC window, generally "NEOS Alarm" or "KEES Alarm" etc.
+         * @param experimentName The name of the experiment.
+         * @return On success, returns the alarm which was created, on failure, null.
+         */
+        public static KACWrapper.KACAPI.KACAlarm AddExperimentAlarm(
+                float timeRemaining, string alarmTitle, string experimentName, Vessel v)
+        {
+            KACWrapper.KACAPI.KACAlarm alarm = null;
+            const float AlarmMargin = 30; /* Hard-code the margin to 30s for now */
+
+            var alarmTime = Planetarium.GetUniversalTime() + timeRemaining - AlarmMargin;
+
+            string aID = KACAPI?.CreateAlarm(KACWrapper.KACAPI.AlarmTypeEnum.ScienceLab, alarmTitle, alarmTime);
+            if (aID == "")
+            {
+                /* Unable to create alarm */
+                goto done;
+            }
+            /* Set some additional alarm parameters */
+            alarm = KACAPI.Alarms.Find(z=>z.ID==aID);
+            alarm.Notes = "Alarm for " + experimentName;
+            alarm.AlarmAction = KACWrapper.KACAPI.AlarmActionEnum.KillWarp;
+            alarm.AlarmMargin = AlarmMargin;
+            alarm.VesselID = v?.id.ToString();
+
+        done:
+            return alarm;
+        }
+
+        /** Deletes a KAC alarm */
+        public static bool DeleteAlarm(string alarmId)
+        {
+            return KACAPI.DeleteAlarm(alarmId);
         }
     } // END class NE_Helper
 
