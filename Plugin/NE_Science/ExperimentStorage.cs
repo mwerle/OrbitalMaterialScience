@@ -466,7 +466,7 @@ namespace NE_Science
             }
             else
             {
-                NE_Helper.logError("Transform NOT found: " + "Equipment Container");
+                NE_Helper.logError("Transform NOT found: " + "ESC1");
             }
         }
 

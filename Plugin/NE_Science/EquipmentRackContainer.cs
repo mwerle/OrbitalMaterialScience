@@ -208,7 +208,7 @@ namespace NE_Science
             }
             else
             {
-                NE_Helper.logError("Transform NOT found: " + "Equipment Container");
+                NE_Helper.logError("Transform NOT found: " + "LabEquipmentContainer");
             }
         }
 
@@ -216,7 +216,7 @@ namespace NE_Science
         {
             if (contMat == null)
             {
-                Transform t = part.FindModelTransform("Container");
+                Transform t = part.FindModelTransform("LabEquipmentContainer");
                 if (t != null)
                 {
                     contMat = t.GetComponent<Renderer>().material;

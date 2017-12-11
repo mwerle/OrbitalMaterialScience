@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: ESC3C
-  m_Shader: {fileID: 4800000, guid: 006a02235764773478998a79f8e09f85, type: 3}
+  m_Shader: {fileID: 4800000, guid: 9d70c5341ccdb4f4c8c43701bf65a6d8, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_CustomRenderQueue: -1
