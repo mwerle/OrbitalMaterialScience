@@ -305,7 +305,7 @@ namespace NE_Science
 
         internal double getResourceAmount(string res)
         {
-            return lab.getResourceAmount(res);
+            return lab? lab.getResourceAmount(res) : 0.0;
         }
 
         internal bool canRunExperimentAction()

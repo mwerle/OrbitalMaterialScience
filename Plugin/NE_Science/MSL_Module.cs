@@ -303,21 +303,12 @@ namespace NE_Science
 
             if (cirSlot.isEquipmentRunning() || firSlot.isEquipmentRunning() || printerSlot.isEquipmentRunning())
             {
-                Events["stopResearch"].active = doResearch;
-                Events["startResearch"].active = !doResearch;
+                Events["labAction"].guiName = doResearch? "#ne_Pause_Research" : "#ne_Resume_Research";
+                Events["labAction"].active = true;
             }
             else
             {
-                if (doResearch)
-                {
-                    Events["stopResearch"].active = false;
-                    Events["startResearch"].active = false;
-                }
-                else
-                {
-                    Events["stopResearch"].active = doResearch;
-                    Events["startResearch"].active = !doResearch;
-                }
+                Events["labAction"].active = false;
             }
 
             if (!cirSlot.isEquipmentInstalled())
@@ -410,7 +401,34 @@ namespace NE_Science
                     prStatus = Localizer.GetStringByTag("#ne_No_Experiment");
                 }
             }
+        }
 
+        protected override bool onLabPaused()
+        {
+            if(! base.onLabPaused() )
+            {
+                return false;
+            }
+
+            /* Delete all alarms */
+            cirSlot?.getExperiment()?.onPaused();
+            firSlot?.getExperiment()?.onPaused();
+            printerSlot?.getExperiment()?.onPaused();
+            return true;
+        }
+
+        protected override bool onLabStarted()
+        {
+            if(! base.onLabStarted() )
+            {
+                return false;
+            }
+
+            /* Create alarms for any running experiments */
+            cirSlot?.getExperiment()?.onResumed();
+            firSlot?.getExperiment()?.onResumed();
+            printerSlot?.getExperiment()?.onResumed();
+            return true;
         }
 
         private string getEquipmentString()

@@ -33,8 +33,21 @@ namespace NE_Science
         {
             PartResource res = getResource(part, name);
             if (res == null)
+            {
                 return 0;
+            }
             return res.amount;
+        }
+
+        public static bool setResourceAmount(Part part, string name, double amount)
+        {
+            PartResource res = getResource(part, name);
+            if (res == null)
+            {
+                return false;
+            }
+            res.amount = amount;
+            return true;
         }
 
         public static PartResource setResourceMaxAmount(Part part, string name, double max)

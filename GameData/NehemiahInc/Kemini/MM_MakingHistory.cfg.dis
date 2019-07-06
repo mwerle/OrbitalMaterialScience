@@ -1,0 +1,60 @@
+//---------------------------------- Squad Making History ------------------------
+// Mk2 Command Pod
+@PART[Mk2Pod]:NEEDS[SquadExpansion/MakingHistory]
+{
+	MODULE
+	{
+		name = Kemini_Module
+
+		abbreviation = Kemini Science Experiment
+		minimumCrew = 1
+
+		NE_LabEquipmentSlot
+		{
+			type = KEMINI
+		}
+	}
+
+	MODULE
+	{
+		name = ExperimentStorage
+		identifier = Kemini 1
+		chanceTexture = false
+		type = KEMINI
+	}
+
+	MODULE
+	{
+		name = ExperimentStorage
+		identifier = Kemini 2
+		chanceTexture = false
+		type = KEMINI
+	}
+}
+
+// -- Disabled by default; enable if you want these pods to have Kemini experiments too
+// Soviet-style Command Pods
+// kv3Pod is too cramped for experiments I think.
+@PART[kv1Pod,kv2Pod]:NEEDS[SquadExpansion/MakingHistory]
+{
+	MODULE
+	{
+		name = Kemini_Module
+
+		abbreviation = Kemini Science Experiment
+		minimumCrew = 1
+
+		NE_LabEquipmentSlot
+		{
+			type = KEMINI
+		}
+	}
+
+	MODULE
+	{
+		name = ExperimentStorage
+		identifier = Kemini 1
+		chanceTexture = false
+		type = KEMINI
+	}
+}

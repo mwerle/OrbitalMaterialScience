@@ -32,7 +32,7 @@ namespace NE_Science
         Part getPart();
     }
 
-    public class ExperimentStorage : ModuleScienceExperiment, ExperimentDataStorage, IPartCostModifier, IPartMassModifier
+    public class ExperimentStorage : ModuleScienceExperiment, ExperimentDataStorage, IPartCostModifier, IPartMassModifier, IScienceResultHelperClient
     {
 
         [KSPField(isPersistant = false)]
@@ -87,8 +87,10 @@ namespace NE_Science
             experimentID = expData.getId();
             if (expData.getId () == "") {
                 experiment = null;
+                ScienceResultHelper.Instance.Unregister(this);
             } else {
                 experiment = ResearchAndDevelopment.GetExperiment (experimentID);
+                ScienceResultHelper.Instance.Register(this);
             }
 
             experimentActionName = Localizer.GetStringByTag("#ne_Results");
@@ -138,6 +140,14 @@ namespace NE_Science
             if (state.Equals(StartState.Editor))
             {
                 Events["chooseEquipment"].active = true;
+                if (expData.getId() == "")
+                {
+                    Events["chooseEquipment"].guiName = Localizer.GetStringByTag("#ne_Add_Experiment");
+                }
+                else
+                {
+                    Events["chooseEquipment"].guiName = Localizer.Format("#ne_Remove_1", expData.getAbbreviation());
+                }
             }
             else
             {
@@ -185,6 +195,9 @@ namespace NE_Science
             if (expData.canFinalize())
             {
                 base.DeployExperiment();
+                // TODO: If we don't suppress the 'reset' button and instead hook into it,
+                // let's now check whether we should actually finalize the experiment or
+                // do something else.
                 expData.finalize();
             }
             else
@@ -439,11 +452,6 @@ namespace NE_Science
             return part.gameObject;
         }
 
-        public Part getPart()
-        {
-            return part;
-        }
-
         private void setTexture(ExperimentData expData)
         {
             GameDatabase.TextureInfo tex = textureReg.getTextureForExperiment(expData);
@@ -501,6 +509,7 @@ namespace NE_Science
             }
         }
 
+        #region IPartMassModifier interface
         /// <summary>Overridden from IPartMassModifier</summary>
         public ModifierChangeWhen GetModuleMassChangeWhen()
         {
@@ -512,7 +521,9 @@ namespace NE_Science
         {
             return (expData != null)? expData.getMass() : 0f;
         }
+        #endregion
 
+        #region IPartCostModifier interface
         /// <summary>Overridden from IPartCostModifier</summary>
         public ModifierChangeWhen GetModuleCostChangeWhen()
         {
@@ -524,6 +535,33 @@ namespace NE_Science
         {
             return (expData != null)? expData.getCost() : 0f;
         }
+        #endregion
+
+        #region ExperimentResultDialog interface and callbacks
+        /// <summary>
+        /// ExperimentResultHelperClient interface
+        /// </summary>
+        public virtual Part getPart()
+        {
+            return part;
+        }
+        /** Default implementation; does nothing. */
+        public virtual void OnExperimentResultDialogResetClicked()
+        {
+            NE_Helper.log("Lab: OnExperimentResultDialogResetClicked()");
+        }
+        /** Default implementation; disabled 'Reset' button. */
+        public virtual void OnExperimentResultDialogOpened()
+        {
+            NE_Helper.log("Lab: OnExperimentResultDialogOpened()");
+            ScienceResultHelper.Instance.DisableButton(ScienceResultHelper.ExperimentResultDialogButton.ButtonReset);
+        }
+        /** Default implementation; does nothing. */
+        public virtual void OnExperimentResultDialogClosed()
+        {
+            NE_Helper.log("Lab: OnExperimentResultDialogClosed()");
+        }
+        #endregion
     }
 
     class ExpContainerTextureFactory

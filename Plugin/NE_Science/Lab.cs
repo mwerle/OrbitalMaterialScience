@@ -26,18 +26,47 @@ namespace NE_Science
 {
     public abstract class Lab : PartModule, IPartMassModifier
     {
+        #region KSPFields
+        /// A KSPField is a class member which can be automatically persisted in the save file
+        /// or displayed as a Tweakable.
 
+        ///
+        /// Minimum crew required to operate this Lab.
+        ///
         [KSPField(isPersistant = false)]
         public int minimumCrew = 0;
 
+        /// <summary>
+        /// Current status whether the lab is active / performing research.
+        /// </summary>
         [KSPField(isPersistant = true)]
         public bool doResearch = true;
 
+        /// <summary>
+        /// Time when the lab was last active.
+        /// </summary>
         [KSPField(isPersistant = true)]
         public string last_active = "0";
 
+        /// <summary>
+        /// Abbreviation used in various places.
+        /// </summary>
         [KSPField(isPersistant = false)]
         public string abbreviation = "";
+
+        /// <summary>
+        /// GUI field to display the current lab status.
+        /// </summary>
+        [KSPField(isPersistant = false, guiActive = false, guiName = "#ne_Lab_Status")]
+        public string labStatus = "";
+
+        ///
+        /// Last count of crew in Part.
+        /// This can be different to part.protoModuleCrew.Count if a crew member has just entered or left the Part.
+        ///
+        [KSPField(isPersistant = false)]
+        private int m_cCrew = 0;
+        #endregion
 
         public double LastActive
         {
@@ -59,9 +88,6 @@ namespace NE_Science
                 last_active = value.ToString();
             }
         }
-
-        [KSPField(isPersistant = false, guiActive = false, guiName = "#ne_Lab_Status")]
-        public string labStatus = "";
 
         public virtual void installExperiment(ExperimentData exp)
         {
@@ -153,7 +179,6 @@ namespace NE_Science
         protected virtual void displayStatusMessage(string s)
         {
             labStatus = s;
-            Fields["labStatus"].guiActive = true;
         }
 
         protected V getOrDefault<K, V>(Dictionary<K, V> dict, K key)
@@ -168,19 +193,28 @@ namespace NE_Science
             }
         }
 
+        public bool isUnderstaffed()
+        {
+            return part.protoModuleCrew.Count < minimumCrew;
+        }
+
+        /** This function is called whenever the display of the status messages should change. */
         private void updateStatus()
         {
             if (!doResearch)
             {
-                displayStatusMessage(Localizer.GetStringByTag("#ne_Paused"));
-            }
-            else if (minimumCrew > 0 && part.protoModuleCrew.Count < minimumCrew)
-            {
-                displayStatusMessage(Localizer.Format("#ne_Understaffed_1_of_2", part.protoModuleCrew.Count, minimumCrew));
-            }
-            else if (OMSExperiment.checkBoring(vessel, false))
-            {
-                displayStatusMessage(Localizer.GetStringByTag("#ne_Go_to_space"));
+                if(OMSExperiment.checkBoring(vessel, false))
+                {
+                    displayStatusMessage(Localizer.GetStringByTag("#ne_Go_to_space"));
+                }
+                else if(isUnderstaffed())
+                {
+                    displayStatusMessage(Localizer.Format("#ne_Understaffed_1_of_2", part.protoModuleCrew.Count, minimumCrew));
+                }
+                else
+                {
+                    displayStatusMessage(Localizer.GetStringByTag("#ne_Paused"));
+                }
             }
             else
             {
@@ -188,12 +222,86 @@ namespace NE_Science
             }
         }
 
+        /// <summary>
+        /// This function is called regularly and should be used to update any state
+        /// or displays which cannot be updated via events.
+        /// </summary>
+        /// The primary state which must be polled is to detect when an experiment has finished.
         protected virtual void updateLabStatus()
         {
+            /* Default implementation : no-op */
+        }
+
+        /** Called whenever the state of the lab changes to stopped, such as when understaffed or paused */
+        protected virtual bool onLabPaused()
+        {
+            if (!canPerformLabActions())
+            {
+                return false;
+            }
+
+            doResearch = false;
+            Events["labAction"].guiName = "#ne_Resume_Research";
+            return true;
+        }
+
+        /// <summary>
+        /// Called whenever crew enters or leaves this part.
+        /// </summary>
+        protected virtual void onCrewMoved()
+        {
+            /* Crew left and we dropped below the minimum crew requirement. */
+            if( m_cCrew >= minimumCrew && part.protoModuleCrew.Count < minimumCrew )
+            {
+                onLabPaused();
+            }
+            /* Crew entered and we went above the minimum crew requirement. */
+            if( m_cCrew < minimumCrew && part.protoModuleCrew.Count >= minimumCrew )
+            {
+                updateStatus();
+                /* Lab is not automatically restarted, player must press button. */
+            }
+        }
+
+        /// <summary>
+        /// Query whether we can perform lab actions such as starting or pausing the lab.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual bool canPerformLabActions()
+        {
+            return !isUnderstaffed();
+        }
+
+        /// <summary>
+        /// Called when the state of the lab changes to started.
+        /// </summary>
+        /// This can occur when crew members enter the Part, or the user clicks on resume.
+        /// It is always called  before updateLabStatus()
+        /// <returns>True if the lab was started</returns>
+        protected virtual bool onLabStarted()
+        {
+            if (!canPerformLabActions())
+            {
+                ScreenMessages.PostScreenMessage("#ne_Not_enough_crew_in_this_module", 6, ScreenMessageStyle.UPPER_CENTER);
+                return false;
+            }
+            if (OMSExperiment.checkBoring(vessel, true))
+            {
+                return false;
+            }
+
+            doResearch = true;
+            Events["labAction"].guiName = "#ne_Pause_Research";
+            updateStatus();
+            return true;
         }
 
         double owed_time = 0;
 
+        /// <summary>
+        /// Called once after the Part is initialized (ie, after OnAwake) but before the first Update.
+        /// </summary>
+        /// <param name="state"></param>
         public override void OnStart(PartModule.StartState state)
         {
             base.OnStart(state);
@@ -204,47 +312,76 @@ namespace NE_Science
             this.part.force_activate();
             generators = new List<Generator>();
 
+            m_cCrew = part.protoModuleCrew.Count;
+
             if (LastActive > 0)
             {
                 owed_time = Planetarium.GetUniversalTime() - LastActive;
             }
-            Events["stopResearch"].active = doResearch;
-            Events["startResearch"].active = !doResearch;
+            Events["labAction"].guiName = doResearch? "#ne_Pause_Research" : "#ne_Resume_Research";
+            Fields["labStatus"].guiActive = true;
             StartCoroutine(updateState());
         }
 
+        /// <summary>
+        /// Coroutine running while the Part is active.
+        /// </summary>
+        /// This is more efficient than running OnUpdate.
+        /// <returns></returns>
         public System.Collections.IEnumerator updateState()
         {
             while (true)
             {
-                updateStatus();
+                /* Unfortunately there doesn't appear to be an Event for this, so we need to poll
+                 * to Check if crew has entered or left this part. */
+                if( m_cCrew != part.protoModuleCrew.Count )
+                {
+                    onCrewMoved();
+                    m_cCrew = part.protoModuleCrew.Count;
+                }
+                else
+                {
+                    updateStatus();
+                }
                 yield return new UnityEngine.WaitForSeconds(1f);
             }
         }
 
-        [KSPEvent(guiActive = true, guiName = "#ne_Resume_Research", active = true)]
         public void startResearch()
         {
-            if (part.protoModuleCrew.Count < minimumCrew)
+            if( !onLabStarted() )
             {
-                ScreenMessages.PostScreenMessage("#ne_Not_enough_crew_in_this_module.", 6, ScreenMessageStyle.UPPER_CENTER);
                 return;
             }
-            doResearch = true;
-            Events["stopResearch"].active = doResearch;
-            Events["startResearch"].active = !doResearch;
-            updateStatus();
         }
 
-        [KSPEvent(guiActive = true, guiName = "#ne_Pause_Research", active = true)]
         public void stopResearch()
         {
-            doResearch = false;
-            Events["stopResearch"].active = doResearch;
-            Events["startResearch"].active = !doResearch;
-            updateStatus();
+            if( !onLabPaused() )
+            {
+                return;
+            }
         }
 
+        #region KSPEvents
+        // KSPEvents can display a gui button in the part action menu
+
+        [KSPEvent(guiActive = true, guiName = "#ne_Resume_Research", active = true)]
+        public void labAction()
+        {
+            if(!doResearch)
+            {
+                startResearch();
+            }
+            else
+            {
+                stopResearch();
+            }
+        }
+        #endregion
+
+        #region KSPActions
+        // KSPActions can be bound to action keys in the Editor
         [KSPAction("#ne_Resume_Research")]
         public void startResearchingAction(KSPActionParam param)
         {
@@ -265,9 +402,12 @@ namespace NE_Science
             else
                 startResearch();
         }
+        #endregion
 
-
-
+        /// <summary>
+        /// Called by Unity on every physics tic.
+        /// </summary>
+        /// This should be used for any physics calculations.
         public override void OnFixedUpdate()
         {
             if (isActive())
@@ -312,6 +452,7 @@ namespace NE_Science
             }
         }
 
+        #region IPartMassModifier overrides
         /// <summary>Overridden from IPartMassModifier</summary>
         public ModifierChangeWhen GetModuleMassChangeWhen()
         {
@@ -323,6 +464,7 @@ namespace NE_Science
         {
             return getMass();
         }
+        #endregion
     }
 
     public class Generator

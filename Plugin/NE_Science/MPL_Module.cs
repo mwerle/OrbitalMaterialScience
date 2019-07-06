@@ -341,21 +341,12 @@ namespace NE_Science
 
             if (msgSlot.isEquipmentRunning() || usuSlot.isEquipmentRunning())
             {
-                Events["stopResearch"].active = doResearch;
-                Events["startResearch"].active = !doResearch;
+                Events["labAction"].guiName = doResearch? "#ne_Pause_Research" : "#ne_Resume_Research";
+                Events["labAction"].active = true;
             }
             else
             {
-                if (doResearch)
-                {
-                    Events["stopResearch"].active = false;
-                    Events["startResearch"].active = false;
-                }
-                else
-                {
-                    Events["stopResearch"].active = doResearch;
-                    Events["startResearch"].active = !doResearch;
-                }
+                Events["labAction"].active = false;
             }
 
             if (msg == null)
@@ -424,7 +415,32 @@ namespace NE_Science
                     usuStatus = Localizer.GetStringByTag("#ne_No_Experiment");
                 }
             }
+        }
 
+        protected override bool onLabPaused()
+        {
+            if(! base.onLabPaused() )
+            {
+                return false;
+            }
+
+            /* Delete all alarms */
+            msgSlot?.getExperiment()?.onPaused();
+            usuSlot?.getExperiment()?.onPaused();
+            return true;
+        }
+
+        protected override bool onLabStarted()
+        {
+            if(! base.onLabStarted() )
+            {
+                return false;
+            }
+
+            /* Create alarms for any running experiments */
+            msgSlot?.getExperiment()?.onResumed();
+            usuSlot?.getExperiment()?.onResumed();
+            return true;
         }
 
         private string getEquipmentString()

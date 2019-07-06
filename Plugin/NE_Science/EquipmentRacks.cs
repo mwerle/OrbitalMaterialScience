@@ -29,8 +29,30 @@ namespace NE_Science
             new KeyValuePair<EquipmentRacks, String>(EquipmentRacks.CIR, "NE.CIR"),
             new KeyValuePair<EquipmentRacks, String>(EquipmentRacks.FIR, "NE.FIR"),
             new KeyValuePair<EquipmentRacks, String>(EquipmentRacks.MSG, "NE.MSG"),
-            new KeyValuePair<EquipmentRacks, String>(EquipmentRacks.USU, "NE.USU")
+            new KeyValuePair<EquipmentRacks, String>(EquipmentRacks.USU, "NE.USU"),
+            new KeyValuePair<EquipmentRacks, String>(EquipmentRacks.EXPOSURE, "MEP"),
+            new KeyValuePair<EquipmentRacks, String>(EquipmentRacks.KEMINI, "NE.KEMINI"),
         };
+
+        public static LabEquipment getLabEquipmentForRack(EquipmentRacks er)
+        {
+            LabEquipment le = null;
+
+            for (int idx = 0, count = racks.Length; idx < count; idx++)
+            {
+                if(racks[idx].Key == er)
+                {
+                    AvailablePart part = PartLoader.getPartInfoByName(racks[idx].Value);
+                    if (part != null)
+                    {
+                        le = getLabEquipment(part.partPrefab, er);
+                    }
+                    break;
+                }
+            }
+
+            return le;
+        }
 
         public static List<LabEquipment> getAvailableRacks()
         {

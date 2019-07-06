@@ -77,3 +77,14 @@ Related and Recommended Mods
 * [Universal Storage](http://www.kingtiger.co.uk/kingtiger/wordpress/universal-storage-a-mod-for-kerbal-space-program/) - when installed, additional US wedges are available for storing experiments.
 
 * [Connected Living Spaces](https://github.com/codepoetpbowden/ConnectedLivingSpace) - various parts are compatible with CLS and allow Kerbals to move through them.
+
+Download Links
+--------------
+
+* [GitHub](https://github.com/mwerle/OrbitalMaterialScience/releases) - primary download location.
+
+* [SpaceDock](https://spacedock.info/mod/1393)
+
+* [CurseForge](https://mods.curse.com/ksp-mods/kerbal/270269-neos)
+
+* And via the [CKAN](https://forum.kerbalspaceprogram.com/threads/100067) tool.

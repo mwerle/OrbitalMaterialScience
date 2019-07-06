@@ -84,5 +84,11 @@ namespace NE_Science
                 }
             }
         }
+
+        public override float getTimeRequired()
+        {
+            // The Kemini "Lab" generates 1 LAB_TIME per hour
+            return step.getNeededAmount() * 60 * 60;
+        }
     }
 }

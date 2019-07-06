@@ -21,7 +21,7 @@ using System.Text;
 
 namespace NE_Science
 {
-    class KEES_Lab : Lab
+    public class KEES_Lab : Lab
     {
 
         [KSPField(isPersistant = false)]
@@ -35,10 +35,8 @@ namespace NE_Science
                 return;
             }
 
-            Events["stopResearch"].active = false;
-            Events["startResearch"].active = false;
+            Events["labAction"].active = false;
             Fields["labStatus"].guiActive = false;
-
 
             Generator exposureGenerator = createGenerator(Resources.EXPOSURE_TIME, ExposureTimePerHour, Resources.ELECTRIC_CHARGE, 0);
             generators.Add(exposureGenerator);
@@ -52,8 +50,6 @@ namespace NE_Science
                 gen.addRate(useRes, usePerUnit);
             return gen;
         }
-
-
 
     }
 }

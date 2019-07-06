@@ -133,6 +133,11 @@ namespace NE_Science
         {
             return 0;
         }
+
+        public virtual EquipmentRacks getNeededEquipment()
+        {
+            return exp.getEquipmentNeeded();
+        }
     }
 
     public class ResourceExperimentStep : ExperimentStep

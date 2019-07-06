@@ -50,6 +50,7 @@ namespace NE_Science
         private string startExpAnimName = "StartExperiment";
         private string errorOnStartAnimName = "ErrorOnStart";
         private string errorOnStopAnimName = "ErrorOnStop";
+        public delegate void OnAnimationFinished(Animation a);
 
         private LabEquipmentSlot exposureSlot = new LabEquipmentSlot(EquipmentRacks.EXPOSURE);
 
@@ -90,94 +91,164 @@ namespace NE_Science
             switch (MEPlabState)
             {
                 case MEPLabStatus.NOT_READY:
-                    playAnimation(deployAnimName, -1f, 0f);
-                    Events["FixArm"].guiActiveUnfocused = false;
-                    Events["DeployPlatform"].guiActive = true;
+                    Events["DeployPlatform"].guiName = Localizer.GetStringByTag("#ne_Deploy_Platform");
+                    playAnimation(deployAnimName, -1f, 0f, onAnimationOnStartFinished);
                     break;
                 case MEPLabStatus.READY:
-                    playAnimation(startExpAnimName, -1f, 0f);
-                    Events["FixArm"].guiActiveUnfocused = false;
-                    Events["DeployPlatform"].guiActive = true;
+                    Events["DeployPlatform"].guiName = Localizer.GetStringByTag("#ne_Retract_Platform");
+                    playAnimation(startExpAnimName, -1f, 0f, onAnimationOnStartFinished);
                     break;
 
                 case MEPLabStatus.RUNNING:
-                    playAnimation(startExpAnimName, 1f, 1f);
-                    Events["DeployPlatform"].guiActive = false;
-                    Events["FixArm"].guiActiveUnfocused = false;
+                    playAnimation(startExpAnimName, 1f, 1f, onAnimationOnStartFinished);
                     break;
 
                 case MEPLabStatus.ERROR_ON_START:
-                    playAnimation(errorOnStartAnimName, 1f, 1f);
-                    Events["FixArm"].guiActiveUnfocused = true;
-                    Events["DeployPlatform"].guiActive = false;
+                    playAnimation(errorOnStartAnimName, 1f, 1f, onAnimationOnStartFinished);
+                    Events["DeployPlatform"].active = false;
+                    Events["labAction"].active = false;
+                    Events["FixArm"].active = true;
                     break;
 
                 case MEPLabStatus.ERROR_ON_STOP:
-                    playAnimation(errorOnStopAnimName, -1f, 0f);
-                    Events["FixArm"].guiActiveUnfocused = true;
-                    Events["DeployPlatform"].guiActive = false;
+                    playAnimation(errorOnStopAnimName, -1f, 0f, onAnimationOnStartFinished);
+                    Events["DeployPlatform"].active = false;
+                    Events["labAction"].active = false;
+                    Events["FixArm"].active = true;
                     break;
             }
         }
 
-        [KSPEvent(guiName = "#ne_Fix_robotic_arm", externalToEVAOnly = true, guiActiveUnfocused = true, unfocusedRange = 3.0f)]
+        #region Right-click menu buttons (KSPEvent)
+        /// <summary>
+        /// Event to allow moving an experiment.
+        /// </summary>
+        [KSPEvent(guiActive = true, guiName = "#ne_Move_Experiment")]
+        public void moveExp()
+        {
+            exposureSlot.moveExperiment(part.vessel);
+        }
+
+        /// <summary>
+        /// Event to control the experiment.
+        /// </summary>
+        [KSPEvent(guiActive = true, guiName = "#ne_Action_Experiment")]
+        public void actionExp()
+        {
+            if (!canPerformLabActions())
+            {
+                ScreenMessages.PostScreenMessage("#ne_Not_enough_crew_in_this_module", 6, ScreenMessageStyle.UPPER_CENTER);
+                return;
+            }
+            if (exposureSlot.isExposureAction())
+            {
+                bool shouldArmMove = canArmMove();
+                if(shouldArmMove)
+                {
+                    exposureSlot.experimentAction();
+                }
+                animateRobotArm(shouldArmMove);
+            }
+            else
+            {
+                exposureSlot.experimentAction();
+            }
+        }
+
+        /// <summary>
+        /// Event to fix the robot arm.
+        /// </summary>
+        /// This event should only be usable from EVA.
+        /// TODO: Make the event only usable with an Engineer.
+        [KSPEvent(active = false, externalToEVAOnly = true, guiActiveUnfocused = true, unfocusedRange = 3.0f, guiName = "#ne_Fix_robotic_arm")]
         public void FixArm()
         {
-            Events["FixArm"].guiActiveUnfocused = false;
+            Events["FixArm"].active = false;
             armOps = 0;
             switch (MEPlabState)
             {
                 case MEPLabStatus.ERROR_ON_START:
-                    MEPlabState = MEPLabStatus.RUNNING;
-                    playAnimation(errorOnStartAnimName, -1f, 1f);
                     ScreenMessages.PostScreenMessage("#ne_Robotic_arm_fixed_Experiment_will_start_soon", 2, ScreenMessageStyle.UPPER_CENTER);
-                    StartCoroutine(playAninimationAfter(5.8f,startExpAnimName, 1f, 0));
+                    playAnimation(errorOnStartAnimName, -1f, 1f, onAnimStartFixFinished);
                     break;
                 case MEPLabStatus.ERROR_ON_STOP:
                     ScreenMessages.PostScreenMessage("#ne_Robotic_arm_fixed", 2, ScreenMessageStyle.UPPER_CENTER);
-                    playAnimation(errorOnStopAnimName, 1f, 0f);
-                    StartCoroutine(waitForAnimation(5.8f));
+                    playAnimation(errorOnStopAnimName, 1f, 0f, onAnimStopFixFinished);
                     break;
             }
         }
 
-        System.Collections.IEnumerator playAninimationAfter(float seconds, string animation, float speed, float normalizedTime)
-        {
-            yield return new WaitForSeconds(seconds);
-            playAnimation(animation, speed, normalizedTime);
-        }
-
-        System.Collections.IEnumerator waitForAnimation(float seconds)
-        {
-            yield return new WaitForSeconds(seconds);
-            MEPlabState = MEPLabStatus.RUNNING;
-        }
-
-
-        [KSPEvent(guiActive = true, guiName = "#ne_Deploy_Platform", active = true)]
+        /// <summary>
+        /// Event to open/close the exposure platform.
+        /// </summary>
+        /// TODO: Ensure it can only be controlled if a Kerbal is in the Part.
+        [KSPEvent(guiActive = true, guiName = "#ne_Deploy_Platform")]
         public void DeployPlatform()
         {
+            if (!canPerformLabActions())
+            {
+                ScreenMessages.PostScreenMessage("#ne_Not_enough_crew_in_this_module", 6, ScreenMessageStyle.UPPER_CENTER);
+                return;
+            }
+            Events["labAction"].active = false;
+            Events["DeployPlatform"].active = false;
             switch (MEPlabState)
             {
                 case MEPLabStatus.NOT_READY:
-                    playAnimation(deployAnimName, 1f, 0);
-                    MEPlabState = MEPLabStatus.READY;
-                    Events["DeployPlatform"].guiName = Localizer.GetStringByTag("#ne_Retract_Platform");
+                    playAnimation(deployAnimName, 1f, 0, onAnimationDeployPlatformFinished);
                     break;
                 case MEPLabStatus.READY:
-                    playAnimation(deployAnimName, -1f, 1);
-                    MEPlabState = MEPLabStatus.NOT_READY;
-                    Events["DeployPlatform"].guiName = Localizer.GetStringByTag("#ne_Deploy_Platform");
+                    playAnimation(deployAnimName, -1f, 1, onAnimationRetractPlatformFinished);
                     break;
             }
         }
+        #endregion
+
+        #region KSPActions
+        // KSPActions can be bound to action keys in the Editor
+        [KSPAction("#ne_Deploy_Platform")]
+        public void deployExposurePlatform(KSPActionParam param)
+        {
+            if (!canPerformLabActions())
+            {
+                ScreenMessages.PostScreenMessage("#ne_Not_enough_crew_in_this_module", 6, ScreenMessageStyle.UPPER_CENTER);
+                return;
+            }
+            if(MEPlabState != MEPLabStatus.NOT_READY)
+            {
+                return;
+            }
+            Events["labAction"].active = false;
+            Events["DeployPlatform"].active = false;
+            playAnimation(deployAnimName, 1f, 0, onAnimationDeployPlatformFinished);
+        }
+
+        [KSPAction("#ne_Retract_Platform")]
+        public void retractExposurePlatform(KSPActionParam param)
+        {
+            if (!canPerformLabActions())
+            {
+                ScreenMessages.PostScreenMessage("#ne_Not_enough_crew_in_this_module", 6, ScreenMessageStyle.UPPER_CENTER);
+                return;
+            }
+            if(MEPlabState != MEPLabStatus.READY)
+            {
+                return;
+            }
+            Events["labAction"].active = false;
+            Events["DeployPlatform"].active = false;
+            playAnimation(deployAnimName, -1f, 1, onAnimationDeployPlatformFinished);
+        }
+
+        #endregion
 
         public override void installExperiment(ExperimentData exp)
         {
-            if (exp.getEquipmentNeeded() == EquipmentRacks.EXPOSURE)
+            if (exp.getEquipmentNeeded() == EquipmentRacks.EXPOSURE && exposureSlot.experimentSlotFree())
             {
                 exposureSlot.installExperiment(exp);
                 experimentName = exp.getAbbreviation() + ": " + exp.stateString();
+                
             }
         }
 
@@ -214,64 +285,101 @@ namespace NE_Science
                     displayStatusMessage(Localizer.GetStringByTag("#ne_Platform_retracted"));
                     break;
                 case MEPLabStatus.READY:
-                    Events["DeployPlatform"].guiActive = true;
-                    Events["FixArm"].guiActiveUnfocused = false;
                     displayStatusMessage(Localizer.GetStringByTag("#ne_Idle"));
                     break;
                 case MEPLabStatus.RUNNING:
-                    Fields["labStatus"].guiActive = false;
-                    Events["DeployPlatform"].guiActive = false;
-                    Events["FixArm"].guiActiveUnfocused = false;
                     displayStatusMessage(Localizer.GetStringByTag("#ne_Running"));
                     break;
                 case MEPLabStatus.ERROR_ON_START:
                 case MEPLabStatus.ERROR_ON_STOP:
-                    Events["DeployPlatform"].guiActive = false;
-                    Events["FixArm"].guiActiveUnfocused = true;
                     displayStatusMessage(Localizer.GetStringByTag("#ne_Robotic_Arm_Failure"));
                     break;
             }
 
+            // TODO: Need callbacks on experiment installed and removed.
             Fields["experimentName"].guiActive = !exposureSlot.experimentSlotFree();
-            experimentName = exposureSlot.getExperiment().getAbbreviation() + ": " + exposureSlot.getExperiment().stateString();
-
-            Events["moveExp"].active = exposureSlot.canExperimentMove(part.vessel);
-            if (Events["moveExp"].active)
+            if( Fields["experimentName"].guiActive )
             {
-                Events["moveExp"].guiName = Localizer.Format("#ne_Move_1", exposureSlot.getExperiment().getAbbreviation());
+                experimentName = exposureSlot.getExperiment().getAbbreviation() + ": " + exposureSlot.getExperiment().stateString();
+
+                Events["moveExp"].active = exposureSlot.canExperimentMove(part.vessel);
+                if (Events["moveExp"].active)
+                {
+                    Events["moveExp"].guiName = Localizer.Format("#ne_Move_1", exposureSlot.getExperiment().getAbbreviation());
+                }
+                Events["actionExp"].active = exposureSlot.canActionRun();
+                if (Events["actionExp"].active)
+                {
+                    Events["actionExp"].guiName = exposureSlot.getActionString();
+                }
+            }
+        }
+
+        protected override bool canPerformLabActions()
+        {
+            // The MEP doesn't usually require crew but does when performing an action.
+            return (part.protoModuleCrew.Count >= 1) && base.canPerformLabActions();
+        }
+
+        protected override bool onLabPaused()
+        {
+            if (!canPerformLabActions())
+            {
+                ScreenMessages.PostScreenMessage("#ne_Not_enough_crew_in_this_module", 6, ScreenMessageStyle.UPPER_CENTER);
+                return false;
+            }
+            if( !base.onLabPaused() )
+            {
+                return false;
+            }
+            ExperimentData e = exposureSlot?.getExperiment();
+
+            if( e != null )
+            {
+                /* And if the experiment is running let's animate closing it. */
+                if( exposureSlot.isExposureAction() && (e.state == ExperimentState.RUNNING) )
+                {
+                    animateRobotArm(canArmMove());
+                }
+                /* Notify the experiment that the lab has paused */
+                e.onPaused();
+            }
+            return true;
+        }
+
+        protected override bool onLabStarted()
+        {
+            if (!canPerformLabActions())
+            {
+                ScreenMessages.PostScreenMessage("#ne_Not_enough_crew_in_this_module", 6, ScreenMessageStyle.UPPER_CENTER);
+                return false;
+            }
+            if( !base.onLabStarted() )
+            {
+                return false;
             }
 
-            Events["actionExp"].active = exposureSlot.canActionRun();
-            if (Events["actionExp"].active)
+            ExperimentData e = exposureSlot?.getExperiment();
+            if( e != null )
             {
-                Events["actionExp"].guiName = exposureSlot.getActionString();
+                /* And if the experiment is running let's animate closing it. */
+                if( exposureSlot.isExposureAction() && (e.state == ExperimentState.RUNNING) )
+                {
+                    animateRobotArm(canArmMove());
+                }
+                /* Notify the experiment that the lab has resumed */
+                e.onResumed();
             }
-
-
-            Events["FixArm"].active = Events["FixArm"].guiActiveUnfocused;
+            return true;
         }
 
-        public void errorOnStart()
-        {
-            MEPlabState = MEPLabStatus.RUNNING;
-            playAnimation(errorOnStartAnimName, 1f, 0f);
-            StartCoroutine(ErrorCallback(5.8f, MEPLabStatus.ERROR_ON_START));
-        }
-
-        public void errorOnStop()
-        {
-            playAnimation(errorOnStopAnimName, -1f, 1);
-            StartCoroutine(ErrorCallback(5.5f, MEPLabStatus.ERROR_ON_STOP));
-        }
-
-        System.Collections.IEnumerator ErrorCallback(float seconds, MEPLabStatus targetState)
-        {
-            yield return new WaitForSeconds(seconds);
-            ScreenMessages.PostScreenMessage("#ne_Warning_robotic_arm_failure", 6, ScreenMessageStyle.UPPER_CENTER);
-            MEPlabState = targetState;
-        }
-
-        private bool isSuccessfull()
+        /// <summary>
+        /// Calculates chance of robot arm failure.
+        /// </summary>
+        /// If robot arm failures are enabled, this function calculates whether the robot arm failed. The chance
+        /// of failure increases every time the arm is used.
+        /// <returns>True if robot arm did not fail.</returns>
+        private bool canArmMove()
         {
             if (failures)
             {
@@ -286,6 +394,7 @@ namespace NE_Science
                 int actFailurePerc = failurePercentage + (int)(armOps * 1.5f);
                 int i = new System.Random().Next(1, (100 / actFailurePerc + 1));
                 NE_Helper.log("ExpLab is successfull: " + !(i == 1) + " ; " + i + " ; percentage: " + failurePercentage + "% armOps: " + armOps + " actual percentage: " + actFailurePerc + "%:");
+                ++armOps;
                 return !(i == 1);
             }
             else
@@ -294,7 +403,79 @@ namespace NE_Science
             }
         }
 
-        private void playAnimation(string animName, float speed, float time)
+        private void onAnimationOnStartFinished(Animation anim)
+        {
+            updateLabStatus();
+        }
+
+        private void onAnimationDeployPlatformFinished(Animation anim)
+        {
+            MEPlabState = MEPLabStatus.READY;
+            Events["DeployPlatform"].guiName = Localizer.GetStringByTag("#ne_Retract_Platform");
+            Events["DeployPlatform"].active = true;
+            Events["labAction"].active = true;
+            Events["actionExp"].active = exposureSlot.canActionRun();
+        }
+
+        private void onAnimationRetractPlatformFinished(Animation anim)
+        {
+            MEPlabState = MEPLabStatus.NOT_READY;
+            Events["DeployPlatform"].guiName = Localizer.GetStringByTag("#ne_Deploy_Platform");
+            Events["DeployPlatform"].active = true;
+            Events["labAction"].active = true;
+        }
+
+        private void onAnimExpStartFinished(Animation anim)
+        {
+            MEPlabState = MEPLabStatus.RUNNING;
+            Events["labAction"].active = true;
+        }
+
+        private void onAnimExpStopFinished(Animation anim)
+        {
+            MEPlabState = MEPLabStatus.READY;
+            Events["labAction"].active = true;
+        }
+
+        private void onAnimExpStartErrorFinished(Animation anim)
+        {
+            ScreenMessages.PostScreenMessage("#ne_Warning_robotic_arm_failure", 6, ScreenMessageStyle.UPPER_CENTER);
+            MEPlabState = MEPLabStatus.ERROR_ON_START;
+            Events["FixArm"].active = true;
+        }
+
+        private void onAnimExpStopErrorFinished(Animation anim)
+        {
+            ScreenMessages.PostScreenMessage("#ne_Warning_robotic_arm_failure", 6, ScreenMessageStyle.UPPER_CENTER);
+            MEPlabState = MEPLabStatus.ERROR_ON_STOP;
+            Events["FixArm"].active = true;
+        }
+
+        private void onAnimStartFixFinished(Animation anim)
+        {
+            playAnimation(startExpAnimName, 1f, 0, onAnimExpStartFinished);
+        }
+
+        private void onAnimStopFixFinished(Animation anim)
+        {
+            onAnimExpStopFinished(anim);
+        }
+
+        /// <summary>
+        /// Coroutine which waits for the animation to finish playing before running the specified delegate.
+        /// Code shamelessly lifted from  AnimatedDecoupler/DecoupleAnimator.cs
+        /// </summary>
+        /// <returns></returns>
+        System.Collections.IEnumerator runOnAnimationFinished(Animation anim, OnAnimationFinished onFinished = null)
+        {
+            while (anim.isPlaying)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+            onFinished?.Invoke(anim);
+        }
+
+        private void playAnimation(string animName, float speed, float time, OnAnimationFinished onFinished = null)
         {
             // MKW TODO - remove "FirstOrDefault" Linq statement
             Animation anim = part.FindModelAnimators(animName).FirstOrDefault();
@@ -302,8 +483,11 @@ namespace NE_Science
             {
                 anim[animName].speed = speed;
                 anim[animName].normalizedTime = time;
-
                 anim.Play(animName);
+                if(onFinished != null)
+                {
+                    StartCoroutine(runOnAnimationFinished(anim, onFinished));
+                }
             }
             else
             {
@@ -311,63 +495,49 @@ namespace NE_Science
             }
         }
 
-       public override string GetInfo()
+        public override string GetInfo()
         {
             String ret = base.GetInfo();
             ret += (ret == "" ? "" : "\n") + Localizer.Format("#ne_Exposure_Time_per_hour_1", ExposureTimePerHour);
             return ret;
         }
 
-       internal bool hasEquipmentFreeExperimentSlot(EquipmentRacks neededEquipment)
-       {
-           return exposureSlot.experimentSlotFree();
-       }
+        internal bool hasEquipmentFreeExperimentSlot(EquipmentRacks neededEquipment)
+        {
+            return exposureSlot.experimentSlotFree();
+        }
 
-       [KSPEvent(guiActive = true, guiName = "#ne_Move_Experiment", active = false)]
-       public void moveExp()
-       {
-           exposureSlot.moveExperiment(part.vessel);
-       }
-
-       [KSPEvent(guiActive = true, guiName = "#ne_Action_Experiment", active = false)]
-       public void actionExp()
-       {
-           if (exposureSlot.isExposureAction())
-           {
-               if (isSuccessfull())
-               {
-                   exposureSlot.experimentAction();
-                   ++armOps;
-                   switch (MEPlabState)
-                   {
-                       case MEPLabStatus.READY:
-                           playAnimation(startExpAnimName, 1f, 0f);
-                           MEPlabState = MEPLabStatus.RUNNING;
-                           break;
-                       case MEPLabStatus.RUNNING:
-                           playAnimation(startExpAnimName, -1f, 1f);
-                           MEPlabState = MEPLabStatus.READY;
-                           break;
-                   }
-               }
-               else
-               {
-                   switch (MEPlabState)
-                   {
-                       case MEPLabStatus.READY:
-                           errorOnStart();
-                           break;
-                       case MEPLabStatus.RUNNING:
-                           errorOnStop();
-                           break;
-                   }
-               }
-           }
-           else
-           {
-               exposureSlot.experimentAction();
-           }
-       }
+        /// <summary>
+        /// Runs the relevant robot arm animation.
+        /// </summary>
+        internal void animateRobotArm(bool canArmMove)
+        {
+            Events["labAction"].active = false;
+            Events["DeployPlatform"].active = false;
+            switch (MEPlabState)
+            {
+                case MEPLabStatus.READY:
+                    if(canArmMove)
+                    {
+                        playAnimation(startExpAnimName, 1f, 0f, onAnimExpStartFinished);
+                    }
+                    else
+                    {
+                        playAnimation(errorOnStartAnimName, 1f, 0f, onAnimExpStartErrorFinished);
+                    }
+                    break;
+                case MEPLabStatus.RUNNING:
+                    if(canArmMove)
+                    {
+                        playAnimation(startExpAnimName, -1f, 1f, onAnimExpStopFinished);
+                    }
+                    else
+                    {
+                        playAnimation(errorOnStopAnimName, -1f, 1, onAnimExpStopErrorFinished);
+                    }
+                    break;
+            }
+        }
 
         /// <summary>
         /// Returns the mass of installed equipment and experiments.

@@ -47,15 +47,49 @@ namespace NE_Science
             List<Lab> labs = getFreeLabsWithEquipment(vessel);
             return labs.Count > 0 && state == ExperimentState.STORED;
         }
+
+        /** Returns the total amount of time required to run this experiment. */
+        public override float getTimeRequired()
+        {
+            float time = 0.0f;
+
+            // Gather the time needed for every step.
+            for (int idx = 0, count = steps.Length; idx < count; idx++)
+            {
+                switch(steps[idx].getNeededResource())
+                {
+                    case Resources.EXPOSURE_TIME:
+                        // TODO: Load NE_MEP lab, retrieve the "ExposureTimePerHour" (currently 1.0) from the MEP_Module
+                        time += steps[idx].getNeededAmount();
+                        break;
+
+                    default:
+                        EquipmentRacks rack = steps[idx].getNeededEquipment();
+                        LabEquipment le = EquipmentRackRegistry.getLabEquipmentForRack(rack);
+                        if (le == null)
+                        {
+                            NE_Helper.log("Warning: Could not find lab equipemnt for " + rack);
+                        }
+                        else
+                        {
+                            time += steps[idx].getNeededAmount() / le.ProductPerHour;
+                        }
+                        break;
+                }
+            }
+            return time * 60 * 60; /* Convert hours to seconds */
+        }
+
     }
 
     public class MEE1_ExperimentData : MEPExperimentData
     {
         public MEE1_ExperimentData(float mass, float cost)
-            : base("NE_MEE1", "MEE1", "#ne_oms_mee1_title", "MEE1", EquipmentRacks.EXPOSURE, mass, cost, 2)
+            : base("NE_MEE1", "MEE1", "#ne_oms_mee1_title", "MEE1", EquipmentRacks.EXPOSURE, mass, cost, 3)
         {
             setExperimentStep(Resources.LAB_TIME, 1, Localizer.GetStringByTag("#ne_Preparation"), 0);
             setExperimentStep(Resources.EXPOSURE_TIME, 20, Localizer.GetStringByTag("#ne_Exposure"), 1);
+            setExperimentStep(Resources.LAB_TIME, 2, Localizer.GetStringByTag("#ne_Store_Samples"), 2);
         }
     }
 

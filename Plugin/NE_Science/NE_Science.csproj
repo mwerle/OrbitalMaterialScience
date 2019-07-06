@@ -91,6 +91,7 @@
     <Compile Include="KEES_PEC.cs" />
     <Compile Include="KEESDoExperimentParameter.cs" />
     <Compile Include="KEESExperimentContract.cs" />
+    <Compile Include="NE_Settings.cs" />
     <Compile Include="OMSExperiment.cs" />
     <Compile Include="MEP_Module.cs" />
     <Compile Include="NE_Helper.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="ResourceHelper.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="ScienceHelper.cs" />
+    <Compile Include="ScienceResultHelper.cs" />
     <Compile Include="StageRecovery.cs" />
     <Compile Include="WindowCounter.cs" />
     <Compile Include="DependancyChecker.cs" />

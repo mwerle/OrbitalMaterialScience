@@ -68,7 +68,7 @@ The modelling tool used to create these is [Blender][30]. For consistencies sake
 ## Unity Projects
 The **Unity Projects** directory contains the Unity configuration for all parts used in NEOS.
 
-The projects are in the process of being updated to Unity **5.4.0p4**, which can be downloaded directly from the [Unity website][40].
+The projects are in the process of being updated to Unity ~~5.4.0p4~~**2017.1.3p1**, which can be downloaded directly from the [Unity website][40].
 
 Each project contains the [PartTools][41] plugin, which must be added to any new projects. Older projects are in the process of being upgraded from PartTools 0.23.
 
@@ -93,8 +93,8 @@ The KSPedia unity project additionally requires the "TextMeshPro" utility and a 
 
 Please see DMagic's excellent [forum post][43] for more details on how to create KSPedia articles.
 
-[40]: https://unity3d.com/unity/qa/patch-releases?version=5.4
-[41]: http://forum.kerbalspaceprogram.com/index.php?showtopic=135228
+[40]: https://unity3d.com/unity/qa/patch-releases/2017.1.3p1
+[41]: http://forum.kerbalspaceprogram.com/index.php?showtopic=160487
 [42]: http://forum.kerbalspaceprogram.com/index.php?showtopic=88972
 [43]: http://forum.kerbalspaceprogram.com/index.php?showtopic=137628
 
@@ -109,7 +109,7 @@ Version information is maintained in various **.version** files in the **GameDat
 
 Each component of NEOS is versioned individually, the idea being that updating part of the mod would only require downloading that part. This is especially important for people on slow internet connections and could be leveraged by [CKAN][60].
 
-To make a release, a [NAnt build script][61] is provided. Edit this to update the version numbers, then run **nant** in the top-level directory to generate the various release files.
+To make a release, a [NAnt build script][61] (`OrbitalScience.build`) is provided. Edit this to update the version numbers, then run **nant** in the top-level directory to generate the various release files.
 
 [60]: http://forum.kerbalspaceprogram.com/index.php?showtopic=90246
 [61]: http://nant.sourceforge.net/

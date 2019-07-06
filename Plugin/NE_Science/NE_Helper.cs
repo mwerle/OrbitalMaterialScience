@@ -19,6 +19,7 @@
 
 using System;
 using UnityEngine;
+using KSP.Localization;
 
 namespace NE_Science
 {
@@ -29,8 +30,13 @@ namespace NE_Science
     {
 
         private static string SETTINGS_FILE;
-        private const string DEBUG_VALUE = "Debug";
+        private const string SETTINGS_DEBUG = "Debug";
+        //private const string SETTINGS_NODE_KAC = "KerbalAlarmClock";
+        //private const string SETTINGS_VALUE_ENABLED = "Enabled";
+        //private const string SETTINGS_VALUE_ALARM_MARGIN = "AlarmMargin";
         private static bool debug = true;
+        //private static bool setting_KAC_Enabled = false;
+        //private static int setting_KAC_AlarmMargin = 0;
 
         void Start()
         {
@@ -42,6 +48,13 @@ namespace NE_Science
             }
         }
 
+        /// <summary>
+        /// Loads or creates the global settings.
+        /// </summary>
+        /// <remarks>
+        /// TODO: Refactor and wrap in its own class if we're going to add
+        /// more settings!
+        /// </remarks>
         private void loadOrCreateSettings()
         {
             bool d = false;
@@ -53,10 +66,30 @@ namespace NE_Science
                 ConfigNode settings = ConfigNode.Load(SETTINGS_FILE);
                 if (settings == null)
                 {
-                    settings.AddValue(DEBUG_VALUE, false);
+                    settings.AddValue(SETTINGS_DEBUG, false);
+                    /*
+                    ConfigNode cnSettingsKAC = settings.AddNode(SETTINGS_NODE_KAC);
+                    cnSettingsKAC.AddValue(SETTINGS_VALUE_ENABLED, true);
+                    cnSettingsKAC.AddValue(SETTINGS_VALUE_ALARM_MARGIN, 0);
                     settings.Save(SETTINGS_FILE);
+                    */
                 } else {
-                    d = bool.Parse(settings.GetValue(DEBUG_VALUE));
+                    d = bool.Parse(settings.GetValue(SETTINGS_DEBUG));
+                    /*
+                    if (settings.HasNode(SETTINGS_NODE_KAC))
+                    {
+                        ConfigNode cnSettingsKAC = settings.GetNode(SETTINGS_NODE_KAC);
+                        setting_KAC_Enabled = GetValueAsBool(cnSettingsKAC, SETTINGS_VALUE_ENABLED);
+                        setting_KAC_AlarmMargin = GetValueAsInt(cnSettingsKAC, SETTINGS_VALUE_ALARM_MARGIN, 0);
+                    }
+                    else
+                    {
+                        ConfigNode cnSettingsKAC = settings.AddNode(SETTINGS_NODE_KAC);
+                        cnSettingsKAC.AddValue(SETTINGS_VALUE_ENABLED, true);
+                        cnSettingsKAC.AddValue(SETTINGS_VALUE_ALARM_MARGIN, 0);
+                        settings.Save(SETTINGS_FILE);
+                    }
+                    */
                 }
             }
             catch (Exception e)
@@ -68,18 +101,43 @@ namespace NE_Science
         }
 
         /// <summary>
+        /// Returns the ConfigNode's value as a bool, or the defaultValue on failure.
+        /// </summary>
+        /// <returns>The node value as int.</returns>
+        /// <param name="node">The Node from which to retrieve the Value.</param>
+        /// <param name="name">The name of the Value to retrieve.</param>
+        /// <param name="defaultValue">Default value to return if the Value doesn't exist in the ConfigNode.</param>
+        public static bool GetValueAsBool(ConfigNode node, string name, bool defaultValue = false)
+        {
+            bool rv = defaultValue;
+            try
+            {
+                if (!node.TryGetValue(name, ref rv))
+                {
+                    rv = defaultValue;
+                }
+            }
+            catch (Exception e)
+            {
+                logError("GetValueAsInt - exception: " + e.Message);
+            }
+            return rv;
+        }
+
+        /// <summary>
         /// Returns the ConfigNode's value as an int, or 0 on failure.
         /// </summary>
         /// <returns>The node value as int.</returns>
         /// <param name="node">The Node from which to retrieve the Value.</param>
         /// <param name="name">The name of the Value to retrieve.</param>
-        public static int GetValueAsInt(ConfigNode node, string name)
+        /// <param name="defaultValue">Default value to return if the Value doesn't exist in the ConfigNode.</param>
+        public static int GetValueAsInt(ConfigNode node, string name, int defaultValue = 0)
         {
-            int rv = 0;
+            int rv = defaultValue;
             try {
                 if (!node.TryGetValue(name, ref rv))
                 {
-                    rv = 0;
+                    rv = defaultValue;
                 }
             } catch (Exception e) {
                 logError("GetValueAsInt - exception: " + e.Message);
@@ -93,13 +151,14 @@ namespace NE_Science
         /// <returns>The node value as float.</returns>
         /// <param name="node">The Node from which to retrieve the Value.</param>
         /// <param name="name">The name of the Value to retrieve.</param>
-        public static float GetValueAsFloat(ConfigNode node, string name)
+        /// <param name="defaultValue">Default value to return if the Value doesn't exist in the ConfigNode.</param>
+        public static float GetValueAsFloat(ConfigNode node, string name, float defaultValue = 0.0f)
         {
-            float rv = 0f;
+            float rv = defaultValue;
             try {
                 if (!node.TryGetValue(name, ref rv))
                 {
-                    rv = 0f;
+                    rv = defaultValue;
                 }
             } catch (Exception e) {
                 logError("GetValueAsFloat - exception: " + e.Message);
@@ -145,8 +204,13 @@ namespace NE_Science
                 return false;
             }
 
+            if( p == null )
+            {
+                return false;
+            }
+
             // If the part does not have an instantiated IVA, or isn't attached to an active vessel the user can't be in it.
-            if (p == null || p.internalModel == null || p.vessel == null || !p.vessel.isActiveVessel)
+            if (p.internalModel == null || p.vessel == null || !p.vessel.isActiveVessel)
             {
                 return false;
             }
@@ -190,6 +254,18 @@ namespace NE_Science
             return false;
         }
 
+        public static bool isKacEnabled()
+        {
+            //return setting_KAC_Enabled;
+            return HighLogic.CurrentGame.Parameters.CustomParams<NE_Settings>().KAC_Enabled;
+        }
+
+        public static int getKacAlarmMargin()
+        {
+            //return setting_KAC_AlarmMargin;
+            return HighLogic.CurrentGame.Parameters.CustomParams<NE_Settings>().KAC_AlarmMargin;
+        }
+
         public static bool debugging()
         {
             return debug;
@@ -213,6 +289,64 @@ namespace NE_Science
 
         public static void logError(string errMsg){
             Debug.LogError("[NE] Error: " + errMsg);
+        }
+
+        /** Prints the time in years, days, and hours (and optionally minutes) */
+        public static string timeToStr(long timeInSeconds, bool printMinutes = false)
+        {
+            string ts = "";
+
+            int HoursPerDay = GameSettings.KERBIN_TIME ? 6 : 24;
+            int DaysPerYear = GameSettings.KERBIN_TIME ? 426 : 365;
+
+            long minutes = timeInSeconds / 60;
+            timeInSeconds -= minutes * 60;
+            long hours = minutes / 60;
+            minutes -= hours * 60;
+            long days = hours / HoursPerDay;
+            hours -= days * HoursPerDay;
+            long years = days / DaysPerYear;
+            days -= years * DaysPerYear;
+
+            bool hasTime = false;
+            try {
+                if (years > 0)
+                {
+                    ts += " " + years + " " + Localizer.GetStringByTag("#ne_Years");
+                    hasTime = true;
+                }
+                if (days > 0)
+                {
+                    ts += " " + days + " " + Localizer.GetStringByTag("#ne_Days");
+                    hasTime = true;
+                }
+                if (hours > 0)
+                {
+                    ts += " " + hours + " " + Localizer.GetStringByTag("#ne_Hours");
+                    hasTime = true;
+                }
+                if (printMinutes)
+                {
+                    if (minutes > 0)
+                    {
+                        ts += " " + minutes + " " + Localizer.GetStringByTag("#ne_Minutes");
+                    }
+                    else if(!hasTime)
+                    {
+                        ts += " < 1 " + Localizer.GetStringByTag("#ne_Minutes");
+                    }
+                }
+                else if (!hasTime)
+                {
+                    ts += " < 1 " + Localizer.GetStringByTag("#ne_Hours");
+                }
+            }
+            catch(Exception e)
+            {
+                NE_Helper.logError("Failed to convert time to string: " + e.ToString());
+            }
+
+            return ts;
         }
 
         // Returns the part which is currently under the mouse cursor
@@ -292,41 +426,72 @@ namespace NE_Science
             }
         }
 
+        /** Returns true if the KAC API is available. */
+        public static bool isKacAvailable()
+        {
+            return ka != null;
+        }
+
+        public static KACWrapper.KACAPI.KACAlarm FindAlarm(string alarmId)
+        {
+            return KACAPI?.Alarms.Find(z => z.ID == alarmId);
+        }
+
         /** Adds an alarm for the experiment.
          * @param timeRemaining The time, in seconds, when the experiment will complete.
          * @param alarmTitle The title of the alarm, shown in the main KAC window, generally "NEOS Alarm" or "KEES Alarm" etc.
          * @param experimentName The name of the experiment.
-         * @return On success, returns the alarm which was created, on failure, null.
+         * @return On success, returns the id of the alarm which was created, on failure, null.
          */
-        public static KACWrapper.KACAPI.KACAlarm AddExperimentAlarm(
+        public static string AddExperimentAlarm(
                 float timeRemaining, string alarmTitle, string experimentName, Vessel v)
         {
-            KACWrapper.KACAPI.KACAlarm alarm = null;
-            const float AlarmMargin = 30; /* Hard-code the margin to 30s for now */
+            string aID = null;
 
-            var alarmTime = Planetarium.GetUniversalTime() + timeRemaining - AlarmMargin;
+            if( timeRemaining < 10.0 )
+            {
+                goto done;
+            }
 
-            string aID = KACAPI?.CreateAlarm(KACWrapper.KACAPI.AlarmTypeEnum.ScienceLab, alarmTitle, alarmTime);
-            if (aID == "")
+            if (!isKacEnabled())
+            {
+                goto done;
+            }
+
+            var alarmMargin = getKacAlarmMargin();
+            var alarmTime = Planetarium.GetUniversalTime() + timeRemaining - alarmMargin;
+
+            aID = KACAPI?.CreateAlarm(KACWrapper.KACAPI.AlarmTypeEnum.ScienceLab, alarmTitle, alarmTime);
+            if (string.IsNullOrEmpty(aID))
             {
                 /* Unable to create alarm */
                 goto done;
             }
             /* Set some additional alarm parameters */
-            alarm = KACAPI.Alarms.Find(z=>z.ID==aID);
+            KACWrapper.KACAPI.KACAlarm alarm = FindAlarm(aID);
             alarm.Notes = "Alarm for " + experimentName;
             alarm.AlarmAction = KACWrapper.KACAPI.AlarmActionEnum.KillWarp;
-            alarm.AlarmMargin = AlarmMargin;
+            alarm.AlarmMargin = alarmMargin;
             alarm.VesselID = v?.id.ToString();
 
         done:
-            return alarm;
+            return aID;
         }
 
-        /** Deletes a KAC alarm */
+        /** Deletes a KAC alarm by ID*/
         public static bool DeleteAlarm(string alarmId)
         {
             return KACAPI.DeleteAlarm(alarmId);
+        }
+
+        /** Deletes a KAC alarm */
+        public static bool DeleteAlarm(KACWrapper.KACAPI.KACAlarm alarm)
+        {
+            if (alarm != null)
+            {
+                return KACAPI.DeleteAlarm(alarm.ID);
+            }
+            return false;
         }
     } // END class NE_Helper
 
@@ -364,6 +529,28 @@ namespace NE_Science
                 {
                     break;
                 }
+            }
+        }
+    } // End class GOExtensions
+
+    /// <summary>
+    /// This class implements Extension Methods for various other classes.
+    /// </summary>
+    /// It should be noted that Extension Methods can be called even if the
+    /// variable is null, so care must be taken inside the extension methods
+    /// not to cause NullReferenceExceptions.
+    public static class NE_ExtensionMethods
+    {
+        /// <summary>
+        /// Extension Method on Unity Objects returning whether the object really is null.
+        /// </summary>
+        /// Unity overloads the '==' operator so that it returns true on both null references
+        /// as well as references to destroyed objects. This function only returns true if
+        /// the reference truly is null, and returns false for "fake null" objects.
+        public static bool IsTrueNull(this UnityEngine.Object ob)
+        {
+            return (object)ob == null;
+        }
             }
         }
     } // END class GOExtensions

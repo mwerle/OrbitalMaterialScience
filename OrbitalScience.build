@@ -21,10 +21,10 @@
 	 - KEES - Kerbal Environmental Effects Study
 	 - NEOS - Nehemiah Enginneering Orbital Science (Was: All-in-One)
 	-->
-	<property name="NEOS.Version" value="0.7.1" />
-	<property name="OSS.Version" value="0.7.1" />
-	<property name="KRP.Version" value="0.7.1" />
-	<property name="KEES.Version" value="0.7.1" />
+	<property name="NEOS.Version" value="0.8.1" />
+	<property name="OSS.Version" value="0.8.1" />
+	<property name="KRP.Version" value="0.8.1" />
+	<property name="KEES.Version" value="0.8.1" />
 
 	<property name="CurrMod.dir" value="${build.dir}" />
 
