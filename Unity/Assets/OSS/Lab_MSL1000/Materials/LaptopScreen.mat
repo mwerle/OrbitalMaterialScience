@@ -7,70 +7,42 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: LaptopScreen
-  m_Shader: {fileID: 4800000, guid: 14990e9f66877764ea09767aa942f285, type: 3}
+  m_Shader: {fileID: 4800000, guid: 9d70c5341ccdb4f4c8c43701bf65a6d8, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
+  disabledShaderPasses: []
   m_SavedProperties:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TexEnvs:
-    - first:
-        name: _BumpMap
-      second:
+    - _BumpMap:
         m_Texture: {fileID: 2800000, guid: 591b605b2f8b6414dbbf483123bd85a4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - first:
-        name: _Emissive
-      second:
+    - _Emissive:
         m_Texture: {fileID: 2800000, guid: 591b605b2f8b6414dbbf483123bd85a4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - first:
-        name: _MainTex
-      second:
+    - _MainTex:
         m_Texture: {fileID: 2800000, guid: 1e6fa0ba06459884fbbdaee28fa66cd6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - first:
-        name: _Cutoff
-      second: 0.51
-    - first:
-        name: _Gloss
-      second: 0.5
-    - first:
-        name: _InvFade
-      second: 1
-    - first:
-        name: _Opacity
-      second: 1
-    - first:
-        name: _RimFalloff
-      second: 1.08
-    - first:
-        name: _Shininess
-      second: 0.078125
+    - _Cutoff: 0.51
+    - _Gloss: 0.5
+    - _InvFade: 1
+    - _Opacity: 1
+    - _RimFalloff: 1.08
+    - _Shininess: 0.078125
+    - _UnderwaterFogFactor: 0
     m_Colors:
-    - first:
-        name: _BurnColor
-      second: {r: 1, g: 1, b: 1, a: 1}
-    - first:
-        name: _Color
-      second: {r: 1, g: 1, b: 1, a: 1}
-    - first:
-        name: _EmissiveColor
-      second: {r: 0, g: 0.584, b: 1, a: 0.307}
-    - first:
-        name: _RimColor
-      second: {r: 0, g: 0, b: 0, a: 0}
-    - first:
-        name: _SpecColor
-      second: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - first:
-        name: _TemperatureColor
-      second: {r: 0, g: 0, b: 0, a: 0}
-    - first:
-        name: _TintColor
-      second: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
+    - _BurnColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissiveColor: {r: 0, g: 0.584, b: 1, a: 0.307}
+    - _RimColor: {r: 0, g: 0, b: 0, a: 0}
+    - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _TemperatureColor: {r: 0, g: 0, b: 0, a: 0}
+    - _TintColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}

@@ -33,7 +33,7 @@ namespace NE_Science
         [KSPField]
         public string alarmSound = "NehemiahInc/Sounds/alarm";
 
-        private const string EMISSIVE_COLOR = "_EmissiveCollor";
+        private const string EMISSIVE_COLOR = "_EmissiveColor";
 
         private const float DOPPLER_LEVEL = 0f;
         private const float MIN_DIST = 1f;
@@ -119,33 +119,14 @@ namespace NE_Science
             {
                 if (_alarmLight == null)
                 {
-                    GameObject labIVA = part.internalModel?.gameObject.transform.GetChild(0).GetChild(0).gameObject;
-                    if (labIVA == null)
+                    var screen = part.internalModel?.FindModelTransform("AlarmLight");
+                    var light = screen?.GetComponent<Light>();
+                    if( light == null )
                     {
-                        NE_Helper.log("MEP_IVA_AlarmAnimation.initPartObjects - IVA not found");
-                        goto done;
+                        NE_Helper.logError("MEP_IVA_Alarm_Animation: Could not find AlarmLight");
                     }
-
-                    var lights = labIVA.GetComponentsInChildren<Light>();
-                    if (lights == null || lights.Length == 0)
-                    {
-                        NE_Helper.log("MEP_IVA_AlarmAnimation.initPartObjects - no lights found in IVA");
-                        goto done;
-                    }
-
-                    for (int idx = 0; idx < lights.Length; idx++)
-                    {
-                        var light = lights[idx];
-                        if (light.name == "AlarmLight")
-                        {
-                            NE_Helper.log("Found alarm light");
-                            _alarmLight = light;
-                            _lightMat = light.GetComponent<Renderer>().material;
-                            break;
-                        }
-                    }
+                    _alarmLight = light;
                 }
-            done:
                 return _alarmLight;
             }
         }
@@ -156,7 +137,7 @@ namespace NE_Science
             {
                 if (_lightMat == null)
                 {
-                    _lightMat = alarmLight.GetComponent<Renderer>().material;
+                    _lightMat = alarmLight?.GetComponent<Renderer>()?.material;
                 }
                 return _lightMat;
             }
@@ -183,10 +164,9 @@ namespace NE_Science
             }
         }
 
-        /*
         // MKW DEBUG
+        /*
         static bool isFirstTime = true;
-
         private void initPartObjects()
         {
 #if true

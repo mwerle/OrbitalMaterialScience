@@ -7,28 +7,26 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Decal
-  m_Shader: {fileID: 4800000, guid: f44399c56f8f1424fb444bbabcbc7f44, type: 3}
+  m_Shader: {fileID: 4800000, guid: b3b035681f285f740b32cf2bc12a8de6, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
+  disabledShaderPasses: []
   m_SavedProperties:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TexEnvs:
-    - first:
-        name: _MainTex
-      second:
+    - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - first:
-        name: _RimFalloff
-      second: 0.1
+    - _Cutoff: 0.5
+    - _RimFalloff: 0.1
     m_Colors:
-    - first:
-        name: _Color
-      second: {r: 1, g: 1, b: 1, a: 1}
-    - first:
-        name: _RimColor
-      second: {r: 0, g: 0, b: 0, a: 0}
+    - _BurnColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _RimColor: {r: 0, g: 0, b: 0, a: 0}
+    - _TemperatureColor: {r: 0, g: 0, b: 0, a: 0}

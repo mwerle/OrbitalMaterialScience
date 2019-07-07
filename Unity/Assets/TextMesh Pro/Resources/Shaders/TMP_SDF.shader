@@ -12,7 +12,7 @@ Properties {
 	_OutlineUVSpeedX	("Outline UV Speed X", Range(-5, 5)) = 0.0
 	_OutlineUVSpeedY	("Outline UV Speed Y", Range(-5, 5)) = 0.0
 	_OutlineWidth		("Outline Thickness", Range(0, 1)) = 0
-	_OutlineSoftness	("Outline Softness", Range(0,1)) = 0
+	_OutlineSoftness	("Outline Softness", Range(-1,1)) = 0
 
 	_Bevel				("Bevel", Range(0,1)) = 0.5
 	_BevelOffset		("Bevel Offset", Range(-0.5,0.5)) = 0
@@ -116,7 +116,8 @@ SubShader {
 		#pragma shader_feature __ BEVEL_ON
 		#pragma shader_feature __ UNDERLAY_ON UNDERLAY_INNER
 		#pragma shader_feature __ GLOW_ON
-		#pragma shader_feature __ MASK_OFF
+
+		#pragma multi_compile __ UNITY_UI_ALPHACLIP
 
 
 		#include "UnityCG.cginc"
@@ -159,7 +160,8 @@ SubShader {
 			float4 vert = input.position;
 			vert.x += _VertexOffsetX;
 			vert.y += _VertexOffsetY;
-			float4 vPosition = mul(UNITY_MATRIX_MVP, vert);
+
+			float4 vPosition = UnityObjectToClipPos(vert);
 
 			float2 pixelSize = vPosition.w;
 			pixelSize /= float2(_ScaleX, _ScaleY) * abs(mul((float2x2)UNITY_MATRIX_P, _ScreenParams.xy));
@@ -283,6 +285,10 @@ SubShader {
 		// Alternative implementation to UnityGet2DClipping with support for softness.
 		half2 m = saturate((_ClipRect.zw - _ClipRect.xy - abs(input.mask.xy)) * input.mask.zw);
 		faceColor *= m.x * m.y;
+
+		#if UNITY_UI_ALPHACLIP
+			clip(faceColor.a - 0.001);
+		#endif
 
   		return faceColor * input.color.a;
 		}

@@ -81,6 +81,15 @@ namespace NE_Science
         }
 
         /// <summary>
+        /// Called when the object is started.
+        /// </summary>
+        /// This should only be called once the object is fully initialized.
+        public void Start()
+        {
+            initPartObjects();
+        }
+
+        /// <summary>
         /// Called whenever the camera changes.
         /// </summary>
         /// WARNING: the first time this is called, the part may not be fully initialized yet
@@ -103,22 +112,25 @@ namespace NE_Science
         public override void OnFixedUpdate()
         {
             base.OnFixedUpdate();
-            if (count == 0)
+            if (count == 1)
             {
-                if (headBase == null || head == null)
+                try
                 {
-                    initPartObjects();
+                    MSL_Module lab = part.GetComponent<MSL_Module>();
+                    if (lab.isEquipmentRunning(EquipmentRacks.PRINTER) && isUserInIVA)
+                    {
+                        moveBase();
+                        moveHead();
+                        playSoundFX();
+                    }
+                    else
+                    {
+                        stopSoundFX();
+                    }
                 }
-                MSL_Module lab = part.GetComponent<MSL_Module>();
-                if (lab.isEquipmentRunning(EquipmentRacks.PRINTER) && isUserInIVA)
+                catch (Exception e)
                 {
-                    moveBase();
-                    moveHead();
-                    playSoundFX();
-                }
-                else
-                {
-                    stopSoundFX();
+                    NE_Helper.logError("MSL_PrinterAnimation.OnFixedUpdate: Caught exception " + e.ToString());
                 }
             }
             count = (count + 1) % 2;
@@ -189,6 +201,7 @@ namespace NE_Science
 
         private void initPartObjects()
         {
+        #if false
             if (part.internalModel == null)
             {
                 return;
@@ -200,9 +213,13 @@ namespace NE_Science
             }
 
             NE_Helper.log("set printer transforms");
-            GameObject printer = labIVA.transform.FindChild("3D_Printer").gameObject;
+            GameObject printer = labIVA.transform.Find("3D_Printer").gameObject;
             headBase = printer.transform.GetChild(1).GetChild(0);
             head = headBase.GetChild(0);
+        #endif
+            GameObject printer = part.internalModel?.FindModelTransform("3D_Printer")?.gameObject;
+            headBase = printer.transform.Find("Base2/Head_Base");
+            head = headBase.Find("Head");
 
             prAs = part.gameObject.AddComponent<AudioSource>();// using gameobjects from the internal model does not work AS would stay in the place it was added.
             AudioClip clip = GameDatabase.Instance.GetAudioClip(prMovingSound);

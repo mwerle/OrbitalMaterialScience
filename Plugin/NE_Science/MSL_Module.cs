@@ -98,31 +98,112 @@ namespace NE_Science
             return gen;
         }
 
+        static bool isFirstTime = true;
         private void initERacksActive()
         {
-            if (part.internalModel != null)
+            int notFound = 0;
+            if (!isFirstTime) return;
+
+            printer = part.internalModel?.FindModelTransform("3D_Printer").gameObject;
+            if(printer == null)
             {
-                GameObject labIVA = part.internalModel.gameObject.transform.GetChild(0).GetChild(0).gameObject;
-                if (labIVA.GetComponent<MeshFilter>().name == "MSL_IVA")
+                NE_Helper.logError("MSL: Could not find 3D_Printer gameObject");
+                notFound++;
+            }
+
+            cir = part.internalModel?.FindModelTransform("CIR")?.gameObject;
+            if (cir == null)
+            {
+                NE_Helper.logError("MSL: Could not find CIR gameObject");
+                notFound++;
+            }
+
+            fir = part.internalModel?.FindModelTransform("FIR")?.gameObject;
+            if (cir == null)
+            {
+                NE_Helper.logError("MSL: Could not find FIR gameObject");
+                notFound++;
+            }
+
+            cir?.SetActive(cirSlot.isEquipmentInstalled());
+            fir?.SetActive(firSlot.isEquipmentInstalled());
+            printer?.SetActive(printerSlot.isEquipmentInstalled());
+
+            NE_Helper.log("MSL: init E Racks " + ((notFound==0)?"successfull":"FAILED"));
+
+            isFirstTime = false;
+            #region Debugging
+            #if false
+            if (part == null)
+            {
+                NE_Helper.log("MSL: init E Racks - part is null!");
+                return;
+            }
+
+            Part foo = part.FindChildPart("MSL_IVA(Clone)", true);
+            if (foo != null)
+            {
+                NE_Helper.log("MSL: init E Racks - found MSL_IVA!");
+                NE_Helper.log("MSL: init E Racks - MeshFilter: " + foo.gameObject?.GetComponent<MeshFilter>()?.name);
+            }
+            else
+            {
+                NE_Helper.log("MSL: init E Racks - MPL_IVA not found!");
+            }
+
+            if (part.internalModel == null)
+            {
+                NE_Helper.log("MSL: init E Racks internal model null");
+            }
+            //GameObject labIVA = part.internalModel.gameObject.transform.GetChild(0).GetChild(0).gameObject;
+            GameObject labIVA = part.FindChildPart("MSL_IVA(Clone)", true)?.gameObject;
+
+            if (isFirstTime && NE_Helper.debugging())
+            {
+                part.internalModel?.gameObject.PrintComponents(5);
+            }
+
+            if (labIVA == null)
+            {
+                NE_Helper.log("MSL: init E Racks - labIVA object not found");
+                return;
+            }
+            if (labIVA?.GetComponent<MeshFilter>() == null)
+            {
+                NE_Helper.log("MSL: init E Racks - MeshFilter not found");
+                if (isFirstTime)
                 {
-                    printer = labIVA.transform.FindChild("3D_Printer").gameObject;
-                    cir = labIVA.transform.FindChild("CIR").gameObject;
-                    fir = labIVA.transform.FindChild("FIR").gameObject;
-
-                    fir.SetActive(firSlot.isEquipmentInstalled());
-                    cir.SetActive(cirSlot.isEquipmentInstalled());
-                    printer.SetActive(printerSlot.isEquipmentInstalled());
-
-                    NE_Helper.log("init E Racks successfull");
+                    labIVA.PrintComponents(2);
+                    isFirstTime = false;
                 }
-                else
+                if (labIVA.transform.GetComponent<MeshFilter>() != null)
                 {
-                    NE_Helper.logError("MSL_IVA mesh not found");
+                    NE_Helper.log("MSL: init E Racks - but labIVA.transform has MeshFilter: {0}", labIVA.transform.GetComponent<MeshFilter>().name);
+                }
+                if (labIVA.transform.GetChild(0).GetComponent<MeshFilter>() != null)
+                {
+                    NE_Helper.log("MSL: init E Racks - but labIVA.GetChild(0) has MeshFilter: {0}", labIVA.transform.GetChild(0).GetComponent<MeshFilter>().name);
                 }
             }
-            else {
-                NE_Helper.log("init E Racks internal model null");
+            else
+            {
+                NE_Helper.log("MPL: init E Racks - MeshFilter '" + labIVA.GetComponent<MeshFilter>().name + "'found");
             }
+
+            if (labIVA?.GetComponent<MeshFilter>()?.name != "MSL_IVA")
+            {
+                NE_Helper.logError("MSL: MSL_IVA mesh not found");
+                return;
+            }
+            printer = labIVA.transform.Find("3D_Printer").gameObject;
+            cir = labIVA.transform.Find("CIR").gameObject;
+            fir = labIVA.transform.Find("FIR").gameObject;
+
+            fir.SetActive(firSlot.isEquipmentInstalled());
+            cir.SetActive(cirSlot.isEquipmentInstalled());
+            printer.SetActive(printerSlot.isEquipmentInstalled());
+            #endif
+            #endregion
         }
 
         public override void installExperiment(ExperimentData exp)
@@ -138,7 +219,7 @@ namespace NE_Science
                     }
                     else
                     {
-                        NE_Helper.logError("installExperiment, installed: " + cirSlot.isEquipmentInstalled() + "; free: " + cirSlot.experimentSlotFree());
+                        NE_Helper.logError("MSL: installExperiment, installed: " + cirSlot.isEquipmentInstalled() + "; free: " + cirSlot.experimentSlotFree());
                     }
                     break;
                 case EquipmentRacks.FIR:
@@ -150,7 +231,7 @@ namespace NE_Science
                     }
                     else
                     {
-                        NE_Helper.logError("installExperiment, installed: " + firSlot.isEquipmentInstalled() + "; free: " + firSlot.experimentSlotFree());
+                        NE_Helper.logError("MSL: installExperiment, installed: " + firSlot.isEquipmentInstalled() + "; free: " + firSlot.experimentSlotFree());
                     }
                     break;
                 case EquipmentRacks.PRINTER:
@@ -162,7 +243,7 @@ namespace NE_Science
                     }
                     else
                     {
-                        NE_Helper.logError("installExperiment, installed: " + printerSlot.isEquipmentInstalled() + "; free: " + printerSlot.experimentSlotFree());
+                        NE_Helper.logError("MSL: installExperiment, installed: " + printerSlot.isEquipmentInstalled() + "; free: " + printerSlot.experimentSlotFree());
                     }
                     break;
             }

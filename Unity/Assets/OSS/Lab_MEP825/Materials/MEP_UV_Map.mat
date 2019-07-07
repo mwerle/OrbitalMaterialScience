@@ -7,43 +7,32 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: MEP_UV_Map
-  m_Shader: {fileID: 4800000, guid: 006a02235764773478998a79f8e09f85, type: 3}
+  m_Shader: {fileID: 4800000, guid: ac859b44038643d40b88f24aceac191c, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
+  disabledShaderPasses: []
   m_SavedProperties:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TexEnvs:
-    - first:
-        name: _BumpMap
-      second:
+    - _BumpMap:
         m_Texture: {fileID: 2800000, guid: af2bfca86fe4ef246accd37ec14c0e97, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - first:
-        name: _MainTex
-      second:
+    - _MainTex:
         m_Texture: {fileID: 2800000, guid: e5089f30b7748d34685809a7b80207d7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - first:
-        name: _Opacity
-      second: 1
-    - first:
-        name: _RimFalloff
-      second: 0.1
-    - first:
-        name: _Shininess
-      second: 0.078125
+    - _Opacity: 1
+    - _RimFalloff: 0.1
+    - _Shininess: 0.078125
     m_Colors:
-    - first:
-        name: _Color
-      second: {r: 0.8, g: 0.8, b: 0.8, a: 1}
-    - first:
-        name: _RimColor
-      second: {r: 0, g: 0, b: 0, a: 0}
-    - first:
-        name: _SpecColor
-      second: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _BurnColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+    - _RimColor: {r: 0, g: 0, b: 0, a: 0}
+    - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _TemperatureColor: {r: 0, g: 0, b: 0, a: 0}

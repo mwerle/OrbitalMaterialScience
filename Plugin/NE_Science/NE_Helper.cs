@@ -287,7 +287,8 @@ namespace NE_Science
             }
         }
 
-        public static void logError(string errMsg){
+        public static void logError(string errMsg)
+        {
             Debug.LogError("[NE] Error: " + errMsg);
         }
 
@@ -550,8 +551,6 @@ namespace NE_Science
         public static bool IsTrueNull(this UnityEngine.Object ob)
         {
             return (object)ob == null;
-        }
-            }
         }
     } // END class GOExtensions
 

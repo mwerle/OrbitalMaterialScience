@@ -53,6 +53,7 @@ Shader "TextMeshPro/Sprite"
 			#include "UnityCG.cginc"
 			#include "UnityUI.cginc"
 
+
 			#pragma multi_compile __ UNITY_UI_ALPHACLIP
 			
 			struct appdata_t
@@ -78,7 +79,7 @@ Shader "TextMeshPro/Sprite"
 			{
 				v2f OUT;
 				OUT.worldPosition = IN.vertex;
-				OUT.vertex = mul(UNITY_MATRIX_MVP, OUT.worldPosition);
+				OUT.vertex = UnityObjectToClipPos(OUT.worldPosition);
 
 				OUT.texcoord = IN.texcoord;
 				

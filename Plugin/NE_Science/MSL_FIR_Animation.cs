@@ -63,6 +63,15 @@ namespace NE_Science
         }
 
         /// <summary>
+        /// Called when the object is started.
+        /// </summary>
+        /// This should only be called once the object is fully initialized.
+        public void Start()
+        {
+            initPartObjects();
+        }
+
+        /// <summary>
         /// Called whenever the camera changes.
         /// </summary>
         /// WARNING: the first time this is called, the part may not be fully initialized yet
@@ -87,21 +96,11 @@ namespace NE_Science
             base.OnFixedUpdate();
             if (count == 0)
             {
-                if (pump1 == null || pump2 == null)
-                {
-                    initPartObjects();
-                }
                 MSL_Module lab = part.GetComponent<MSL_Module>();
                 if (lab.isEquipmentRunning(EquipmentRacks.FIR) && isUserInIVA)
                 {
-                    if (pump1 != null)
-                    {
-                        pump1.Rotate(PUMP1_SPEED, 0, 0);
-                    }
-                    if (pump2 != null)
-                    {
-                        pump2.Rotate(PUMP2_SPEED, 0, 0);
-                    }
+                    pump1?.Rotate(PUMP1_SPEED, 0, 0);
+                    pump2?.Rotate(PUMP2_SPEED, 0, 0);
                     playSoundFX();
                 }
                 else
@@ -138,22 +137,41 @@ namespace NE_Science
             }
         }
 
+        //static bool isFirstTime = true;
         private void initPartObjects()
         {
+        #if false
             if (part.internalModel == null)
             {
                 return;
             }
 
+
             GameObject labIVA = part.internalModel.gameObject.transform.GetChild(0).GetChild(0).gameObject;
-            if (labIVA.GetComponent<MeshFilter>().name != "MSL_IVA")
+            if( isFirstTime && labIVA is null )
             {
+                labIVA = part.FindChildPart("MSL_IVA(Clone)", true)?.gameObject;
+                NE_Helper.log("MSL_FIR: Found MSL_IVA using FindChildPart() - " + labIVA is null?"No" : "Yes");
+            }
+            if (labIVA?.GetComponent<MeshFilter>()?.name != "MSL_IVA")
+            {
+                if (isFirstTime && NE_Helper.debugging())
+                {
+                    part.internalModel?.gameObject.PrintComponents(5);
+                    isFirstTime = false;
+                }
                 return;
             }
-                
-            GameObject fir = labIVA.transform.FindChild("FIR").gameObject;
-            pump1 = fir.transform.FindChild("Pump_1");
-            pump2 = fir.transform.FindChild("Pump_2");
+        #endif
+
+            GameObject fir = part.internalModel?.FindModelTransform("FIR")?.gameObject;
+            pump1 = fir?.transform.Find("Pump_1");
+            pump2 = fir?.transform.Find("Pump_2");
+
+            if(pump1 == null || pump2 == null)
+            {
+                NE_Helper.logError("MSL_FIR_Animation.initPartObjects(): Could not find pump transforms.");
+            }
 
             pumpAs = part.gameObject.AddComponent<AudioSource>(); // using gameobjects from the internal model does not work AS would stay in the place it was added.
             AudioClip clip = GameDatabase.Instance.GetAudioClip(pumpSound);
