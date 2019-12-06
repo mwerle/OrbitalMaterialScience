@@ -32,7 +32,12 @@ namespace NE_Science
         Part getPart();
     }
 
-    public class ExperimentStorage : ModuleScienceExperiment, ExperimentDataStorage, IPartCostModifier, IPartMassModifier, IScienceResultHelperClient
+    public class ExperimentStorage : ModuleScienceExperiment,
+        ExperimentDataStorage,
+        IPartCostModifier,
+        IPartMassModifier,
+        IScienceResultHelperClient,
+        IMoveDestination
     {
 
         [KSPField(isPersistant = false)]
@@ -299,6 +304,9 @@ namespace NE_Science
         {
         }
 
+        /// <summary>
+        /// This displays a window allowing the user to choose which lab to install an experiment into.
+        /// </summary>
         private void showLabWindow()
         {
             // This is a list of content items to add to the dialog

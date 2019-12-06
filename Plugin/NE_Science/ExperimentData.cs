@@ -29,7 +29,7 @@ namespace NE_Science
         STORED, INSTALLED, RUNNING, FINISHED, FINALIZED, COMPLETED
     }
 
-    public class ExperimentData
+    public class ExperimentData : IMoveable
     {
         public const string CONFIG_NODE_NAME = "NE_ExperimentData";
         public const string TYPE_VALUE = "Type";
@@ -114,6 +114,17 @@ namespace NE_Science
             desc += linePrefix + Localizer.Format("#ne_Needs_Time_1", KSPUtil.PrintDateDelta(getTimeRequired(), true));
             return desc;
         }
+
+        #region IMoveable
+        public string getDisplayName()
+        {
+            return abb;
+        }
+        public Part getPart()
+        {
+            return store.getPart();
+        }
+        #endregion
 
         private string getReqString()
         {
@@ -293,7 +304,7 @@ namespace NE_Science
 
         public virtual bool canMove(Vessel vessel)
         {
-            return id != "" && (state == ExperimentState.STORED || state == ExperimentState.INSTALLED || state == ExperimentState.FINISHED ) && getFreeExperimentContainers(vessel).Count > 0;
+            return id != "" && (state != ExperimentState.RUNNING) && getFreeExperimentContainers(vessel).Count > 0;
         }
 
         public List<ExperimentStorage> getFreeExperimentContainers(Vessel vessel)
@@ -368,15 +379,73 @@ namespace NE_Science
             state = ExperimentState.FINALIZED;
         }
 
+        /// <summary>
+        /// Called back from ChososeMoveTarget.showDialog()
+        /// </summary>
+        /// <param name="p"></param>
+        internal void OnDestionationSelected(Part destination)
+        {
+            #if false
+            moveTo(es);
+            #else
+
+            #if false
+            // Works, but Kemini Experiments start as soon as they are
+            // installed. The user may have just wanted to move the
+            // experiment, so really we should ask.
+
+            // Try to install the experiment if the destination has a free Lab
+            if(state == ExperimentState.STORED)
+            {
+                Kemini_Module[] labs = destination.GetComponents<Kemini_Module>();
+                foreach(Kemini_Module lab in labs)
+                {
+                    if(lab.hasEquipmentFreeExperimentSlot(neededEquipment))
+                    {
+                        // Move the experiment from the store to the lab
+                        store.removeExperimentData();
+                        lab.installExperiment(this);
+                        return;
+                    }
+                }
+            }
+            #endif
+
+            // Try to move the experiment if the destination has free Storage
+            ExperimentStorage[] ess = destination.GetComponents<ExperimentStorage>();
+            foreach (ExperimentStorage es in ess)
+            {
+                if(es.isEmpty() && es.type == storageType)
+                {
+                    moveTo(es);
+                }
+            }
+            #endif
+        }
+
+#if false
         internal void move(Vessel vessel)
         {
             List<ExperimentStorage> targets = getFreeExperimentContainers(vessel);
             if ((state == ExperimentState.STORED || state == ExperimentState.INSTALLED || state == ExperimentState.FINISHED) && targets.Count > 0)
             {
                 ChooseMoveTarget t = getMoveGuiComponent();
-                t.showDialog(targets, this);
+                t.showDialog(targets, OnDestionationSelected);
             }
         }
+#else
+        internal void move(Vessel vessel)
+        {
+            Debug.Assert(vessel == store.getPart().vessel);
+
+            List<Part> targets = freeContainerParts;
+            if ((state != ExperimentState.RUNNING) && targets.Count > 0)
+            {
+                ChooseMoveTarget t = getMoveGuiComponent();
+                t.showDialog(targets, this, OnDestionationSelected);
+            }
+        }
+#endif
 
         private ChooseMoveTarget getMoveGuiComponent()
         {
