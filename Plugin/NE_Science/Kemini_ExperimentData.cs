@@ -20,15 +20,87 @@ using System.Text;
 
 namespace NE_Science
 {
+    /// <summary>
+    /// A cache for all the Kemini Labs in all the Vessels.
+    /// </summary>
+    public static class KeminiLabCache
+    {
+        private class CacheEntry
+        {
+            private Vessel vessel = null;
+            private int partCount = 0;
+            private Kemini_Module[] labCache = null;
+
+            public Kemini_Module[] LabCache {
+                get {
+                    UpdateCache();
+                    return labCache;
+                }
+            }
+
+            public CacheEntry(Vessel v)
+            {
+                vessel = v;
+                UpdateCache();
+            }
+
+            private void UpdateCache()
+            {
+                if( vessel.Parts.Count != partCount )
+                {
+                    partCount = vessel.Parts.Count;
+                    labCache = vessel.GetComponents<Kemini_Module>();
+                    NE_Helper.log("Lab Cache refresh for vessel " + vessel.id);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Contains the caches for all the vessels.
+        /// </summary>
+        private static Dictionary<Guid,CacheEntry> vesselCache = new Dictionary<Guid,CacheEntry>();
+
+        /// <summary>
+        /// Gets all the Kemini Labs in the Vessel.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public static Kemini_Module[] GetLabs(Vessel v)
+        {
+            CacheEntry ce = getCache(v);
+
+            return ce.LabCache;
+        }
+
+        public static void Clear()
+        {
+            vesselCache.Clear();
+        }
+
+        /// <summary>
+        /// Creates or updates the cache for the given vessel.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        private static CacheEntry getCache(Vessel v)
+        {
+            CacheEntry ce = null;
+
+            if( !vesselCache.TryGetValue(v.id, out ce) )
+            {
+                ce = new CacheEntry(v);
+                vesselCache.Add(v.id, ce);
+            }
+
+            return ce;
+        }
+    }
+
     /*
     * Experiments for the Kemini Research Program
     */
     public class KeminiExperimentData : StepExperimentData
     {
-        private Guid cachedVesselID;
-        private int partCount;
-        private Kemini_Module[] KeminiLabCache = null;
-
         public KeminiExperimentData(string id, string type, string name, string abb, float mass, float cost, float labTime)
             : base(id, type, name, abb, EquipmentRacks.KEMINI, mass, cost)
         {
@@ -39,17 +111,23 @@ namespace NE_Science
         public override List<Lab> getFreeLabs(Vessel vessel)
         {
             List<Lab> ret = new List<Lab>();
-            if (KeminiLabCache == null || cachedVesselID != vessel.id || partCount != vessel.parts.Count)
+            foreach(Kemini_Module lab in KeminiLabCache.GetLabs(vessel))
             { 
-                KeminiLabCache = UnityFindObjectsOfType(typeof(Kemini_Module)) as Kemini_Module[];
-                cachedVesselID = vessel.id;
-                partCount = vessel.parts.Count;
-                NE_Helper.log("Lab Cache refresh");
+                if (lab.hasEquipmentFreeExperimentSlot(neededEquipment))
+                {
+                    ret.Add(lab);
+                }
+            }
+            return ret;
         }
-            for (int idx = 0, count = KeminiLabCache.Length; idx < count; idx++)
+
+        public override List<Lab> getFreeLabs(Part p)
+        {
+            List<Lab> ret = new List<Lab>();
+
+            foreach(Kemini_Module lab in p.GetComponents<Kemini_Module>())
             {
-                var lab = KeminiLabCache[idx];
-                if (lab.vessel == vessel && lab.hasEquipmentInstalled(neededEquipment) && lab.hasEquipmentFreeExperimentSlot(neededEquipment))
+                if(lab.hasEquipmentFreeExperimentSlot(neededEquipment))
                 {
                     ret.Add(lab);
                 }
