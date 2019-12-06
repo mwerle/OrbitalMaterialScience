@@ -318,9 +318,15 @@ namespace NE_Science
             return freeCont;
         }
 
-        public virtual List<Lab> getFreeLabsWithEquipment(Vessel vessel)
+        /// <summary>
+        /// Returns a list of labs in the current Vessel which free and compatbile with the ExperimentData.
+        /// </summary>
+        /// <param name="vessel"></param>
+        /// <returns></returns>
+        public virtual List<Lab> getFreeLabs(Vessel vessel)
         {
-            return new List<Lab>();
+        {
+            return null;
         }
 
         protected UnityEngine.Object[] UnityFindObjectsOfType(Type type)

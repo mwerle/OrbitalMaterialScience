@@ -36,16 +36,16 @@ namespace NE_Science
             step = new ResourceExperimentStep(this, Resources.LAB_TIME, labTime, "", 0);
         }
 
-        public override List<Lab> getFreeLabsWithEquipment(Vessel vessel)
+        public override List<Lab> getFreeLabs(Vessel vessel)
         {
             List<Lab> ret = new List<Lab>();
             if (KeminiLabCache == null || cachedVesselID != vessel.id || partCount != vessel.parts.Count)
-            {
+            { 
                 KeminiLabCache = UnityFindObjectsOfType(typeof(Kemini_Module)) as Kemini_Module[];
                 cachedVesselID = vessel.id;
                 partCount = vessel.parts.Count;
                 NE_Helper.log("Lab Cache refresh");
-            }
+        }
             for (int idx = 0, count = KeminiLabCache.Length; idx < count; idx++)
             {
                 var lab = KeminiLabCache[idx];
@@ -59,8 +59,8 @@ namespace NE_Science
 
         public override bool canInstall(Vessel vessel)
         {
-            List<Lab> labs = getFreeLabsWithEquipment(vessel);
-            return labs.Count > 0 && state == ExperimentState.STORED;
+            List<Lab> labs = getFreeLabs(vessel);
+            return labs?.Count > 0 && state == ExperimentState.STORED;
         }
 
         public override bool canMove(Vessel vessel)

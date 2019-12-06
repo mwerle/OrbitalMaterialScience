@@ -21,7 +21,7 @@ namespace NE_Science
             steps[index]= new MEPResourceExperimentStep(this, resourceName, resourceAmount, stepName, index);
         }
 
-        public override List<Lab> getFreeLabsWithEquipment(Vessel vessel)
+        public override List<Lab> getFreeLabs(Vessel vessel)
         {
             List<Lab> ret = new List<Lab>();
             if (physicsLabCache == null || cachedVesselID != vessel.id || partCount != vessel.parts.Count)
@@ -44,8 +44,8 @@ namespace NE_Science
 
         public override bool canInstall(Vessel vessel)
         {
-            List<Lab> labs = getFreeLabsWithEquipment(vessel);
-            return labs.Count > 0 && state == ExperimentState.STORED;
+            List<Lab> labs = getFreeLabs(vessel);
+            return labs?.Count > 0 && state == ExperimentState.STORED;
         }
 
         /** Returns the total amount of time required to run this experiment. */

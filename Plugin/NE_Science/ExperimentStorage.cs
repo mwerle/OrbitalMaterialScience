@@ -252,8 +252,8 @@ namespace NE_Science
             // TODO: Refactor and use the "move" logic
             // Idea is that if the target is another storage container, the experiment is moved,
             // and if it is a lab with suitable equipment, then it is installed
-            availableLabs = expData.getFreeLabsWithEquipment(part.vessel);
-            if (availableLabs.Count > 0)
+            availableLabs = expData.getFreeLabs(part.vessel);
+            if (availableLabs?.Count > 0)
             {
                 if (availableLabs.Count == 1)
                 {

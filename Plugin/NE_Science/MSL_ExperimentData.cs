@@ -17,7 +17,7 @@ namespace NE_Science
             : base(id, type, name, abb, eq, mass, cost)
         { }
 
-        public override List<Lab> getFreeLabsWithEquipment(Vessel vessel)
+        public override List<Lab> getFreeLabs(Vessel vessel)
         {
             List<Lab> ret = new List<Lab>();
             MSL_Module[] allPhysicsLabs = null;
@@ -46,8 +46,8 @@ namespace NE_Science
 
         public override bool canInstall(Vessel vessel)
         {
-            List<Lab> labs = getFreeLabsWithEquipment(vessel);
-            return labs.Count > 0 && state == ExperimentState.STORED;
+            List<Lab> labs = getFreeLabs(vessel);
+            return labs?.Count > 0 && state == ExperimentState.STORED;
         }
     }
 
