@@ -63,10 +63,12 @@ namespace NE_Science
             return labs.Count > 0 && state == ExperimentState.STORED;
         }
 
+        #if false
         public override bool canMove(Vessel vessel)
         {
             return state == ExperimentState.INSTALLED;
         }
+        #endif
 
         public override void runLabAction()
         {

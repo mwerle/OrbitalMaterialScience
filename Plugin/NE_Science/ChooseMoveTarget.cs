@@ -22,15 +22,20 @@ using KSP.Localization;
 
 namespace NE_Science
 {
+    interface IMoveable
+    {
+        string getDisplayName();
+        Part getPart();
+    }
+
     class ChooseMoveTarget : MonoBehaviour
     {
-        private List<ExperimentStorage> targets = null;
-        private ExperimentData exp = null;
         private ScreenMessage smInfo = null;
         private ScreenMessage smError = null;
         private Part currentPart = null;
         private Part sourcePart = null;
         private List<Part> destinationParts = new List<Part>();
+        Action<Part> onDestinationSelected = null;
 
         private static Color dullOrange = new Color (0.8f, 0.4f, 0.2f);
         private static Color orange = new Color (1.0f, 0.9f, 0.4f);
@@ -42,6 +47,43 @@ namespace NE_Science
             this.enabled = false;
         }
 
+        internal void showDialog(List<Part> f_lTargets, Part f_pSource, Action<Part> f_aOnPartSelectedCallback)
+        {
+            onDestinationSelected = f_aOnPartSelectedCallback;
+            destinationParts= f_lTargets;
+            if (destinationParts == null || destinationParts.Count == 0)
+            {
+                this.enabled = false;
+                return;
+            }
+
+            // Highlight source part
+            sourcePart = f_pSource;
+            sourcePart.SetHighlightColor(dullOrange);
+            sourcePart.SetHighlightType(Part.HighlightType.AlwaysOn);
+            sourcePart.SetHighlight(true, false);
+
+            // Highlight destination parts
+            // NB: foreach for a list no longer creates garbage
+            foreach (Part p in destinationParts)
+            {
+                if (p == sourcePart)
+                {
+                    continue;
+                }
+                p.SetHighlightColor(dullCyan);
+                p.SetHighlightType(Part.HighlightType.AlwaysOn);
+                p.SetHighlight(true, false);
+            }
+
+            smInfo = ScreenMessages.PostScreenMessage(Localizer.Format("#ne_Select_a_part_to_transfer_1_to_ESC_to_cancel", "the Experiment"),
+                15, ScreenMessageStyle.UPPER_CENTER);
+            smInfo.color = Color.cyan;
+            this.enabled = true;
+            NE_Helper.LockUI();
+        }
+
+        #if false
         internal void showDialog(List<ExperimentStorage> targets, ExperimentData experimentData)
         {
             NE_Helper.log("start");
@@ -79,6 +121,7 @@ namespace NE_Science
             this.enabled = true;
             NE_Helper.LockUI();
         }
+        #endif
 
         void Update()
         {
@@ -114,8 +157,12 @@ namespace NE_Science
                 ScreenMessages.RemoveMessage(smError);
                 smError = null;
             }
-            destinationParts.Clear();
+            currentPart = null;
+            sourcePart = null;
+            destinationParts = null;
+            onDestinationSelected = null;
             // Delay unlocking UI to end of frame to prevent KSP from handling ESC key
+            // TODO: Ideally we want to Destroy this component.. but we can't do that now.
             NE_Helper.RunOnEndOfFrame(this, NE_Helper.UnlockUI);
         }
 
@@ -163,12 +210,8 @@ namespace NE_Science
         {
             if(destinationParts.Contains(p))
             {
-                ExperimentStorage es = getTargetForPart(p);
-                if (es != null)
-                {
-                    exp.moveTo(es);
-                    closeGui();
-                }
+                onDestinationSelected(p);
+                closeGui();
             }
             else if (p == sourcePart)
             {
@@ -190,6 +233,7 @@ namespace NE_Science
             smError.color = orange;
         }
 
+        #if false
         private ExperimentStorage getTargetForPart(Part p)
         {
             for(int i = 0, count = targets.Count; i < count; i++)
@@ -199,6 +243,7 @@ namespace NE_Science
             }
             return null;
         }
+        #endif
 
         private void resetHighlight()
         {

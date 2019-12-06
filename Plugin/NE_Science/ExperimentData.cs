@@ -293,7 +293,7 @@ namespace NE_Science
 
         public virtual bool canMove(Vessel vessel)
         {
-            return id != "" && (state == ExperimentState.STORED || state == ExperimentState.INSTALLED || state == ExperimentState.FINISHED ) && getFreeExperimentContainers(vessel).Count > 0;
+            return id != "" && (state != ExperimentState.RUNNING) && getFreeExperimentContainers(vessel).Count > 0;
         }
 
         public List<ExperimentStorage> getFreeExperimentContainers(Vessel vessel)
@@ -316,6 +316,48 @@ namespace NE_Science
                 }
             }
             return freeCont;
+        }
+
+        private List<Part> _freeContainerParts = null;
+        /// <summary>
+        /// A list of Parts which have free ExperimentStorage.
+        /// </summary>
+        public List<Part> freeContainerParts
+        {
+            get
+            {
+                Vessel vessel = store.getPart().vessel;
+                if (contCache == null || cachedVesselID != vessel.id && partCount != vessel.parts.Count)
+                {
+                    contCache = UnityFindObjectsOfType(typeof(ExperimentStorage)) as ExperimentStorage[];
+                    cachedVesselID = vessel.id;
+                    partCount = vessel.parts.Count;
+                    NE_Helper.log("Storage Cache refresh");
+
+                    _freeContainerParts.Clear();
+                    for (int idx = 0, count = contCache.Length; idx < count; idx++)
+                    {
+                        ExperimentStorage es = contCache[idx];
+                        if (es.vessel == vessel && es.isEmpty() && es.type == storageType)
+                        {
+                            _freeContainerParts.Add(es.part);
+                        }
+                    }
+                }
+                if (_freeContainerParts == null)
+                {
+                    _freeContainerParts = new List<Part>();
+                    for (int idx = 0, count = contCache.Length; idx < count; idx++)
+                    {
+                        ExperimentStorage es = contCache[idx];
+                        if (es.vessel == vessel && es.isEmpty() && es.type == storageType)
+                        {
+                            _freeContainerParts.Add(es.part);
+                        }
+                    }
+                }
+                return _freeContainerParts;
+            }
         }
 
         public virtual List<Lab> getFreeLabsWithEquipment(Vessel vessel)
@@ -362,15 +404,45 @@ namespace NE_Science
             state = ExperimentState.FINALIZED;
         }
 
+        /// <summary>
+        /// Called back from ChososeMoveTarget.showDialog()
+        /// </summary>
+        /// <param name="p"></param>
+        internal void OnDestionationSelected(Part destination)
+        {
+            ExperimentStorage[] ess = destination.GetComponents<ExperimentStorage>();
+            foreach(ExperimentStorage es in ess)
+            {
+                if(es.isEmpty() && es.type == storageType)
+                {
+                    moveTo(es);
+                }
+            }
+        }
+
+#if false
         internal void move(Vessel vessel)
         {
             List<ExperimentStorage> targets = getFreeExperimentContainers(vessel);
             if ((state == ExperimentState.STORED || state == ExperimentState.INSTALLED || state == ExperimentState.FINISHED) && targets.Count > 0)
             {
                 ChooseMoveTarget t = getMoveGuiComponent();
-                t.showDialog(targets, this);
+                t.showDialog(targets, OnDestionationSelected);
             }
         }
+#else
+        internal void move(Vessel vessel)
+        {
+            Debug.Assert(vessel == store.getPart().vessel);
+
+            List<Part> targets = freeContainerParts;
+            if ((state == ExperimentState.STORED || state == ExperimentState.INSTALLED || state == ExperimentState.FINISHED) && targets.Count > 0)
+            {
+                ChooseMoveTarget t = getMoveGuiComponent();
+                t.showDialog(targets, store.getPart(), OnDestionationSelected);
+            }
+        }
+#endif
 
         private ChooseMoveTarget getMoveGuiComponent()
         {
