@@ -329,6 +329,49 @@ namespace NE_Science
             return freeCont;
         }
 
+        private List<Part> _freeContainerParts = null;
+        /// <summary>
+        /// A list of Parts which have free ExperimentStorage.
+        /// </summary>
+        public List<Part> freeContainerParts
+        public virtual List<Lab> getFreeLabs(Vessel vessel)
+        {
+            get
+            {
+                Vessel vessel = store.getPart().vessel;
+                if (contCache == null || cachedVesselID != vessel.id && partCount != vessel.parts.Count)
+                {
+                    contCache = UnityFindObjectsOfType(typeof(ExperimentStorage)) as ExperimentStorage[];
+                    cachedVesselID = vessel.id;
+                    partCount = vessel.parts.Count;
+                    NE_Helper.log("Storage Cache refresh");
+
+                    _freeContainerParts.Clear();
+                    for (int idx = 0, count = contCache.Length; idx < count; idx++)
+                    {
+                        ExperimentStorage es = contCache[idx];
+                        if (es.vessel == vessel && es.isEmpty() && es.type == storageType)
+                        {
+                            _freeContainerParts.AddUnique<Part>(es.part);
+                        }
+                    }
+                }
+                if (_freeContainerParts == null)
+                {
+                    _freeContainerParts = new List<Part>();
+                    for (int idx = 0, count = contCache.Length; idx < count; idx++)
+                    {
+                        ExperimentStorage es = contCache[idx];
+                        if (es.vessel == vessel && es.isEmpty() && es.type == storageType)
+                        {
+                            _freeContainerParts.Add(es.part);
+                        }
+                    }
+                }
+                return _freeContainerParts;
+            }
+        }
+
         /// <summary>
         /// Returns a list of labs in the current Vessel which free and compatbile with the ExperimentData.
         /// </summary>
