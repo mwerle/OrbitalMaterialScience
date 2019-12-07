@@ -80,7 +80,7 @@ namespace NE_Science
         }
         #endregion
 
-        internal void showDialog(List<Part> f_lTargets, IMoveable f_pSource, Action<Part> f_aOnPartSelectedCallback)
+        internal void showDialog(List<Part> f_lTargets, IMoveable f_pSource, Action<Part> f_aOnPartSelectedCallback, string screenMessage = null)
         {
             onDestinationSelected = f_aOnPartSelectedCallback;
             destinationParts = f_lTargets;
@@ -109,8 +109,12 @@ namespace NE_Science
                 p.SetHighlight(true, false);
             }
 
-            smInfo = ScreenMessages.PostScreenMessage(Localizer.Format("#ne_Select_a_part_to_transfer_1_to_ESC_to_cancel", f_pSource.getDisplayName()),
-                15, ScreenMessageStyle.UPPER_CENTER);
+            if (screenMessage == null)
+            {
+                screenMessage = Localizer.Format("#ne_Select_a_part_to_transfer_1_to_ESC_to_cancel", f_pSource.getDisplayName());
+            }
+
+            smInfo = ScreenMessages.PostScreenMessage(screenMessage, 15, ScreenMessageStyle.UPPER_CENTER);
             smInfo.color = Color.cyan;
             this.enabled = true;
             NE_Helper.LockUI();
