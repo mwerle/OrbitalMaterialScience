@@ -109,16 +109,28 @@ namespace NE_Science
         {
             return abb;
         }
+        /// <summary>
+        /// The abbreviation for this Equipment.
+        /// </summary>
+        public string Abbreviation { get { return abb; } }
 
         public string getName()
         {
             return name;
         }
+        /// <summary>
+        /// The name for this Equipment.
+        /// </summary>
+        public string Name { get { return name; } }
 
         public LabEquipmentType getType()
         {
             return type;
         }
+        /// <summary>
+        /// The EquipmentType of this Equipment.
+        /// </summary>
+        public LabEquipmentType Type { get { return type; } }
 
         /** How many units of Product the lab generates per hour. */
         public float ProductPerHour

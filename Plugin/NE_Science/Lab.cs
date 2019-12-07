@@ -94,6 +94,76 @@ namespace NE_Science
 
         }
 
+        #region Equipment Management
+        /// <summary>
+        /// Returns true if the Lab has at least one of the specified equipment installed.
+        /// </summary>
+        /// NB: Current labs only have a single slot of a type, but in future labs may have generic
+        ///     slots.
+        /// <param name="equipmentType"></param>
+        /// <returns></returns>
+        public virtual bool hasEquipmentInstalled(LabEquipmentType equipmentType)
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if the Lab contains at least one Equipment slot of the requested type.
+        /// </summary>
+        /// NB: Current labs only have a single slot of a type, but in future labs may have generic
+        ///     slots.
+        /// <param name="equipmentType"></param>
+        /// <returns></returns>
+        public virtual bool hasEquipmentSlot(LabEquipmentType equipmentType)
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if the Lab contains at least one empty Equipment slot of the requested type.
+        /// </summary>
+        /// NB: Current labs only have a single slot of a type, but in future labs may have generic
+        ///     slots.
+        /// <param name="equipmentType"></param>
+        /// <returns></returns>
+        public virtual bool hasFreeEquipmentSlot(LabEquipmentType equipmentType)
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// Installs LabEquipment in one of the EquipmentSlots in the Lab.
+        /// </summary>
+        /// <param name="le"></param>
+        public virtual void installLabEquipment(LabEquipment le)
+        {
+        }
+
+        /// <summary>
+        /// Tries to install Equipment into the specified EquipmentSlot.
+        /// </summary>
+        /// NB: The target Slot is defined in derived classes.
+        ///
+        /// On success, the Labs' mass is increased and the specified GameObject
+        /// is set to Active.
+        /// 
+        /// <param name="le"></param>
+        /// <param name="s"></param>
+        /// <param name="go"></param>
+        /// <returns></returns>
+        public virtual bool tryInstallEquipment(LabEquipment le, LabEquipmentSlot s, GameObject go = null)
+        {
+            if (s.isEquipmentInstalled())
+            {
+                return false;
+            }
+            s.install(le, this);
+            go?.SetActive(true);
+            part.mass += le.getMass();
+            return true;
+        }
+        #endregion
+
         protected LabEquipmentSlot getLabEquipmentSlotByType(ConfigNode configNode, string type)
         {
             LabEquipmentSlot rv = null;

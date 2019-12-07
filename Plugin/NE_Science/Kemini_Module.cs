@@ -92,9 +92,9 @@ namespace NE_Science
             }
         }
 
-        public bool hasEquipmentInstalled(LabEquipmentType rack)
+        public override bool hasEquipmentInstalled(LabEquipmentType let)
         {
-            switch (rack)
+            switch (let)
             {
                 case LabEquipmentType.KEMINI:
                     return keminiSlot.isEquipmentInstalled();

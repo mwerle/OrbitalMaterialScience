@@ -186,27 +186,7 @@ namespace NE_Science
             }
         }
 
-
-        public void installEquipmentRack(LabEquipment le)
-        {
-            switch (le.getType())
-            {
-                case LabEquipmentType.FIR:
-                    fir.SetActive(true);
-                    firSlot.install(le, this);
-                    break;
-                case LabEquipmentType.CIR:
-                    cir.SetActive(true);
-                    cirSlot.install(le, this);
-                    break;
-                case LabEquipmentType.PRINTER:
-                    printer.SetActive(true);
-                    printerSlot.install(le, this);
-                    break;
-            }
-            part.mass += le.getMass();
-        }
-
+        #region Equipment Management
         private void setEquipmentActive(LabEquipmentType rack)
         {
             switch (rack)
@@ -247,9 +227,9 @@ namespace NE_Science
             }
         }
 
-        public bool hasEquipmentInstalled(LabEquipmentType rack)
+        public override bool hasEquipmentInstalled(LabEquipmentType equipmentType)
         {
-            switch (rack)
+            switch (equipmentType)
             {
                 case LabEquipmentType.CIR:
                     return cirSlot.isEquipmentInstalled();
@@ -264,6 +244,70 @@ namespace NE_Science
                     return false;
             }
         }
+
+        public override bool hasEquipmentSlot(LabEquipmentType equipmentType)
+        {
+            switch (equipmentType)
+            {
+                case LabEquipmentType.CIR:
+                    // fall through 
+                case LabEquipmentType.FIR:
+                    // fall through 
+                case LabEquipmentType.PRINTER:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
+        public override bool hasFreeEquipmentSlot(LabEquipmentType equipmentType)
+        {
+            switch (equipmentType)
+            {
+                case LabEquipmentType.CIR:
+                    return !cirSlot.isEquipmentInstalled();
+
+                case LabEquipmentType.FIR:
+                    return !firSlot.isEquipmentInstalled();
+
+                case LabEquipmentType.PRINTER:
+                    return !printerSlot.isEquipmentInstalled();
+
+                default:
+                    return false;
+            }
+        }
+
+        public override void installLabEquipment(LabEquipment le)
+        {
+            switch (le.Type)
+            {
+                case LabEquipmentType.FIR:
+                    if (!tryInstallEquipment(le, firSlot, fir))
+                    {
+                        NE_Helper.logError("installLabEquipment failed: FIR slot already full");
+                    }
+                    break;
+                case LabEquipmentType.CIR:
+                    if (!tryInstallEquipment(le, cirSlot, cir))
+                    {
+                        NE_Helper.logError("installLabEquipment failed: CIR slot already full");
+                    }
+                    break;
+                case LabEquipmentType.PRINTER:
+                    if (!tryInstallEquipment(le, printerSlot, printer))
+                    {
+                        NE_Helper.logError("installLabEquipment failed: PRINTER slot already full");
+                    }
+                    break;
+                default:
+                    NE_Helper.logError($"installLabEquipment failed: unsupported Equipment {le.Name} for Lab {this.name}");
+                    throw new ArgumentException($"installLabEquipment failed: unsupported Equipment {le.Name} for Lab {this.name}", "le");
+            }
+        }
+        #endregion
+
 
         public bool hasEquipmentFreeExperimentSlot(LabEquipmentType rack)
         {
@@ -331,12 +375,10 @@ namespace NE_Science
 
             if (!cirSlot.isEquipmentInstalled())
             {
-                Events["installCIR"].active = checkForRackModule(LabEquipmentType.CIR);
                 Fields["cirStatus"].guiActive = false;
             }
             else
             {
-                Events["installCIR"].active = false;
                 Events["moveCIRExp"].active = cirSlot.canExperimentMove(part.vessel);
                 Fields["cirStatus"].guiActive = true;
                 if (Events["moveCIRExp"].active)
@@ -361,12 +403,10 @@ namespace NE_Science
             }
             if (!firSlot.isEquipmentInstalled())
             {
-                Events["installFIR"].active = checkForRackModule(LabEquipmentType.FIR);
                 Fields["ffrStatus"].guiActive = false;
             }
             else
             {
-                Events["installFIR"].active = false;
                 Events["moveFIRExp"].active = firSlot.canExperimentMove(part.vessel);
                 Fields["ffrStatus"].guiActive = true;
                 if (Events["moveFIRExp"].active)
@@ -391,12 +431,10 @@ namespace NE_Science
             }
             if (!printerSlot.isEquipmentInstalled())
             {
-                Events["installPrinter"].active = checkForRackModule(LabEquipmentType.PRINTER);
                 Fields["prStatus"].guiActive = false;
             }
             else
             {
-                Events["installPrinter"].active = false;
                 Events["movePRExp"].active = printerSlot.canExperimentMove(part.vessel);
                 Fields["prStatus"].guiActive = true;
                 if (Events["movePRExp"].active)
@@ -471,69 +509,6 @@ namespace NE_Science
                 ret = Localizer.GetStringByTag("#ne_none");
             }
             return ret;
-        }
-
-        private bool checkForRackModule(LabEquipmentType equipmentRack)
-        {
-            return getRackModule(equipmentRack) != null;
-        }
-
-        private EquipmentRackContainer getRackModule(LabEquipmentType equipmentRack)
-        {
-            EquipmentRackContainer[] modules = GameObject.FindObjectsOfType(typeof(EquipmentRackContainer)) as EquipmentRackContainer[];
-
-            for (int idx = 0, count = modules.Length; idx < count; idx++)
-            {
-                var module = modules[idx];
-                if (module.vessel == this.vessel && module.getRackType() == equipmentRack)
-                {
-                    return module;
-                }
-            }
-
-            return null;
-        }
-
-        [KSPEvent(guiActive = true, guiName = "#ne_Install_CIR", active = false)]
-        public void installCIR()
-        {
-            EquipmentRackContainer module = getRackModule(LabEquipmentType.CIR);
-            if (module != null)
-            {
-                installEquipmentRack(module.install());
-            }
-            else
-            {
-                displayStatusMessage(Localizer.GetStringByTag("#ne_Equipment_Rack_Module_not_found"));
-            }
-        }
-
-        [KSPEvent(guiActive = true, guiName = "#ne_Install_FIR", active = false)]
-        public void installFIR()
-        {
-            EquipmentRackContainer module = getRackModule(LabEquipmentType.FIR);
-            if (module != null)
-            {
-                installEquipmentRack(module.install());
-            }
-            else
-            {
-                displayStatusMessage(Localizer.GetStringByTag("#ne_Equipment_Rack_Module_not_found"));
-            }
-        }
-
-        [KSPEvent(guiActive = true, guiName = "#ne_Install_3DP", active = false)]
-        public void installPrinter()
-        {
-            EquipmentRackContainer module = getRackModule(LabEquipmentType.PRINTER);
-            if (module != null)
-            {
-                installEquipmentRack(module.install());
-            }
-            else
-            {
-                displayStatusMessage(Localizer.GetStringByTag("#ne_Equipment_Rack_Module_not_found"));
-            }
         }
 
         [KSPEvent(guiActive = true, guiName = "#ne_Move_FIR_Experiment", active = false)]

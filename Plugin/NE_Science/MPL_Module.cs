@@ -167,25 +167,7 @@ namespace NE_Science
             }
         }
 
-
-        public void installEquipmentRack(LabEquipment le)
-        {
-            switch (le.getType())
-            {
-                case LabEquipmentType.MSG:
-                    msg.SetActive(true);
-                    msgSlot.install(le, this);
-                    cfe.SetActive(false);
-                    break;
-                case LabEquipmentType.USU:
-                    usu.SetActive(true);
-                    usuSlot.install(le, this);
-                    break;
-            }
-
-            part.mass += le.getMass();
-        }
-
+        #region Equipment Management
         private void setEquipmentActive(LabEquipmentType rack)
         {
             switch (rack)
@@ -215,12 +197,13 @@ namespace NE_Science
             }
         }
 
-        public bool hasEquipmentInstalled(LabEquipmentType rack)
+        public override bool hasEquipmentInstalled(LabEquipmentType equipmentType)
         {
-            switch (rack)
+            switch (equipmentType)
             {
                 case LabEquipmentType.MSG:
                     return msgSlot.isEquipmentInstalled();
+
                 case LabEquipmentType.USU:
                     return usuSlot.isEquipmentInstalled();
 
@@ -228,6 +211,63 @@ namespace NE_Science
                     return false;
             }
         }
+
+        public override bool hasEquipmentSlot(LabEquipmentType equipmentType)
+        {
+            switch (equipmentType)
+            {
+                case LabEquipmentType.MSG:
+                    // fall through 
+                case LabEquipmentType.USU:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
+        public override bool hasFreeEquipmentSlot(LabEquipmentType equipmentType)
+        {
+            switch (equipmentType)
+            {
+                case LabEquipmentType.MSG:
+                    return !msgSlot.isEquipmentInstalled();
+
+                case LabEquipmentType.USU:
+                    return !usuSlot.isEquipmentInstalled();
+
+                default:
+                    return false;
+            }
+        }
+
+        public override void installLabEquipment(LabEquipment le)
+        {
+            switch (le.Type)
+            {
+                case LabEquipmentType.MSG:
+                    if (tryInstallEquipment(le, msgSlot, msg))
+                    {
+                        cfe.SetActive(false);
+                    }
+                    else
+                    {
+                        NE_Helper.logError("installLabEquipment failed: FIR slot already full");
+                    }
+                    break;
+                case LabEquipmentType.USU:
+                    if (!tryInstallEquipment(le, usuSlot, usu))
+                    {
+                        NE_Helper.logError("installLabEquipment failed: CIR slot already full");
+                    }
+                    break;
+                default:
+                    NE_Helper.logError($"installLabEquipment failed: unsupported Equipment {le.Name} for Lab {this.name}");
+                    throw new ArgumentException($"installLabEquipment failed: unsupported Equipment {le.Name} for Lab {this.name}", "le");
+            }
+        }
+        #endregion
+
 
         public bool hasEquipmentFreeExperimentSlot(LabEquipmentType rack)
         {
@@ -290,12 +330,10 @@ namespace NE_Science
 
             if (!msgSlot.isEquipmentInstalled())
             {
-                Events["installMSG"].active = checkForRackModule(LabEquipmentType.MSG);
                 Fields["msgStatus"].guiActive = false;
             }
             else
             {
-                Events["installMSG"].active = false;
                 Events["moveMSGExp"].active = msgSlot.canExperimentMove(part.vessel);
                 Fields["msgStatus"].guiActive = true;
                 if (Events["moveMSGExp"].active)
@@ -321,12 +359,10 @@ namespace NE_Science
 
             if (!usuSlot.isEquipmentInstalled())
             {
-                Events["installUSU"].active = checkForRackModule(LabEquipmentType.USU);
                 Fields["usuStatus"].guiActive = false;
             }
             else
             {
-                Events["installUSU"].active = false;
                 Events["moveUSUExp"].active = usuSlot.canExperimentMove(part.vessel);
                 Fields["usuStatus"].guiActive = true;
                 if (Events["moveUSUExp"].active)
@@ -396,39 +432,6 @@ namespace NE_Science
             return sb.ToString();
         }
 
-        private bool checkForRackModule(LabEquipmentType equipmentRack)
-        {
-            return getRackModule(equipmentRack) != null;
-        }
-
-        private EquipmentRackContainer getRackModule(LabEquipmentType equipmentRack)
-        {
-            EquipmentRackContainer[] modules = GameObject.FindObjectsOfType(typeof(EquipmentRackContainer)) as EquipmentRackContainer[];
-            for (int idx = 0, count = modules.Length; idx < count; idx++)
-            {
-                var module = modules[idx];
-                if (module.vessel == this.vessel && module.getRackType() == equipmentRack)
-                {
-                    return module;
-                }
-            }
-            return null;
-        }
-
-        [KSPEvent(guiActive = true, guiName = "#ne_Install_MSG", active = false)]
-        public void installMSG()
-        {
-            EquipmentRackContainer module = getRackModule(LabEquipmentType.MSG);
-            if (module != null)
-            {
-                installEquipmentRack(module.install());
-            }
-            else
-            {
-                displayStatusMessage(Localizer.GetStringByTag("#ne_Equipment_Rack_Module_not_found"));
-            }
-        }
-
         [KSPEvent(guiActive = true, guiName = "#ne_Move_MSG_Experiment", active = false)]
         public void moveMSGExp()
         {
@@ -439,20 +442,6 @@ namespace NE_Science
         public void actionMSGExp()
         {
             msgSlot.experimentAction();
-        }
-
-        [KSPEvent(guiActive = true, guiName = "#ne_Install_USU", active = false)]
-        public void installUSU()
-        {
-            EquipmentRackContainer modul = getRackModule(LabEquipmentType.USU);
-            if (modul != null)
-            {
-                installEquipmentRack(modul.install());
-            }
-            else
-            {
-                displayStatusMessage(Localizer.GetStringByTag("#ne_Equipment_Rack_Module_not_found"));
-            }
         }
 
         [KSPEvent(guiActive = true, guiName = "#ne_Move_USU_Experiment", active = false)]

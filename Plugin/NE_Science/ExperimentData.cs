@@ -434,10 +434,6 @@ namespace NE_Science
         internal void OnDestionationSelected(Part destination)
         {
             #if false
-            moveTo(es);
-            #else
-
-            #if false
             // Works, but Kemini Experiments start as soon as they are
             // installed. The user may have just wanted to move the
             // experiment, so really we should ask.
@@ -460,28 +456,14 @@ namespace NE_Science
             #endif
 
             // Try to move the experiment if the destination has free Storage
-            ExperimentStorage[] ess = destination.GetComponents<ExperimentStorage>();
-            foreach (ExperimentStorage es in ess)
+            var ess = destination.GetComponents<ExperimentStorage>();
+            var es = Array.Find(ess, p => p.isEmpty() && p.type == storageType);
+            if (es != null)
             {
-                if(es.isEmpty() && es.type == storageType)
-                {
-                    moveTo(es);
-                }
+                moveTo(es);
             }
-            #endif
         }
 
-#if false
-        internal void move(Vessel vessel)
-        {
-            List<ExperimentStorage> targets = getFreeExperimentContainers(vessel);
-            if ((state == ExperimentState.STORED || state == ExperimentState.INSTALLED || state == ExperimentState.FINISHED) && targets.Count > 0)
-            {
-                ChooseMoveTarget t = getMoveGuiComponent();
-                t.showDialog(targets, OnDestionationSelected);
-            }
-        }
-#else
         internal void move(Vessel vessel)
         {
             Debug.Assert(vessel == store.getPart().vessel);
@@ -489,20 +471,8 @@ namespace NE_Science
             List<Part> targets = freeContainerParts;
             if ((state != ExperimentState.RUNNING) && targets.Count > 0)
             {
-                ChooseMoveTarget t = getMoveGuiComponent();
-                t.showDialog(targets, this, OnDestionationSelected);
+                NE_Helper.ChooseMoveTargetUI.showDialog(targets, this, OnDestionationSelected);
             }
-        }
-#endif
-
-        private ChooseMoveTarget getMoveGuiComponent()
-        {
-            ChooseMoveTarget t = store.getPartGo().GetComponent<ChooseMoveTarget>();
-            if (t == null)
-            {
-                t = store.getPartGo().AddComponent<ChooseMoveTarget>();
-            }
-            return t;
         }
 
         public void moveTo(ExperimentStorage exp)

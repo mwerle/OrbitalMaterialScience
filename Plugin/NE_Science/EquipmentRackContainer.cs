@@ -27,7 +27,7 @@ namespace NE_Science
     /// </summary>
     /// This is the PartModule which allows the user to add or remove
     /// LabEquipment to a Part for transportation to a Lab.
-    class EquipmentRackContainer : PartModule, IPartCostModifier, IPartMassModifier
+    class EquipmentRackContainer : PartModule, IPartCostModifier, IPartMassModifier, IMoveable
     {
         private const float EMPTY_MASS = 0.4f;
 
@@ -69,10 +69,12 @@ namespace NE_Science
             if (leq.getType() == LabEquipmentType.NONE)
             {
                 Events["chooseEquipment"].guiName = Localizer.GetStringByTag("#ne_Add_Lab_Equipment");
+                Events["InstallEquipment"].active = false;
             }
             else
             {
                 Events["chooseEquipment"].guiName = Localizer.GetStringByTag("#ne_Remove_Equipment");
+                Events["InstallEquipment"].active = true;
             }
             RefreshMassAndCost();
             setTexture(leq);
@@ -115,9 +117,69 @@ namespace NE_Science
             else
             {
                 setEquipment(LabEquipment.getNullObject());
-                Events["chooseEquipment"].guiName = Localizer.GetStringByTag("#ne_Add_Lab_Equipment");
             }
         }
+
+        /// <summary>
+        /// This event adds a UI button allowing the user to install equipment in a Lab
+        /// </summary>
+        /// If there is more than one piece of equipment, a selection box is
+        /// openend to let the user choose which equipment to install. Otherwise
+        /// the "standard" highlight-chooser is used to let the user select the
+        /// Lab into which to install the equipment.
+        //[KSPEvent(guiName = "#ne_Install_Lab_Equipment", active = false, category = "NEOS_c", groupDisplayName = "NEOS_dg", groupName = "NEOS_g", requireFullControl = true)]
+        [KSPEvent(guiName = "#ne_Install_Lab_Equipment", guiActive = true, active = true)]
+        public void InstallEquipment()
+        {
+            // Create a list of target Parts
+            // TODO: Cache this!
+            var labs = GameObject.FindObjectsOfType(typeof(Lab)) as Lab[];
+            var emptyLabs = System.Array.FindAll(labs, p => p.hasFreeEquipmentSlot(leq.Type));
+            if (emptyLabs.Length > 0)
+            {
+                List<Part> targets = new List<Part>(emptyLabs.Length);
+                foreach(Lab l in emptyLabs)
+                {
+                    targets.Add(l.part);
+                }
+
+                NE_Helper.ChooseMoveTargetUI.showDialog(targets, this, OnDestinationSelected);
+            }
+        }
+
+        /// <summary>
+        /// Called from the ChooseMover when a destination has been selected.
+        /// </summary>
+        /// <param name="destination"></param>
+        void OnDestinationSelected(Part destination)
+        {
+            // Install the LabEquipment if the destination has an empty slot of the correct type.
+            var lab = destination.GetComponent<Lab>();
+            
+            if ((lab != null) && lab.hasFreeEquipmentSlot(leq.Type))
+            {
+                // Move the Equipment to the Lab
+                lab.installLabEquipment(leq);
+                setEquipment(LabEquipment.getNullObject());
+            }
+        }
+
+        #region IMoveable implementation
+        // It's a bit odd adding getMoveable to this class since the Container itself
+        // isn't being moved. But the LabEquipment doesn't always know which Part it's
+        // inside of and it'd be a bit weird to manage tracking of that, so we just
+        // make this Class the IMoveable for the LabEquipment.
+        Part IMoveable.getPart()
+        {
+            return part;
+        }
+        string IMoveable.getDisplayName()
+        {
+            return leq.getName();
+        }
+        #endregion
+
+
 
         void OnGUI()
         {

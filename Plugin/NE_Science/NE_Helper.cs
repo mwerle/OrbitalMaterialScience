@@ -28,7 +28,6 @@ namespace NE_Science
     [KSPAddon(KSPAddon.Startup.EveryScene, true)]
     class NE_Helper : MonoBehaviour
     {
-
         private static string SETTINGS_FILE;
         private const string SETTINGS_DEBUG = "Debug";
         //private const string SETTINGS_NODE_KAC = "KerbalAlarmClock";
@@ -37,6 +36,40 @@ namespace NE_Science
         private static bool debug = true;
         //private static bool setting_KAC_Enabled = false;
         //private static int setting_KAC_AlarmMargin = 0;
+
+        private static ChooseMoveTarget cmt = null;
+
+        /// <summary>
+        /// Returns a Singleton instance of the NE_Helper for use with non-static member functions.
+        /// </summary>
+        public static NE_Helper Instance { get; private set; } = null;
+
+        /// <summary>
+        /// Private constructor to avoid anybody else creating instances of this Singleton class.
+        /// </summary>
+        private NE_Helper()
+        {
+        }
+
+        /// <summary>
+        /// A shared ChooseMoveTarget used throughout the NEOS system.
+        /// </summary>
+        public static ChooseMoveTarget ChooseMoveTargetUI {
+            get
+            {
+                if (cmt == null)
+                {
+                    cmt = Instance.gameObject.AddOrGetComponent<ChooseMoveTarget>();
+                }
+                return cmt;
+            }
+        }
+
+        #region Unity Events
+        private void Awake()
+        {
+            Instance = this;
+        }
 
         void Start()
         {
@@ -47,6 +80,12 @@ namespace NE_Science
                 KACWrapper.InitKACWrapper();
             }
         }
+
+        private void OnDestroy()
+        {
+            Instance = null;
+        }
+        #endregion
 
         /// <summary>
         /// Loads or creates the global settings.
