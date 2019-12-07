@@ -23,7 +23,7 @@ using KSP.Localization;
 
 namespace NE_Science
 {
-    public interface ExperimentDataStorage
+    public interface IExperimentDataStorage
     {
         void removeExperimentData();
 
@@ -45,7 +45,7 @@ namespace NE_Science
     /// an experiment (thus generating the actual Science Data) after an
     /// experiment has been run.
     public class ExperimentStorage : ModuleScienceExperiment,
-        ExperimentDataStorage,
+        IExperimentDataStorage,
         IPartCostModifier,
         IPartMassModifier,
         IScienceResultHelperClient,

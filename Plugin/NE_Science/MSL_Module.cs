@@ -38,7 +38,7 @@ namespace NE_Science
         [KSPField(isPersistant = false, guiActive = false, guiName = "CIR")]
         public string cirStatus = "";
         [KSPField(isPersistant = false, guiActive = false, guiName = "FIR")]
-        public string ffrStatus = "";
+        public string firStatus = "";
         [KSPField(isPersistant = false, guiActive = false, guiName = "3PR")]
         public string prStatus = "";
 
@@ -163,8 +163,8 @@ namespace NE_Science
                     if (firSlot.isEquipmentInstalled() && firSlot.experimentSlotFree())
                     {
                         firSlot.installExperiment(exp);
-                        ffrStatus = exp.getAbbreviation();
-                        Fields["ffrStatus"].guiActive = true;
+                        firStatus = exp.getAbbreviation();
+                        Fields["firStatus"].guiActive = true;
                     }
                     else
                     {
@@ -403,12 +403,12 @@ namespace NE_Science
             }
             if (!firSlot.isEquipmentInstalled())
             {
-                Fields["ffrStatus"].guiActive = false;
+                Fields["firStatus"].guiActive = false;
             }
             else
             {
                 Events["moveFIRExp"].active = firSlot.canExperimentMove(part.vessel);
-                Fields["ffrStatus"].guiActive = true;
+                Fields["firStatus"].guiActive = true;
                 if (Events["moveFIRExp"].active)
                 {
                     Events["moveFIRExp"].guiName = Localizer.Format("#ne_Move_1", firSlot.getExperiment().getAbbreviation());
@@ -421,12 +421,12 @@ namespace NE_Science
                 Events["actionFIRExp"].active = firSlot.canActionRun();
                 if (!firSlot.experimentSlotFree())
                 {
-                    ffrStatus = firSlot.getExperiment().getAbbreviation() + ": " + firSlot.getExperiment().stateString();
+                    firStatus = firSlot.getExperiment().getAbbreviation() + ": " + firSlot.getExperiment().stateString();
 
                 }
                 else
                 {
-                    ffrStatus = Localizer.GetStringByTag("#ne_No_Experiment");
+                    firStatus = Localizer.GetStringByTag("#ne_No_Experiment");
                 }
             }
             if (!printerSlot.isEquipmentInstalled())

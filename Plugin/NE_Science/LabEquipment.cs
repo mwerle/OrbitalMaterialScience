@@ -60,7 +60,7 @@ namespace NE_Science
      /// LabEquipment will produce a Product using a Reactants. When
      /// running an experiment, Product is accumulated until the experiment
      /// is completed.
-    public class LabEquipment : ExperimentDataStorage
+    public class LabEquipment : IExperimentDataStorage
     {
         public const string CONFIG_NODE_NAME = "NE_LabEquipment";
         private const string ABB_VALUE = "abb";
@@ -105,40 +105,32 @@ namespace NE_Science
             this.reactantPerProduct = reactantPerProduct;
         }
 
-        public string getAbbreviation()
-        {
-            return abb;
-        }
         /// <summary>
         /// The abbreviation for this Equipment.
         /// </summary>
         public string Abbreviation { get { return abb; } }
 
-        public string getName()
-        {
-            return name;
-        }
         /// <summary>
         /// The name for this Equipment.
         /// </summary>
         public string Name { get { return name; } }
 
-        public LabEquipmentType getType()
-        {
-            return type;
-        }
         /// <summary>
         /// The EquipmentType of this Equipment.
         /// </summary>
         public LabEquipmentType Type { get { return type; } }
 
-        /** How many units of Product the lab generates per hour. */
+        /// <summary>
+        /// How many units of Product the lab generates per hour.
+        /// </summary>
         public float ProductPerHour
         {
             get { return productPerHour; }
         }
 
-        /** How many units of Reactant the lab requires per unit of Product. */
+        /// <summary>
+        /// How many units of Reactant the lab requires per unit of Product.
+        /// </summary>
         public float ReactantPerProduct
         {
             get { return reactantPerProduct; }
@@ -318,6 +310,10 @@ namespace NE_Science
             return lab.part.gameObject;
         }
 
+        /// <summary>
+        /// Returns the Part the LabEquipment is currently in.
+        /// </summary>
+        /// <returns></returns>
         public Part getPart()
         {
             return lab.part;
@@ -398,7 +394,7 @@ namespace NE_Science
 
         internal string getDescription()
         {
-            string desc = "<b>" + getName() +" (" + getAbbreviation()+ ")</b>\n";
+            string desc = "<b>" + name +" (" + abb + ")</b>\n";
             switch (type)
             {
                 case LabEquipmentType.CIR:

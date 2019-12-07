@@ -53,7 +53,7 @@ namespace NE_Science
         private float cost = 0f;
         protected LabEquipmentType neededEquipment;
         internal ExperimentState state = ExperimentState.STORED;
-        internal ExperimentDataStorage store;
+        internal IExperimentDataStorage store;
         protected string storageType = ExperimentFactory.OMS_EXPERIMENTS;
 
         private Guid cachedVesselID;
@@ -491,7 +491,7 @@ namespace NE_Science
             );
         }
 
-        internal void setStorage(ExperimentDataStorage storage)
+        internal void setStorage(IExperimentDataStorage storage)
         {
             store = storage;
         }

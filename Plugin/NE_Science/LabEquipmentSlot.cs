@@ -30,13 +30,24 @@ namespace NE_Science
         public const string CONFIG_NODE_NAME = "NE_LabEquipmentSlot";
         private const string TYPE_VALUE = "type";
 
+        /// <summary>
+        /// The type of slot.
+        /// </summary>
+        /// Currently the type is specific to each type of LabEquipment.
+        /// In future, the type should be the size or configuration of the
+        /// slot. The idea being that different equipment could be installed
+        /// into the same slot.
         private LabEquipmentType type;
+
+        /// <summary>
+        /// The equipment, if any, currently installed in the slot.
+        /// </summary>
         private LabEquipment equ;
 
         public LabEquipmentSlot(LabEquipmentType t, LabEquipment e = null)
         {
             type = t;
-            if (e != null && type == e.getType())
+            if (e != null && type == e.Type)
             {
                 equ = e;
             }
@@ -73,7 +84,7 @@ namespace NE_Science
 
         public void install(LabEquipment eq, Lab lab)
         {
-            if (eq != null && type == eq.getType())
+            if (eq != null && type == eq.Type)
             {
                 equ = eq;
                 eq.install(lab);

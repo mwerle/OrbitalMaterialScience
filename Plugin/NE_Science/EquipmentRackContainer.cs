@@ -62,11 +62,15 @@ namespace NE_Science
             node.AddNode(leq.getNode());
         }
 
+        /// <summary>
+        /// Used to set the LabEquipment and update all internal state.
+        /// </summary>
+        /// <param name="er"></param>
         private void setEquipment(LabEquipment er)
         {
             leq = er;
-            status = leq.getName();
-            if (leq.getType() == LabEquipmentType.NONE)
+            status = leq.Name;
+            if (leq.Type == LabEquipmentType.NONE)
             {
                 Events["chooseEquipment"].guiName = Localizer.GetStringByTag("#ne_Add_Lab_Equipment");
                 Events["InstallEquipment"].active = false;
@@ -80,9 +84,9 @@ namespace NE_Science
             setTexture(leq);
         }
 
-        private void setTexture(LabEquipment type)
+        private void setTexture(LabEquipment equipment)
         {
-            GameDatabase.TextureInfo tex = texFac.getTextureForEquipment(type.getType());
+            GameDatabase.TextureInfo tex = texFac.getTextureForEquipment(equipment.Type);
             if (tex != null)
             {
                 changeTexture(tex);
@@ -109,7 +113,7 @@ namespace NE_Science
         [KSPEvent(guiActiveEditor = true, guiName = "#ne_Add_Lab_Equipment", active = false)]
         public void chooseEquipment()
         {
-            if (leq.getType() == LabEquipmentType.NONE)
+            if (leq.Type == LabEquipmentType.NONE)
             {
                 availableRacks = LabEquipmentRegistry.getAvailableLabEquipment();
                 showAddGui();
@@ -169,13 +173,23 @@ namespace NE_Science
         // isn't being moved. But the LabEquipment doesn't always know which Part it's
         // inside of and it'd be a bit weird to manage tracking of that, so we just
         // make this Class the IMoveable for the LabEquipment.
+
+        /// <summary>
+        /// Returns the Container Part.
+        /// </summary>
+        /// <returns></returns>
         Part IMoveable.getPart()
         {
             return part;
         }
+
+        /// <summary>
+        /// This returns the name of the Equipment currently carried, not the name of the Container!
+        /// </summary>
+        /// <returns></returns>
         string IMoveable.getDisplayName()
         {
-            return leq.getName();
+            return leq.Name;
         }
         #endregion
 
@@ -189,7 +203,7 @@ namespace NE_Science
          * |                 Add Lab Equipment              |
          * +------------------------------------------------+
          * | | [3DPR] 3D Printer                        |^| |
-         * | |                                          | | |
+         * | | [FIR ] Fluid Integrated Rack             | | |
          * | |                                          | | |
          * | |                                          | | |
          * | |                                          |v| |
@@ -218,7 +232,7 @@ namespace NE_Science
             {
                 var e = availableRacks[idx];
 
-                b = new DialogGUIButton<LabEquipment>(e.getAbbreviation(), onAddEquipment, e, true);
+                b = new DialogGUIButton<LabEquipment>(e.Abbreviation, OnAddEquipmentButtonPressed, e, true);
                 b.size = new Vector2(60, 30);
                 l = new DialogGUILabel(e.getDescription(), true, false);
                 hl = new DialogGUIHorizontalLayout(false, false, 4, new RectOffset(), TextAnchor.MiddleCenter, b, l);
@@ -244,16 +258,25 @@ namespace NE_Science
                 false, HighLogic.UISkin);
         }
 
-        private void onAddEquipment(LabEquipment e)
+        /// <summary>
+        /// Called back from the AddGui when one of the LabEquipment buttons is pressed.
+        /// </summary>
+        /// <param name="e"></param>
+        private void OnAddEquipmentButtonPressed(LabEquipment e)
         {
             setEquipment(e);
         }
 
         public LabEquipmentType getRackType()
         {
-            return leq.getType();
+            return leq.Type;
         }
 
+        /// <summary>
+        /// Called when the carried LabEquipment is being installed in a Lab.
+        /// </summary>
+        /// Returns the LabEquipment and empties the Container.
+        /// <returns></returns>
         public LabEquipment install()
         {
             LabEquipment ret = leq;

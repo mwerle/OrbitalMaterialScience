@@ -164,6 +164,13 @@ namespace NE_Science
         }
         #endregion
 
+
+        /// <summary>
+        /// Used to load the data from a savefile.
+        /// </summary>
+        /// <param name="configNode"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         protected LabEquipmentSlot getLabEquipmentSlotByType(ConfigNode configNode, string type)
         {
             LabEquipmentSlot rv = null;
@@ -178,21 +185,24 @@ namespace NE_Science
             ConfigNode cn = configNode.GetNode(LabEquipmentSlot.CONFIG_NODE_NAME, "type", type);
             if (cn == null)
             {
-                // Pre-Kemini-0.3 savegames have another level of nesting of ConfigNodes so let's recursively look into the child-nodes
-                foreach(ConfigNode child in configNode.nodes)
+                // Pre-NEOS-0.3 savegames have another level of nesting of ConfigNodes so let's search the child-nodes
+                foreach(ConfigNode childNode in configNode.nodes)
                 {
-                    rv = getLabEquipmentSlotByType(child, type);
-                    if (rv != null)
+                    cn = childNode.GetNode(LabEquipmentSlot.CONFIG_NODE_NAME, "type", type);
+                    if (cn != null)
                     {
-                        goto done;
+                        break;
                     }
                 }
 
-                // Not found, so let's raise an error
-                NE_Helper.logError("Lab getLabEquipmentSlotByType: node " + configNode.name
-                    + " does not contain a " + LabEquipmentSlot.CONFIG_NODE_NAME
-                    + " node of type " + type);
-                goto done;
+                // Not found, so let's log an error
+                if (cn == null)
+                {
+                    NE_Helper.logError("Lab getLabEquipmentSlotByType: node " + configNode.name
+                        + " does not contain a " + LabEquipmentSlot.CONFIG_NODE_NAME
+                        + " node of type " + type);
+                    goto done;
+                }
             }
             rv = LabEquipmentSlot.getLabEquipmentSlotFromConfigNode(cn, this);
 
@@ -200,6 +210,11 @@ namespace NE_Science
             return rv != null? rv : new LabEquipmentSlot(LabEquipmentType.NONE);
         }
 
+        /// <summary>
+        /// Used to load data from a savefile.
+        /// </summary>
+        /// <param name="configNode"></param>
+        /// <returns></returns>
         protected LabEquipmentSlot getLabEquipmentSlot(ConfigNode configNode)
         {
             if (configNode != null)
@@ -213,6 +228,12 @@ namespace NE_Science
             }
         }
 
+        /// <summary>
+        /// Used to save data.
+        /// </summary>
+        /// <param name="nodeName"></param>
+        /// <param name="slot"></param>
+        /// <returns></returns>
         protected ConfigNode getConfigNodeForSlot(string nodeName, LabEquipmentSlot slot)
         {
             ConfigNode node = new ConfigNode(nodeName);
