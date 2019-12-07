@@ -68,7 +68,7 @@ namespace NE_Science.Contracts.Parameters
                 if (module.moduleName == moduleName)
                 {
                     ConfigNode partConf = module.moduleValues;
-                    float completed = NE_Helper.GetValueAsFloat(partConf, OMSExperiment.COMPLETED);
+                    float completed = partConf.GetFloat(OMSExperiment.COMPLETED);
                     if (completed >= contractAccepted)
                     {
                         return containsDoneExperimentData(partConf, targetBody);
@@ -135,7 +135,7 @@ namespace NE_Science.Contracts.Parameters
                     if (partConf != null)
                     {
                         NE_Helper.log("Experiment module found");
-                        float completed = NE_Helper.GetValueAsFloat(partConf, OMSExperiment.COMPLETED);
+                        float completed = partConf.GetFloat(OMSExperiment.COMPLETED);
                         if (completed >= contractAccepted)
                         {
                             return containsDoneExperimentData(partConf, targetBody);

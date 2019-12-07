@@ -56,15 +56,15 @@ namespace NE_Science
             {
                 lastUpdate = Time.time;
                 MSL_Module lab = part.GetComponent<MSL_Module>();
-                if (gameObject.activeSelf != lab.hasEquipmentInstalled(EquipmentRacks.FIR))
+                if (gameObject.activeSelf != lab.hasEquipmentInstalled(LabEquipmentType.FIR))
                 {
-                    gameObject.SetActive(lab.hasEquipmentInstalled(EquipmentRacks.FIR));
+                    gameObject.SetActive(lab.hasEquipmentInstalled(LabEquipmentType.FIR));
                 }
-                if (lab.hasEquipmentInstalled(EquipmentRacks.FIR))
+                if (lab.hasEquipmentInstalled(LabEquipmentType.FIR))
                 {
-                    if (running != lab.isEquipmentRunning(EquipmentRacks.FIR))
+                    if (running != lab.isEquipmentRunning(LabEquipmentType.FIR))
                     {
-                        running = lab.isEquipmentRunning(EquipmentRacks.FIR);
+                        running = lab.isEquipmentRunning(LabEquipmentType.FIR);
                         changeTexture(getTextureForState(running));
                     }
                 }

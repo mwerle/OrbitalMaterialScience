@@ -92,7 +92,7 @@ namespace NE_Science
                     initPartObjects();
                 }
                 MSL_Module lab = part.GetComponent<MSL_Module>();
-                if (lab.isEquipmentRunning(EquipmentRacks.FIR) && isUserInIVA)
+                if (lab.isEquipmentRunning(LabEquipmentType.FIR) && isUserInIVA)
                 {
                     if (pump1 != null)
                     {

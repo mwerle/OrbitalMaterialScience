@@ -29,6 +29,13 @@ namespace NE_Science
         STORED, INSTALLED, RUNNING, FINISHED, FINALIZED, COMPLETED
     }
 
+    /// <summary>
+    /// The main class implementing an Experiment.
+    /// </summary>
+    /// This is a virtual "Part" which only exists either within
+    /// ExperimentStorage or installed in LabEquipment.
+    /// It can be moved or installed; when installed it can be
+    /// run.
     public class ExperimentData : IMoveable
     {
         public const string CONFIG_NODE_NAME = "NE_ExperimentData";
@@ -44,7 +51,7 @@ namespace NE_Science
         private string type = "";
         private float mass = 0f;
         private float cost = 0f;
-        protected EquipmentRacks neededEquipment;
+        protected LabEquipmentType neededEquipment;
         internal ExperimentState state = ExperimentState.STORED;
         internal ExperimentDataStorage store;
         protected string storageType = ExperimentFactory.OMS_EXPERIMENTS;
@@ -65,7 +72,7 @@ namespace NE_Science
         /// <param name="eq"></param>
         /// <param name="mass"></param>
         /// <param name="cost"></param>
-        public ExperimentData(string id, string type, string name, string abb, EquipmentRacks eq, float mass, float cost)
+        public ExperimentData(string id, string type, string name, string abb, LabEquipmentType eq, float mass, float cost)
         {
             this.id = id;
             this.type = type;
@@ -102,7 +109,7 @@ namespace NE_Science
             return cost;
         }
 
-        public EquipmentRacks getEquipmentNeeded()
+        public LabEquipmentType getEquipmentNeeded()
         {
             return neededEquipment;
         }
@@ -131,30 +138,30 @@ namespace NE_Science
             string reqString = "";// = Localizer.GetStringByTag("#ne_Needs") + ": ";
             switch (getEquipmentNeeded())
             {
-                case EquipmentRacks.CIR:
+                case LabEquipmentType.CIR:
                     reqString = Localizer.Format("#ne_Needs_1_with_2", "MSL-1000", "#ne_oms_eq_cir_title");
                     //reqString += "MSL-1000 with Combustion Integrated Rack (CIR)";
                     break;
-                case EquipmentRacks.FIR:
+                case LabEquipmentType.FIR:
                     reqString = Localizer.Format("#ne_Needs_1_with_2", "MSL-1000", "#ne_oms_eq_fir_title");
                     //reqString += "MSL-1000 with Fluid Integrated Rack (FIR)";
                     break;
-                case EquipmentRacks.PRINTER:
+                case LabEquipmentType.PRINTER:
                     reqString = Localizer.Format("#ne_Needs_1_with_2", "MSL-1000", "#ne_oms_eq_3dp_title");
                     //reqString += "MSL-1000 with 3D-Printer (3PR)";
                     break;
-                case EquipmentRacks.MSG:
+                case LabEquipmentType.MSG:
                     reqString = Localizer.Format("#ne_Needs_1_with_2", "MPL-600", "#ne_oms_eq_msg_title");
                     //reqString += "MPL-600 with Microgravity Science Glovebox (MSG)";
                     break;
-                case EquipmentRacks.USU:
+                case LabEquipmentType.USU:
                     reqString = Localizer.Format("#ne_Needs_1_with_2", "MPL-600", "#ne_kls_eq_usu_title");
                     //reqString += "MPL-600 with Ultrasound Unit (USU)";
                     break;
-                case EquipmentRacks.KEMINI:
+                case LabEquipmentType.KEMINI:
                     reqString = Localizer.Format("#ne_Needs_1", "Command Pod mk1");
                     break;
-                case EquipmentRacks.EXPOSURE:
+                case LabEquipmentType.EXPOSURE:
                     reqString = Localizer.Format("#ne_Needs_1_and_2_or_3", "MEP-825", "MPL-600", "MSL-1000");
                     //reqString += "MEP-825 and MPL-600 or MSL-1000";
                     break;
@@ -268,8 +275,8 @@ namespace NE_Science
                 NE_Helper.logError("getLabEquipmentFromNode: invalid Node: " + node.name);
                 return getNullObject();
             }
-            float mass = NE_Helper.GetValueAsFloat(node, MASS_VALUE);
-            float cost = NE_Helper.GetValueAsFloat(node, COST_VALUE);
+            float mass = node.GetFloat(MASS_VALUE);
+            float cost = node.GetFloat(COST_VALUE);
 
             ExperimentData exp = ExperimentFactory.getExperiment(node.GetValue(TYPE_VALUE), mass, cost);
             exp.load(node);
@@ -294,7 +301,7 @@ namespace NE_Science
 
         public static ExperimentData getNullObject()
         {
-            return new ExperimentData("", "", "null Experiment", "empty", EquipmentRacks.NONE, 0f, 0f);
+            return new ExperimentData("", "", "null Experiment", "empty", LabEquipmentType.NONE, 0f, 0f);
         }
 
         public virtual bool canInstall(Vessel vessel)
@@ -334,7 +341,6 @@ namespace NE_Science
         /// A list of Parts which have free ExperimentStorage.
         /// </summary>
         public List<Part> freeContainerParts
-        public virtual List<Lab> getFreeLabs(Vessel vessel)
         {
             get
             {
@@ -378,7 +384,6 @@ namespace NE_Science
         /// <param name="vessel"></param>
         /// <returns></returns>
         public virtual List<Lab> getFreeLabs(Vessel vessel)
-        {
         {
             return null;
         }
@@ -509,6 +514,11 @@ namespace NE_Science
             store.removeExperimentData();
             exp.part.mass += getMass();
             exp.storeExperiment(this);
+
+            NE_Helper.log(String.Format("Moved experiment from {0}.{1} to {2}.{3}.",
+                store.getPart(), store,
+                exp.part, exp )
+            );
         }
 
         internal void setStorage(ExperimentDataStorage storage)
@@ -601,7 +611,7 @@ namespace NE_Science
     {
         protected ExperimentStep step;
 
-        protected StepExperimentData(string id, string type, string name, string abb, EquipmentRacks eq, float mass, float cost)
+        protected StepExperimentData(string id, string type, string name, string abb, LabEquipmentType eq, float mass, float cost)
             : base(id, type, name, abb, eq, mass, cost)
         {}
 
@@ -690,7 +700,7 @@ namespace NE_Science
             if (le == null)
             {
                 // Experiment is not yet installed in a lab; so let's create a new lab just to calculate the time.
-                le = EquipmentRackRegistry.getLabEquipmentForRack(getEquipmentNeeded());
+                le = LabEquipmentRegistry.getLabEquipmentForType(getEquipmentNeeded());
                 if (le == null)
                 {
                     NE_Helper.log("Warning: Could not find lab equipemnt for " + getEquipmentNeeded());
@@ -736,7 +746,7 @@ namespace NE_Science
         protected T[] steps = null; // Implementation Class must ensure this is allocated
         private int activeStep = 0;
 
-        protected MultiStepExperimentData(string id, string type, string name, string abb, EquipmentRacks eq, float mass, float cost, int numSteps)
+        protected MultiStepExperimentData(string id, string type, string name, string abb, LabEquipmentType eq, float mass, float cost, int numSteps)
             : base(id, type, name, abb, eq, mass, cost)
         {
             if (numSteps < 1) {
@@ -780,7 +790,7 @@ namespace NE_Science
         {
             base.load(node);
 
-            activeStep = NE_Helper.GetValueAsInt(node, ACTIVE_VALUE);
+            activeStep = node.GetInt(ACTIVE_VALUE);
 
             ConfigNode[] stepNodes = node.GetNodes(ExperimentStep.CONFIG_NODE_NAME);
             steps = new T[stepNodes.Length];
@@ -888,8 +898,8 @@ namespace NE_Science
             // Gather the time needed for every step.
             for (int idx = 0, count = steps.Length; idx < count; idx++)
             {
-                EquipmentRacks rack = steps[idx].getNeededEquipment();
-                LabEquipment le = EquipmentRackRegistry.getLabEquipmentForRack(rack);
+                LabEquipmentType rack = steps[idx].getNeededEquipment();
+                LabEquipment le = LabEquipmentRegistry.getLabEquipmentForType(rack);
                 if (le == null)
                 {
                     NE_Helper.log("Warning: Could not find lab equipemnt for " + rack);
@@ -927,8 +937,8 @@ namespace NE_Science
                 // 'Lab.ProductPerHour' - resource accumulation per hour
                 //
                 T step = getActiveStep();
-                EquipmentRacks rack = step.getNeededEquipment();
-                LabEquipment le = EquipmentRackRegistry.getLabEquipmentForRack(rack);
+                LabEquipmentType rack = step.getNeededEquipment();
+                LabEquipment le = LabEquipmentRegistry.getLabEquipmentForType(rack);
                 float amountRemaining = step.getNeededAmount();
                 float productPerHour = 1.0f; // Default
                 if (le == null)
@@ -952,7 +962,7 @@ namespace NE_Science
     public class TestExperimentData : KerbalResearchExperimentData
     {
         public TestExperimentData(float mass, float cost)
-            : base("NE_Test", "Test", "Test Experiment", "Test", EquipmentRacks.USU, mass, cost, 4)
+            : base("NE_Test", "Test", "Test Experiment", "Test", LabEquipmentType.USU, mass, cost, 4)
         {
             steps[0] = new KerbalResearchStep(this, Resources.ULTRASOUND_GEL, 0.5f, 0);
             steps[1] = new KerbalResearchStep(this, Resources.ULTRASOUND_GEL, 0.5f, 1);

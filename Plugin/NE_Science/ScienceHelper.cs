@@ -21,6 +21,9 @@ using System.Text;
 
 namespace NE_Science
 {
+    /// <summary>
+    /// Implements various methods to help figure out what the current science parameters are.
+    /// </summary>
     class ScienceHelper
     {
         public static ExperimentSituations getScienceSituation(Vessel vessel)

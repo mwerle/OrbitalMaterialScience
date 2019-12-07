@@ -32,6 +32,18 @@ namespace NE_Science
         Part getPart();
     }
 
+    /// <summary>
+    /// This implements the Container used to transport Experiments.
+    /// </summary>
+    /// From a KSP perspective, this is also the actual experiment which
+    /// generates science data.
+    ///
+    /// Amongst other things this class manages the textures applied to
+    /// the outside of a Container, hooks into the Science Results dialog.
+    /// It also manages the various UIs for adding and removing experiments
+    /// from containers, installing experiments into labs, and finalizing
+    /// an experiment (thus generating the actual Science Data) after an
+    /// experiment has been run.
     public class ExperimentStorage : ModuleScienceExperiment,
         ExperimentDataStorage,
         IPartCostModifier,
@@ -307,6 +319,7 @@ namespace NE_Science
         /// <summary>
         /// This displays a window allowing the user to choose which lab to install an experiment into.
         /// </summary>
+        /// TODO: replace with a highlight-selector
         private void showLabWindow()
         {
             // This is a list of content items to add to the dialog

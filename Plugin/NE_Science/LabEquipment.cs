@@ -20,9 +20,11 @@ using KSP.Localization;
 
 namespace NE_Science
 {
-    /*
-     *Module used to add Lab Equipment to the Tech tree. 
-     */
+     /// <summary>
+     /// Module used to add Lab Equipment to the Tech tree. 
+     /// </summary>
+     /// This is the actual PartModule defined in the Part Definition for each
+     /// LabEquipment. It is used to display the LabEquipment in the Tech Tree.
     public class LabEquipmentModule : PartModule
     {
 
@@ -44,9 +46,20 @@ namespace NE_Science
 
     }
 
-    /*
-     * Class used to add LabEquipment to Containers
-     */
+     /// <summary>
+     /// The actual LabEquipment as used in this mod.
+     /// </summary>
+     /// LabEquipment is a "virtual Part" in that the user cannot directly
+     /// manipulate the equipment. It is either stored in a
+     /// LabEquipmentContainer or installed in a LabEquipmentSlot inside
+     /// a Lab.
+     ///
+     /// LabEquipment can have experiments (ExperimentData) installed in them
+     /// in order to run the exeperiment.
+     /// 
+     /// LabEquipment will produce a Product using a Reactants. When
+     /// running an experiment, Product is accumulated until the experiment
+     /// is completed.
     public class LabEquipment : ExperimentDataStorage
     {
         public const string CONFIG_NODE_NAME = "NE_LabEquipment";
@@ -64,7 +77,7 @@ namespace NE_Science
         private string name;
         private float mass;
         private float cost;
-        private EquipmentRacks type;
+        private LabEquipmentType type;
 
         private float productPerHour = 0;
         private string product = "";
@@ -77,7 +90,7 @@ namespace NE_Science
         private Lab lab;
         private ExperimentData exp;
 
-        public LabEquipment(string abb, string name, EquipmentRacks type, float mass, float cost, float productPerHour, string product, float reactantPerProduct, string reactant)
+        public LabEquipment(string abb, string name, LabEquipmentType type, float mass, float cost, float productPerHour, string product, float reactantPerProduct, string reactant)
         {
             this.abb = abb;
             this.name = name;
@@ -102,7 +115,7 @@ namespace NE_Science
             return name;
         }
 
-        public EquipmentRacks getType()
+        public LabEquipmentType getType()
         {
             return type;
         }
@@ -139,7 +152,7 @@ namespace NE_Science
 
         static public LabEquipment getNullObject()
         {
-             return new LabEquipment("empty", "empty", EquipmentRacks.NONE, 0f, 0f, 0f, "", 0f, "");
+             return new LabEquipment("empty", "empty", LabEquipmentType.NONE, 0f, 0f, 0f, "", 0f, "");
         }
 
         public ConfigNode getNode()
@@ -176,16 +189,16 @@ namespace NE_Science
 
             string abb = node.GetValue(ABB_VALUE);
             string name = node.GetValue(NAME_VALUE);
-            float mass = NE_Helper.GetValueAsFloat(node, MASS_VALUE);
-            float cost = NE_Helper.GetValueAsFloat(node, COST_VALUE);
+            float mass = node.GetFloat(MASS_VALUE);
+            float cost = node.GetFloat(COST_VALUE);
 
             string product = node.GetValue(PRODUCT_VALUE);
-            float productPerHour = NE_Helper.GetValueAsFloat(node, PRODUCT_PER_HOUR_VALUE);
+            float productPerHour = node.GetFloat(PRODUCT_PER_HOUR_VALUE);
 
             string reactant = node.GetValue(REACTANT_VALUE);
-            float reactantPerProduct = NE_Helper.GetValueAsFloat(node, REACTANT_PER_PRODUCT_VALUE);
+            float reactantPerProduct = node.GetFloat(REACTANT_PER_PRODUCT_VALUE);
 
-            EquipmentRacks type = EquipmentRacksFactory.getType(node.GetValue(TYPE_VALUE));
+            LabEquipmentType type = LabEquipmentRegistry.getType(node.GetValue(TYPE_VALUE));
 
             LabEquipment eq = new LabEquipment(abb, name, type, mass, cost, productPerHour, product, reactantPerProduct, reactant);
             eq.lab = lab;
@@ -376,13 +389,13 @@ namespace NE_Science
             string desc = "<b>" + getName() +" (" + getAbbreviation()+ ")</b>\n";
             switch (type)
             {
-                case EquipmentRacks.CIR:
-                case EquipmentRacks.FIR:
-                case EquipmentRacks.PRINTER:
+                case LabEquipmentType.CIR:
+                case LabEquipmentType.FIR:
+                case LabEquipmentType.PRINTER:
                     desc +=  Localizer.Format("#ne_For_1", "MSL-1000");
                     break;
-                case EquipmentRacks.MSG:
-                case EquipmentRacks.USU:
+                case LabEquipmentType.MSG:
+                case LabEquipmentType.USU:
                     desc +=  Localizer.Format("#ne_For_1", "MPL-600");
                     break;
             }

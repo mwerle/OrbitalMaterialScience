@@ -102,7 +102,7 @@ namespace NE_Science
     public class KeminiExperimentData : StepExperimentData
     {
         public KeminiExperimentData(string id, string type, string name, string abb, float mass, float cost, float labTime)
-            : base(id, type, name, abb, EquipmentRacks.KEMINI, mass, cost)
+            : base(id, type, name, abb, LabEquipmentType.KEMINI, mass, cost)
         {
             storageType = ExperimentFactory.KEMINI_EXPERIMENTS;
             step = new ResourceExperimentStep(this, Resources.LAB_TIME, labTime, "", 0);
@@ -121,6 +121,7 @@ namespace NE_Science
             return ret;
         }
 
+        #if false
         public override List<Lab> getFreeLabs(Part p)
         {
             List<Lab> ret = new List<Lab>();
@@ -134,6 +135,7 @@ namespace NE_Science
             }
             return ret;
         }
+        #endif
 
         public override bool canInstall(Vessel vessel)
         {

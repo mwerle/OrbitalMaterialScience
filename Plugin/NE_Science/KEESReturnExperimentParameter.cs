@@ -108,7 +108,7 @@ namespace NE_Science.Contracts.Parameters
 
         protected override void OnLoad(ConfigNode node)
         {
-            int bodyID = NE_Helper.GetValueAsInt(node, KEESExperimentContract.TARGET_BODY);
+            int bodyID = node.GetInt(KEESExperimentContract.TARGET_BODY);
             for (int idx = 0, count = FlightGlobals.Bodies.Count; idx < count; idx++)
             {
                 var body = FlightGlobals.Bodies[idx];

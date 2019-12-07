@@ -52,16 +52,12 @@ namespace NE_Science
         private string errorOnStopAnimName = "ErrorOnStop";
         public delegate void OnAnimationFinished(Animation a);
 
-        private LabEquipmentSlot exposureSlot = new LabEquipmentSlot(EquipmentRacks.EXPOSURE);
+        private LabEquipmentSlot exposureSlot = new LabEquipmentSlot(LabEquipmentType.EXPOSURE);
 
         public override void OnLoad(ConfigNode node)
         {
             base.OnLoad(node);
-            string stateString = node.GetValue(MEP_STATE_VALUE);
-            if (stateString != null)
-            {
-                MEPlabState = MEPLabStatusFactory.getType(stateString);
-            }
+            MEPlabState = node.GetEnum(MEP_STATE_VALUE, MEPLabStatus.NOT_READY);
             exposureSlot = getLabEquipmentSlotByType(node, EXPOSURE_LAB_EQUIPMENT_TYPE);
         }
 
@@ -85,7 +81,7 @@ namespace NE_Science
             exposureSlot.onStart(this);
             if (!exposureSlot.isEquipmentInstalled())
             {
-                exposureSlot.install(new LabEquipment("MEP", "MEP", EquipmentRacks.EXPOSURE, 0f, 0f, ExposureTimePerHour, Resources.EXPOSURE_TIME, 0, ""), this); ;
+                exposureSlot.install(new LabEquipment("MEP", "MEP", LabEquipmentType.EXPOSURE, 0f, 0f, ExposureTimePerHour, Resources.EXPOSURE_TIME, 0, ""), this); ;
             }
 
             switch (MEPlabState)
@@ -140,19 +136,13 @@ namespace NE_Science
                 ScreenMessages.PostScreenMessage("#ne_Not_enough_crew_in_this_module", 6, ScreenMessageStyle.UPPER_CENTER);
                 return;
             }
-            if (exposureSlot.isExposureAction())
-            {
-                bool shouldArmMove = canArmMove();
-                if(shouldArmMove)
-                {
-                    exposureSlot.experimentAction();
-                }
-                animateRobotArm(shouldArmMove);
-            }
-            else
+
+            bool shouldArmMove = canArmMove();
+            if(shouldArmMove)
             {
                 exposureSlot.experimentAction();
             }
+            animateRobotArm(shouldArmMove);
         }
 
         /// <summary>
@@ -244,7 +234,7 @@ namespace NE_Science
 
         public override void installExperiment(ExperimentData exp)
         {
-            if (exp.getEquipmentNeeded() == EquipmentRacks.EXPOSURE && exposureSlot.experimentSlotFree())
+            if (exp.getEquipmentNeeded() == LabEquipmentType.EXPOSURE && exposureSlot.experimentSlotFree())
             {
                 exposureSlot.installExperiment(exp);
                 experimentName = exp.getAbbreviation() + ": " + exp.stateString();
@@ -274,7 +264,7 @@ namespace NE_Science
 
         protected override bool isActive()
         {
-            return doResearch && isRunning() && part.protoModuleCrew.Count >= minimumCrew && !OMSExperiment.checkBoring(vessel, false);
+            return doResearch && isRunning() && part.protoModuleCrew.Count >= minimumCrew && !vessel.isBoring(false);
         }
 
         protected override void updateLabStatus()
@@ -337,7 +327,7 @@ namespace NE_Science
             if( e != null )
             {
                 /* And if the experiment is running let's animate closing it. */
-                if( exposureSlot.isExposureAction() && (e.state == ExperimentState.RUNNING) )
+                if (e.state == ExperimentState.RUNNING)
                 {
                     animateRobotArm(canArmMove());
                 }
@@ -363,7 +353,7 @@ namespace NE_Science
             if( e != null )
             {
                 /* And if the experiment is running let's animate closing it. */
-                if( exposureSlot.isExposureAction() && (e.state == ExperimentState.RUNNING) )
+                if( e.state == ExperimentState.RUNNING )
                 {
                     animateRobotArm(canArmMove());
                 }
@@ -502,7 +492,7 @@ namespace NE_Science
             return ret;
         }
 
-        internal bool hasEquipmentFreeExperimentSlot(EquipmentRacks neededEquipment)
+        internal bool hasEquipmentFreeExperimentSlot(LabEquipmentType neededEquipment)
         {
             return exposureSlot.experimentSlotFree();
         }
@@ -554,29 +544,5 @@ namespace NE_Science
     public enum MEPLabStatus
     {
         NOT_READY, READY, RUNNING, ERROR_ON_START, ERROR_ON_STOP, NONE
-    }
-
-    public class MEPLabStatusFactory
-    {
-        public static MEPLabStatus getType(string p)
-        {
-            switch (p)
-            {
-                case "NOT_READY":
-                    return MEPLabStatus.NOT_READY;
-                case "READY":
-                    return MEPLabStatus.READY;
-                case "RUNNING":
-                    return MEPLabStatus.RUNNING;
-                case "ERROR_ON_START":
-                    return MEPLabStatus.ERROR_ON_START;
-                case "ERROR_ON_STOP":
-                    return MEPLabStatus.ERROR_ON_STOP;
-                case "NONE":
-                    return MEPLabStatus.NONE;
-                default:
-                    return MEPLabStatus.NOT_READY;
-            }
-        }
     }
 }

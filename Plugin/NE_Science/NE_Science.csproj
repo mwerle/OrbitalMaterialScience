@@ -63,7 +63,7 @@
     <Compile Include="KerbalResearchExperimentData.cs" />
     <Compile Include="MPL_ExperimentData.cs" />
     <Compile Include="MPL_Module.cs" />
-    <Compile Include="EquipmentRacks.cs" />
+    <Compile Include="LabEquipmentType.cs" />
     <Compile Include="EquipmentRackContainer.cs" />
     <Compile Include="ExperimentData.cs" />
     <Compile Include="ExperimentFactory.cs" />

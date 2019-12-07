@@ -48,8 +48,8 @@ namespace NE_Science
 
         public Generator labTimeGenerator;
 
-        private LabEquipmentSlot msgSlot = new LabEquipmentSlot(EquipmentRacks.MSG);
-        private LabEquipmentSlot usuSlot = new LabEquipmentSlot(EquipmentRacks.USU);
+        private LabEquipmentSlot msgSlot = new LabEquipmentSlot(LabEquipmentType.MSG);
+        private LabEquipmentSlot usuSlot = new LabEquipmentSlot(LabEquipmentType.USU);
 
         public override void OnLoad(ConfigNode node)
         {
@@ -140,7 +140,7 @@ namespace NE_Science
         {
             switch (exp.getEquipmentNeeded())
             {
-                case EquipmentRacks.MSG:
+                case LabEquipmentType.MSG:
                     if (msgSlot.isEquipmentInstalled() && msgSlot.experimentSlotFree())
                     {
                         msgSlot.installExperiment(exp);
@@ -152,7 +152,7 @@ namespace NE_Science
                         NE_Helper.logError("installExperiment, installed: " + msgSlot.isEquipmentInstalled() + "; free: " + msgSlot.experimentSlotFree());
                     }
                     break;
-                case EquipmentRacks.USU:
+                case LabEquipmentType.USU:
                     if (usuSlot.isEquipmentInstalled() && usuSlot.experimentSlotFree())
                     {
                         usuSlot.installExperiment(exp);
@@ -172,12 +172,12 @@ namespace NE_Science
         {
             switch (le.getType())
             {
-                case EquipmentRacks.MSG:
+                case LabEquipmentType.MSG:
                     msg.SetActive(true);
                     msgSlot.install(le, this);
                     cfe.SetActive(false);
                     break;
-                case EquipmentRacks.USU:
+                case LabEquipmentType.USU:
                     usu.SetActive(true);
                     usuSlot.install(le, this);
                     break;
@@ -186,11 +186,11 @@ namespace NE_Science
             part.mass += le.getMass();
         }
 
-        private void setEquipmentActive(EquipmentRacks rack)
+        private void setEquipmentActive(LabEquipmentType rack)
         {
             switch (rack)
             {
-                case EquipmentRacks.MSG:
+                case LabEquipmentType.MSG:
                     if (msg != null)
                     {
                         msg.SetActive(msgSlot.isEquipmentInstalled());
@@ -201,7 +201,7 @@ namespace NE_Science
                         if (msg != null) msg.SetActive(msgSlot.isEquipmentInstalled());
                     }
                     break;
-                case EquipmentRacks.USU:
+                case LabEquipmentType.USU:
                     if (usu != null)
                     {
                         usu.SetActive(usuSlot.isEquipmentInstalled());
@@ -215,13 +215,13 @@ namespace NE_Science
             }
         }
 
-        public bool hasEquipmentInstalled(EquipmentRacks rack)
+        public bool hasEquipmentInstalled(LabEquipmentType rack)
         {
             switch (rack)
             {
-                case EquipmentRacks.MSG:
+                case LabEquipmentType.MSG:
                     return msgSlot.isEquipmentInstalled();
-                case EquipmentRacks.USU:
+                case LabEquipmentType.USU:
                     return usuSlot.isEquipmentInstalled();
 
                 default:
@@ -229,13 +229,13 @@ namespace NE_Science
             }
         }
 
-        public bool hasEquipmentFreeExperimentSlot(EquipmentRacks rack)
+        public bool hasEquipmentFreeExperimentSlot(LabEquipmentType rack)
         {
             switch (rack)
             {
-                case EquipmentRacks.MSG:
+                case LabEquipmentType.MSG:
                     return msgSlot.experimentSlotFree();
-                case EquipmentRacks.USU:
+                case LabEquipmentType.USU:
                     return usuSlot.experimentSlotFree();
 
                 default:
@@ -243,13 +243,13 @@ namespace NE_Science
             }
         }
 
-        public bool isEquipmentRunning(EquipmentRacks rack)
+        public bool isEquipmentRunning(LabEquipmentType rack)
         {
             switch (rack)
             {
-                case EquipmentRacks.MSG:
+                case LabEquipmentType.MSG:
                     return msgSlot.isEquipmentRunning();
-                case EquipmentRacks.USU:
+                case LabEquipmentType.USU:
                     return usuSlot.isEquipmentRunning();
 
                 default:
@@ -290,7 +290,7 @@ namespace NE_Science
 
             if (!msgSlot.isEquipmentInstalled())
             {
-                Events["installMSG"].active = checkForRackModule(EquipmentRacks.MSG);
+                Events["installMSG"].active = checkForRackModule(LabEquipmentType.MSG);
                 Fields["msgStatus"].guiActive = false;
             }
             else
@@ -321,7 +321,7 @@ namespace NE_Science
 
             if (!usuSlot.isEquipmentInstalled())
             {
-                Events["installUSU"].active = checkForRackModule(EquipmentRacks.USU);
+                Events["installUSU"].active = checkForRackModule(LabEquipmentType.USU);
                 Fields["usuStatus"].guiActive = false;
             }
             else
@@ -396,12 +396,12 @@ namespace NE_Science
             return sb.ToString();
         }
 
-        private bool checkForRackModule(EquipmentRacks equipmentRack)
+        private bool checkForRackModule(LabEquipmentType equipmentRack)
         {
             return getRackModule(equipmentRack) != null;
         }
 
-        private EquipmentRackContainer getRackModule(EquipmentRacks equipmentRack)
+        private EquipmentRackContainer getRackModule(LabEquipmentType equipmentRack)
         {
             EquipmentRackContainer[] modules = GameObject.FindObjectsOfType(typeof(EquipmentRackContainer)) as EquipmentRackContainer[];
             for (int idx = 0, count = modules.Length; idx < count; idx++)
@@ -418,7 +418,7 @@ namespace NE_Science
         [KSPEvent(guiActive = true, guiName = "#ne_Install_MSG", active = false)]
         public void installMSG()
         {
-            EquipmentRackContainer module = getRackModule(EquipmentRacks.MSG);
+            EquipmentRackContainer module = getRackModule(LabEquipmentType.MSG);
             if (module != null)
             {
                 installEquipmentRack(module.install());
@@ -444,7 +444,7 @@ namespace NE_Science
         [KSPEvent(guiActive = true, guiName = "#ne_Install_USU", active = false)]
         public void installUSU()
         {
-            EquipmentRackContainer modul = getRackModule(EquipmentRacks.USU);
+            EquipmentRackContainer modul = getRackModule(LabEquipmentType.USU);
             if (modul != null)
             {
                 installEquipmentRack(modul.install());

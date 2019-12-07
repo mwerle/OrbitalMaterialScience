@@ -14,7 +14,7 @@ namespace NE_Science
         private int partCount;
         private MPL_Module[] physicsLabCache = null;
 
-        protected KerbalResearchExperimentData(string id, string type, string name, string abb, EquipmentRacks eq, float mass, float cost, int testSubjectsNeeded)
+        protected KerbalResearchExperimentData(string id, string type, string name, string abb, LabEquipmentType eq, float mass, float cost, int testSubjectsNeeded)
             : base(id, type, name, abb, eq, mass, cost, testSubjectsNeeded)
         {
             this.testSubjectsNeeded = testSubjectsNeeded;
@@ -39,7 +39,7 @@ namespace NE_Science
         protected override void load(ConfigNode node)
         {
             base.load(node);
-            testSubjectsNeeded = NE_Helper.GetValueAsInt(node, TEST_SUBJECTS_NEEDED);
+            testSubjectsNeeded = node.GetInt(TEST_SUBJECTS_NEEDED);
         }
 
         public override bool canInstall(Vessel vessel)

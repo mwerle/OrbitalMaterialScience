@@ -22,6 +22,11 @@ using KSP.Localization;
 
 namespace NE_Science
 {
+    /// <summary>
+    /// A container for transporting LabEquipment.
+    /// </summary>
+    /// This is the PartModule which allows the user to add or remove
+    /// LabEquipment to a Part for transportation to a Lab.
     class EquipmentRackContainer : PartModule, IPartCostModifier, IPartMassModifier
     {
         private const float EMPTY_MASS = 0.4f;
@@ -61,7 +66,7 @@ namespace NE_Science
         {
             leq = er;
             status = leq.getName();
-            if (leq.getType() == EquipmentRacks.NONE)
+            if (leq.getType() == LabEquipmentType.NONE)
             {
                 Events["chooseEquipment"].guiName = Localizer.GetStringByTag("#ne_Add_Lab_Equipment");
             }
@@ -102,9 +107,9 @@ namespace NE_Science
         [KSPEvent(guiActiveEditor = true, guiName = "#ne_Add_Lab_Equipment", active = false)]
         public void chooseEquipment()
         {
-            if (leq.getType() == EquipmentRacks.NONE)
+            if (leq.getType() == LabEquipmentType.NONE)
             {
-                availableRacks = EquipmentRackRegistry.getAvailableRacks();
+                availableRacks = LabEquipmentRegistry.getAvailableLabEquipment();
                 showAddGui();
             }
             else
@@ -182,7 +187,7 @@ namespace NE_Science
             setEquipment(e);
         }
 
-        public EquipmentRacks getRackType()
+        public LabEquipmentType getRackType()
         {
             return leq.getType();
         }
@@ -267,20 +272,24 @@ namespace NE_Science
         }
     }
 
+    /// <summary>
+    /// Provides a way to dynamically load and modify the texture of an
+    /// EquipmentRackContainer.
+    /// </summary>
     class EquipmentContainerTextureFactory
     {
-        private Dictionary<EquipmentRacks, GameDatabase.TextureInfo> textureReg = new Dictionary<EquipmentRacks, GameDatabase.TextureInfo>();
-        private Dictionary<EquipmentRacks, KeyValuePair<string, string>> textureNameReg = new Dictionary<EquipmentRacks, KeyValuePair<string, string>>() {
-        { EquipmentRacks.NONE, new KeyValuePair<string,string>("NehemiahInc/MultiPurposeParts/Parts/LabEquipmentContainer/", "ContainerTexture")},
-        { EquipmentRacks.PRINTER, new KeyValuePair<string,string>("NehemiahInc/OMS/Parts/LabEquipmentContainer/","Container3PR_Texture") },
-        { EquipmentRacks.CIR,  new KeyValuePair<string,string>("NehemiahInc/OMS/Parts/LabEquipmentContainer/", "ContainerCIR_Texture") },
-        { EquipmentRacks.FIR,  new KeyValuePair<string,string>("NehemiahInc/OMS/Parts/LabEquipmentContainer/", "ContainerFIR_Texture") },
-        { EquipmentRacks.MSG,  new KeyValuePair<string,string>("NehemiahInc/OMS/Parts/LabEquipmentContainer/", "ContainerMSG_Texture") },
-        { EquipmentRacks.EXPOSURE, new KeyValuePair<string,string>("NehemiahInc/MultiPurposeParts/Parts/LabEquipmentContainer/", "ContainerTexture") },
-        { EquipmentRacks.USU,  new KeyValuePair<string,string>("NehemiahInc/KerbalLifeScience/Parts/LabEquipmentContainer/", "ContainerUSU_Texture" )}};
+        private Dictionary<LabEquipmentType, GameDatabase.TextureInfo> textureReg = new Dictionary<LabEquipmentType, GameDatabase.TextureInfo>();
+        private Dictionary<LabEquipmentType, KeyValuePair<string, string>> textureNameReg = new Dictionary<LabEquipmentType, KeyValuePair<string, string>>() {
+        { LabEquipmentType.NONE, new KeyValuePair<string,string>("NehemiahInc/MultiPurposeParts/Parts/LabEquipmentContainer/", "ContainerTexture")},
+        { LabEquipmentType.PRINTER, new KeyValuePair<string,string>("NehemiahInc/OMS/Parts/LabEquipmentContainer/","Container3PR_Texture") },
+        { LabEquipmentType.CIR,  new KeyValuePair<string,string>("NehemiahInc/OMS/Parts/LabEquipmentContainer/", "ContainerCIR_Texture") },
+        { LabEquipmentType.FIR,  new KeyValuePair<string,string>("NehemiahInc/OMS/Parts/LabEquipmentContainer/", "ContainerFIR_Texture") },
+        { LabEquipmentType.MSG,  new KeyValuePair<string,string>("NehemiahInc/OMS/Parts/LabEquipmentContainer/", "ContainerMSG_Texture") },
+        { LabEquipmentType.EXPOSURE, new KeyValuePair<string,string>("NehemiahInc/MultiPurposeParts/Parts/LabEquipmentContainer/", "ContainerTexture") },
+        { LabEquipmentType.USU,  new KeyValuePair<string,string>("NehemiahInc/KerbalLifeScience/Parts/LabEquipmentContainer/", "ContainerUSU_Texture" )}};
 
 
-        internal GameDatabase.TextureInfo getTextureForEquipment(EquipmentRacks type)
+        internal GameDatabase.TextureInfo getTextureForEquipment(LabEquipmentType type)
         {
             GameDatabase.TextureInfo tex;
             if (textureReg.TryGetValue(type, out tex))
@@ -299,13 +308,13 @@ namespace NE_Science
                 else
                 {
                     NE_Helper.logError("Texture for: " + type + " not found try to return default texture");
-                    newTex = getTexture(EquipmentRacks.NONE);
+                    newTex = getTexture(LabEquipmentType.NONE);
                     return newTex;
                 }
             }
         }
 
-        private GameDatabase.TextureInfo getTexture(EquipmentRacks p)
+        private GameDatabase.TextureInfo getTexture(LabEquipmentType p)
         {
             KeyValuePair<string,string> textureName;
             if (textureNameReg.TryGetValue(p, out textureName))

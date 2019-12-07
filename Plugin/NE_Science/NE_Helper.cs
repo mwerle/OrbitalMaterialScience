@@ -100,72 +100,6 @@ namespace NE_Science
         }
 
         /// <summary>
-        /// Returns the ConfigNode's value as a bool, or the defaultValue on failure.
-        /// </summary>
-        /// <returns>The node value as int.</returns>
-        /// <param name="node">The Node from which to retrieve the Value.</param>
-        /// <param name="name">The name of the Value to retrieve.</param>
-        /// <param name="defaultValue">Default value to return if the Value doesn't exist in the ConfigNode.</param>
-        public static bool GetValueAsBool(ConfigNode node, string name, bool defaultValue = false)
-        {
-            bool rv = defaultValue;
-            try
-            {
-                if (!node.TryGetValue(name, ref rv))
-                {
-                    rv = defaultValue;
-                }
-            }
-            catch (Exception e)
-            {
-                logError("GetValueAsInt - exception: " + e.Message);
-            }
-            return rv;
-        }
-
-        /// <summary>
-        /// Returns the ConfigNode's value as an int, or 0 on failure.
-        /// </summary>
-        /// <returns>The node value as int.</returns>
-        /// <param name="node">The Node from which to retrieve the Value.</param>
-        /// <param name="name">The name of the Value to retrieve.</param>
-        /// <param name="defaultValue">Default value to return if the Value doesn't exist in the ConfigNode.</param>
-        public static int GetValueAsInt(ConfigNode node, string name, int defaultValue = 0)
-        {
-            int rv = defaultValue;
-            try {
-                if (!node.TryGetValue(name, ref rv))
-                {
-                    rv = defaultValue;
-                }
-            } catch (Exception e) {
-                logError("GetValueAsInt - exception: " + e.Message);
-            }
-            return rv;
-        }
-
-        /// <summary>
-        /// Returns the ConfigNode's value as a float, or 0f on failure.
-        /// </summary>
-        /// <returns>The node value as float.</returns>
-        /// <param name="node">The Node from which to retrieve the Value.</param>
-        /// <param name="name">The name of the Value to retrieve.</param>
-        /// <param name="defaultValue">Default value to return if the Value doesn't exist in the ConfigNode.</param>
-        public static float GetValueAsFloat(ConfigNode node, string name, float defaultValue = 0.0f)
-        {
-            float rv = defaultValue;
-            try {
-                if (!node.TryGetValue(name, ref rv))
-                {
-                    rv = defaultValue;
-                }
-            } catch (Exception e) {
-                logError("GetValueAsFloat - exception: " + e.Message);
-            }
-            return rv;
-        }
-
-        /// <summary>
         /// Returns TRUE if the part technology is available.
         /// </summary>
         /// <returns><c>true</c>, if part technology available, <c>false</c> otherwise.</returns>
@@ -508,6 +442,122 @@ namespace NE_Science
         public static bool IsTrueNull(this UnityEngine.Object ob)
         {
             return (object)ob == null;
+        }
+
+        /// <summary>
+        /// Checks whether the current situation is "boring" or not.
+        /// </summary>
+        /// "Boring" is currently defined as being on Kerbin and within the atmosphere.
+        /// <param name="vessel"></param>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        public static bool isBoring(this Vessel vessel, bool msg = false)
+        {
+            if (NE_Helper.debugging())
+            {
+                return false;
+            }
+            // MKW TODO: Check if CelestialBody can be compared like this
+            if ((vessel.orbit.referenceBody == Planetarium.fetch.Home) &&
+                (vessel.situation == Vessel.Situations.LANDED ||
+                vessel.situation == Vessel.Situations.PRELAUNCH ||
+                vessel.situation == Vessel.Situations.SPLASHED ||
+                vessel.altitude <= vessel.orbit.referenceBody.atmosphereDepth))
+            {
+                if (msg) ScreenMessages.PostScreenMessage("#ne_Too_boring_here_Go_to_space", 6, ScreenMessageStyle.UPPER_CENTER);
+                return true;
+            }
+            return false;
+        }
+
+
+        /// <summary>
+        /// Returns the ConfigNode's value as a bool, or the defaultValue on failure.
+        /// </summary>
+        /// If the `name` cannot be found in `node`, `defaultValue` is returned.
+        /// <param name="node"></param>
+        /// <param name="name"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public static bool GetBool(this ConfigNode node, string name, bool defaultValue = false)
+        {
+            bool rv = defaultValue;
+            try {
+                if (!node.TryGetValue(name, ref rv))
+                {
+                    rv = defaultValue;
+                }
+            } catch (Exception e) {
+                NE_Helper.logError("NE_ExtensionMethods.GetBool - exception: " + e.Message);
+            }
+            return rv;
+        }
+
+        /// <summary>
+        /// Returns the ConfigNode's value as an int, or the defaultValue on failure.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="name"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public static int GetInt(this ConfigNode node, string name, int defaultValue = 0)
+        {
+            int rv = defaultValue;
+            try {
+                if (!node.TryGetValue(name, ref rv))
+                {
+                    rv = defaultValue;
+                }
+            } catch (Exception e) {
+                NE_Helper.logError("NE_ExtensionMethods.GetInt - exception: " + e.Message);
+            }
+            return rv;
+        }
+
+        /// <summary>
+        /// Returns the ConfigNode's value as a float, or the defaultValue on failure.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="name"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public static float GetFloat(this ConfigNode node, string name, float defaultValue = 0.0f)
+        {
+            float rv = defaultValue;
+            try {
+                if (!node.TryGetValue(name, ref rv))
+                {
+                    rv = defaultValue;
+                }
+            } catch (Exception e) {
+                NE_Helper.logError("NE_ExtensionMethods.GetFloat - exception: " + e.Message);
+            }
+            return rv;
+        }
+
+        /// <summary>
+        /// Returns the ConfigNode's value as an enumeration, or the defaultValue on failure.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="name"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public static TEnum GetEnum<TEnum>(this ConfigNode node, string name, TEnum defaultValue) where TEnum : struct, IComparable, IConvertible, IFormattable
+        {
+            TEnum rv = defaultValue;
+            string val = "";
+            try {
+                if (!node.TryGetValue(name, ref val))
+                {
+                    if( !Enum.TryParse(val, true, out rv))
+                    {
+                        rv = defaultValue;
+                    }
+                }
+            } catch (Exception e) {
+                NE_Helper.logError("NE_ExtensionMethods.GetEnum - exception: " + e.Message);
+            }
+            return rv;
         }
     }
 }

@@ -87,7 +87,7 @@ namespace NE_Science
                 NE_Helper.logError("getExperimentStepFromConfigNode: invalid Node: " + node.name);
                 return new ExperimentStep(exp, "", "");
             }
-            int index = NE_Helper.GetValueAsInt(node, INDEX_VALUE);
+            int index = node.GetInt(INDEX_VALUE);
             string name = node.GetValue(NAME_VALUE);
             ExperimentStep step = createExperimentStep(node.GetValue(TYPE_VALUE), exp, name, index);
             step.load(node);
@@ -121,7 +121,7 @@ namespace NE_Science
 
         internal virtual bool canStart()
         {
-            return exp.state == ExperimentState.INSTALLED && !OMSExperiment.checkBoring(exp.store.getPart().vessel);
+            return exp.state == ExperimentState.INSTALLED && !exp.store.getPart().vessel.isBoring();
         }
 
         public virtual string getNeededResource()
@@ -134,7 +134,7 @@ namespace NE_Science
             return 0;
         }
 
-        public virtual EquipmentRacks getNeededEquipment()
+        public virtual LabEquipmentType getNeededEquipment()
         {
             return exp.getEquipmentNeeded();
         }
@@ -182,7 +182,7 @@ namespace NE_Science
         {
             base.load(node);
             res = node.GetValue(RES_VALUE);
-            amount = NE_Helper.GetValueAsFloat(node, AMOUNT_VALUE);
+            amount = node.GetFloat(AMOUNT_VALUE);
         }
 
         public override bool ready()
@@ -201,7 +201,8 @@ namespace NE_Science
             NE_Helper.log("ResExppStep.start()");
             if(canStart()){
                 Lab lab = ((LabEquipment)exp.store).getLab();
-                if (lab != null && !OMSExperiment.checkBoring(lab.vessel, true))
+                bool isBoring = lab.vessel.isBoring(true);
+                if (lab != null && !isBoring)
                 {
                     NE_Helper.log("ResExppStep.start(): create Resource");
                     ((LabEquipment)exp.store).createResourceInLab(res, amount);
@@ -210,7 +211,7 @@ namespace NE_Science
                 }
                 else
                 {
-                    NE_Helper.logError("ResExppStep.start(): Lab null or boring. Boring: " + OMSExperiment.checkBoring(lab.vessel, true));
+                    NE_Helper.logError("ResExppStep.start(): Lab null or boring. Boring: " + isBoring);
                 }
             }
             NE_Helper.log("ResExppStep.start(): can NOT start");

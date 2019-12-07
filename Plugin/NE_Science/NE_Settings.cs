@@ -28,6 +28,9 @@ using System.Reflection;
 
 namespace NE_Science
 {
+    /// <summary>
+    /// Manages the game settings for NEOS.
+    /// </summary>
     class NE_Settings : GameParameters.CustomParameterNode
     {
 #warning LOCALISE

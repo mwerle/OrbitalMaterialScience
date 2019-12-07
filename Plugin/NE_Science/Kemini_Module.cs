@@ -27,7 +27,7 @@ namespace NE_Science
 
         private const string KEMINI_LAB_EQUIPMENT_TYPE = "KEMINI";
 
-        private LabEquipmentSlot keminiSlot = new LabEquipmentSlot(EquipmentRacks.KEMINI);
+        private LabEquipmentSlot keminiSlot = new LabEquipmentSlot(LabEquipmentType.KEMINI);
 
         public override void OnLoad(ConfigNode node)
         {
@@ -53,7 +53,7 @@ namespace NE_Science
             keminiSlot.onStart(this);
             if (!keminiSlot.isEquipmentInstalled())
             {
-                LabEquipment keminiLab = new LabEquipment("KL", "Kemini Lab", EquipmentRacks.KEMINI, 0f, 0f, 1f, Resources.LAB_TIME, 10f, Resources.ELECTRIC_CHARGE);
+                LabEquipment keminiLab = new LabEquipment("KL", "Kemini Lab", LabEquipmentType.KEMINI, 0f, 0f, 1f, Resources.LAB_TIME, 10f, Resources.ELECTRIC_CHARGE);
                 keminiSlot.install(keminiLab, this);
             }
             Fields["labStatus"].guiName = "#ne_Kemini_Lab";
@@ -64,7 +64,7 @@ namespace NE_Science
         {
             switch (exp.getEquipmentNeeded())
             {
-                case EquipmentRacks.KEMINI:
+                case LabEquipmentType.KEMINI:
                     if (keminiSlot.isEquipmentInstalled() && keminiSlot.experimentSlotFree())
                     {
                         keminiSlot.installExperiment(exp);
@@ -85,18 +85,18 @@ namespace NE_Science
         {
             switch (le.getType())
             {
-                case EquipmentRacks.KEMINI:
+                case LabEquipmentType.KEMINI:
 
                     keminiSlot.install(le, this);
                     break;
             }
         }
 
-        public bool hasEquipmentInstalled(EquipmentRacks rack)
+        public bool hasEquipmentInstalled(LabEquipmentType rack)
         {
             switch (rack)
             {
-                case EquipmentRacks.KEMINI:
+                case LabEquipmentType.KEMINI:
                     return keminiSlot.isEquipmentInstalled();
 
                 default:
@@ -104,22 +104,22 @@ namespace NE_Science
             }
         }
 
-        public bool hasEquipmentFreeExperimentSlot(EquipmentRacks rack)
+        public bool hasEquipmentFreeExperimentSlot(LabEquipmentType rack)
         {
             switch (rack)
             {
-                case EquipmentRacks.KEMINI:
+                case LabEquipmentType.KEMINI:
                     return keminiSlot.experimentSlotFree();
                 default:
                     return false;
             }
         }
 
-        public bool isEquipmentRunning(EquipmentRacks rack)
+        public bool isEquipmentRunning(LabEquipmentType rack)
         {
             switch (rack)
             {
-                case EquipmentRacks.KEMINI:
+                case LabEquipmentType.KEMINI:
                     return keminiSlot.isEquipmentRunning();
 
                 default:

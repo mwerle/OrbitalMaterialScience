@@ -20,9 +20,12 @@ using System.Text;
 
 namespace NE_Science
 {
-    /*
-    *Module used to add Experiments to the Tech tree.
-    */
+    /// <summary>
+    /// Module used to add Experiments to the Tech tree.
+    /// </summary>
+    /// This is the "physical" Part in the experiment definition added to the
+    /// configuration file for each experiment. It just gives the Part
+    /// definition a NEOS type.
     public class NE_ExperimentModule : PartModule
     {
 
@@ -31,7 +34,9 @@ namespace NE_Science
 
     }
 
-
+    /// <summary>
+    /// The ExperimentFactory maps ExperimentModule to ExperimentData.
+    /// </summary>
     public class ExperimentFactory
     {
         public const string OMS_EXPERIMENTS = "OMS";
@@ -254,7 +259,7 @@ namespace NE_Science
                         n.GetValue("abbreviation"),
                         mass,
                         cost,
-                        NE_Helper.GetValueAsFloat(n, "labTime"));
+                        n.GetFloat("labTime"));
                 }
             }
 

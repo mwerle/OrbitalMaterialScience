@@ -21,15 +21,27 @@ using System.Text;
 
 namespace NE_Science
 {
-    class ResourceHelper
+    static class ResourceHelper
     {
-        public static PartResource getResource(Part part, string name)
+        /// <summary>
+        /// Returns a named Resource if the Part has it.
+        /// </summary>
+        /// <param name="part"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static PartResource getResource(this Part part, string name)
         {
             PartResourceList resourceList = part.Resources;
             return resourceList.Get(name);
         }
 
-        public static double getResourceAmount(Part part, string name)
+        /// <summary>
+        /// Returns the amount of a named Resource if the Part has it.
+        /// </summary>
+        /// <param name="part"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static double getResourceAmount(this Part part, string name)
         {
             PartResource res = getResource(part, name);
             if (res == null)
@@ -39,7 +51,14 @@ namespace NE_Science
             return res.amount;
         }
 
-        public static bool setResourceAmount(Part part, string name, double amount)
+        /// <summary>
+        /// Sets the amount of a Resource in a Part, if the Part has the Resource.
+        /// </summary>
+        /// <param name="part"></param>
+        /// <param name="name"></param>
+        /// <param name="amount"></param>
+        /// <returns></returns>
+        public static bool setResourceAmount(this Part part, string name, double amount)
         {
             PartResource res = getResource(part, name);
             if (res == null)
@@ -50,7 +69,14 @@ namespace NE_Science
             return true;
         }
 
-        public static PartResource setResourceMaxAmount(Part part, string name, double max)
+        /// <summary>
+        /// Sets the maximum amount of a Resource in a Part, adding the Resource if necessary.
+        /// </summary>
+        /// <param name="part"></param>
+        /// <param name="name"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
+        public static PartResource setResourceMaxAmount(this Part part, string name, double max)
         {
             PartResource res = getResource(part, name);
             if (res == null && max > 0)
@@ -72,15 +98,13 @@ namespace NE_Science
             return res;
         }
 
-        public static double getResourceDensity(string name)
-        {
-            var resDef = PartResourceLibrary.Instance.resourceDefinitions["Bioproducts"];
-            if (resDef != null)
-                return resDef.density;
-            return 0;
-        }
-
-        public static double getDemand(Part part, string name)
+        /// <summary>
+        /// Returns the total Demand of a Resource connected to the current Part.
+        /// </summary>
+        /// <param name="part"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static double getResourceDemand(this Part part, string name)
         {
             var res_def = PartResourceLibrary.Instance.GetDefinition(name);
             if (res_def == null) return 0;
@@ -91,8 +115,13 @@ namespace NE_Science
             return amount;
         }
 
-        /** Returns the total amount of available resources connected to the current part */
-        public static double getAvailable(Part part, string name)
+        /// <summary>
+        /// Returns the total amount of available resources connected to the current Part.
+        /// </summary>
+        /// <param name="part"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static double getResourceAvailable(this Part part, string name)
         {
             var res_def = PartResourceLibrary.Instance.GetDefinition(name);
             if (res_def == null) return 0;
@@ -104,7 +133,7 @@ namespace NE_Science
             return amount;
         }
 
-        public static double requestResourcePartial(Part part, string name, double amount)
+        public static double requestResourcePartial(this Part part, string name, double amount)
         {
             if (amount > 0)
             {
@@ -113,7 +142,7 @@ namespace NE_Science
                 //NE_Helper.log(name + " request taken: " + taken);
                 if (taken >= amount * .99999)
                     return taken;
-                double available = getAvailable(part, name);
+                double available = getResourceAvailable(part, name);
                 //NE_Helper.log(name + " request available: " + available);
                 double new_amount = Math.Min(amount, available) * .99999;
                 //NE_Helper.log(name + " request new_amount: " + new_amount);
@@ -129,7 +158,7 @@ namespace NE_Science
                 //NE_Helper.log(name+" request taken: " + taken);
                 if (taken <= amount * .99999)
                     return taken;
-                double available = getDemand(part, name);
+                double available = getResourceDemand(part, name);
                 //NE_Helper.log(name + " request available: " + available);
                 double new_amount = Math.Max(amount, available) * .99999;
                 //NE_Helper.log(name + " request new_amount: " + new_amount);

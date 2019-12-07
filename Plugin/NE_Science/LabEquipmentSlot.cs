@@ -21,15 +21,19 @@ using System.Text;
 
 namespace NE_Science
 {
+    /// <summary>
+    /// Represents a slot in a Lab into which an EquipmentRack can be installed.
+    /// </summary>
+    /// Currently each slot is locked to a particular EquipmentRackType.
     public class LabEquipmentSlot
     {
         public const string CONFIG_NODE_NAME = "NE_LabEquipmentSlot";
         private const string TYPE_VALUE = "type";
 
-        private EquipmentRacks type;
+        private LabEquipmentType type;
         private LabEquipment equ;
 
-        public LabEquipmentSlot(EquipmentRacks t, LabEquipment e = null)
+        public LabEquipmentSlot(LabEquipmentType t, LabEquipment e = null)
         {
             type = t;
             if (e != null && type == e.getType())
@@ -106,9 +110,9 @@ namespace NE_Science
             if (node == null || node.name != CONFIG_NODE_NAME)
             {
                 NE_Helper.logError("getLabEquipmentFromNode: invalid Node: " + node == null? "NULL" : node.name);
-                return new LabEquipmentSlot(EquipmentRacks.NONE);
+                return new LabEquipmentSlot(LabEquipmentType.NONE);
             }
-            EquipmentRacks type = EquipmentRacksFactory.getType(node.GetValue(TYPE_VALUE));
+            LabEquipmentType type = LabEquipmentRegistry.getType(node.GetValue(TYPE_VALUE));
             LabEquipment le = null;
             ConfigNode leNode = node.GetNode(LabEquipment.CONFIG_NODE_NAME);
             if (leNode != null)
@@ -197,18 +201,6 @@ namespace NE_Science
             {
                 return false;
             }
-        }
-
-        internal bool isExposureAction()
-        {
-            if (equ != null)
-            {
-                return equ.isExposureAction();
-            }
-            else
-            {
-                return false;
-            };
         }
 
         internal void updateCheck()

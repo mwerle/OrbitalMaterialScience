@@ -110,7 +110,7 @@ namespace NE_Science
                     initPartObjects();
                 }
                 MSL_Module lab = part.GetComponent<MSL_Module>();
-                if (lab.isEquipmentRunning(EquipmentRacks.PRINTER) && isUserInIVA)
+                if (lab.isEquipmentRunning(LabEquipmentType.PRINTER) && isUserInIVA)
                 {
                     moveBase();
                     moveHead();

@@ -21,6 +21,11 @@ namespace NE_Science
 {
     using KAC;
 
+
+    /// <summary>
+    /// Historic or new? Currently only used by KEES Experiments..
+    /// </summary>
+    /// Look at ExperimentStorage which implements the base class for all other experiments.
     public abstract class OMSExperiment : ModuleScienceExperiment
     {
         public const string COMPLETED = "completed";
@@ -56,21 +61,6 @@ namespace NE_Science
 
         [KSPField(isPersistant = true)]
         public string alarmId = string.Empty;
-
-        public static bool checkBoring(Vessel vessel, bool msg = false)
-        {
-            if (NE_Helper.debugging())
-            {
-                return false;
-            }
-            // MKW TODO: Check if CelestialBody can be compared like this
-            if ((vessel.orbit.referenceBody == Planetarium.fetch.Home) && (vessel.situation == Vessel.Situations.LANDED || vessel.situation == Vessel.Situations.PRELAUNCH || vessel.situation == Vessel.Situations.SPLASHED || vessel.altitude <= vessel.orbit.referenceBody.atmosphereDepth))
-            {
-                if (msg) ScreenMessages.PostScreenMessage("#ne_Too_boring_here_Go_to_space", 6, ScreenMessageStyle.UPPER_CENTER);
-                return true;
-            }
-            return false;
-        }
 
 
         #region Kerbal Alarm Clock helpers

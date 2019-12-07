@@ -81,7 +81,7 @@ namespace NE_Science
             switch(state)
             {
                 case READY: // "Start"
-                    if (!checkBoring(vessel, true))
+                    if (!vessel.isBoring(true))
                     {
                         OnExperimentStarted();
                     }

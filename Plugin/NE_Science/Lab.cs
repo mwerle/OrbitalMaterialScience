@@ -127,7 +127,7 @@ namespace NE_Science
             rv = LabEquipmentSlot.getLabEquipmentSlotFromConfigNode(cn, this);
 
         done:
-            return rv != null? rv : new LabEquipmentSlot(EquipmentRacks.NONE);
+            return rv != null? rv : new LabEquipmentSlot(LabEquipmentType.NONE);
         }
 
         protected LabEquipmentSlot getLabEquipmentSlot(ConfigNode configNode)
@@ -139,7 +139,7 @@ namespace NE_Science
             else
             {
                 NE_Helper.logError("Lab GetLabEquipmentSlotFromNode: LabEquipmentSlotNode null");
-                return new LabEquipmentSlot(EquipmentRacks.NONE);
+                return new LabEquipmentSlot(LabEquipmentType.NONE);
             }
         }
 
@@ -173,7 +173,7 @@ namespace NE_Science
 
         protected virtual bool isActive()
         {
-            return doResearch && part.protoModuleCrew.Count >= minimumCrew && !OMSExperiment.checkBoring(vessel, false);
+            return doResearch && part.protoModuleCrew.Count >= minimumCrew && !vessel.isBoring(false);
         }
 
         protected virtual void displayStatusMessage(string s)
@@ -203,7 +203,7 @@ namespace NE_Science
         {
             if (!doResearch)
             {
-                if(OMSExperiment.checkBoring(vessel, false))
+                if(vessel.isBoring(false))
                 {
                     displayStatusMessage(Localizer.GetStringByTag("#ne_Go_to_space"));
                 }
@@ -285,7 +285,7 @@ namespace NE_Science
                 ScreenMessages.PostScreenMessage("#ne_Not_enough_crew_in_this_module", 6, ScreenMessageStyle.UPPER_CENTER);
                 return false;
             }
-            if (OMSExperiment.checkBoring(vessel, true))
+            if (vessel.isBoring(true))
             {
                 return false;
             }
@@ -524,7 +524,7 @@ namespace NE_Science
                 if (isScience)
                     return ResearchAndDevelopment.Instance.Science;
                 else
-                    return ResourceHelper.getAvailable(owner.part, this.resource);
+                    return ResourceHelper.getResourceAvailable(owner.part, this.resource);
             }
 
             public double getDemand()
@@ -532,7 +532,7 @@ namespace NE_Science
                 if (isScience)
                     return Double.PositiveInfinity;
                 else
-                    return ResourceHelper.getDemand(owner.part, this.resource);
+                    return ResourceHelper.getResourceDemand(owner.part, this.resource);
             }
 
             public double getMaxStep()

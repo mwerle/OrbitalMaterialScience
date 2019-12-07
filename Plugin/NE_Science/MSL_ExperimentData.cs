@@ -13,7 +13,7 @@ namespace NE_Science
         private int partCount;
         private MSL_Module[] physicsLabCache = null;
 
-        protected MSLExperimentData(string id, string type, string name, string abb, EquipmentRacks eq, float mass, float cost)
+        protected MSLExperimentData(string id, string type, string name, string abb, LabEquipmentType eq, float mass, float cost)
             : base(id, type, name, abb, eq, mass, cost)
         { }
 
@@ -54,7 +54,7 @@ namespace NE_Science
     public class FLEX_ExperimentData : MSLExperimentData
     {
         public FLEX_ExperimentData(float mass, float cost)
-            : base("NE_FLEX", "FLEX", "#ne_oms_flex_title", "FLEX", EquipmentRacks.CIR, mass, cost)
+            : base("NE_FLEX", "FLEX", "#ne_oms_flex_title", "FLEX", LabEquipmentType.CIR, mass, cost)
         {
             step = new ResourceExperimentStep(this, Resources.CIR_BURN_TIME, 18, "", 0);
         }
@@ -63,7 +63,7 @@ namespace NE_Science
     public class CFI_ExperimentData : MSLExperimentData
     {
         public CFI_ExperimentData(float mass, float cost)
-            : base("NE_CFI", "CFI", "#ne_oms_cfi_title", "CFI", EquipmentRacks.CIR, mass, cost)
+            : base("NE_CFI", "CFI", "#ne_oms_cfi_title", "CFI", LabEquipmentType.CIR, mass, cost)
         {
             step = new ResourceExperimentStep(this, Resources.CIR_BURN_TIME, 50, "", 0);
         }
@@ -72,7 +72,7 @@ namespace NE_Science
     public class MIS1_ExperimentData : MSLExperimentData
     {
         public MIS1_ExperimentData(float mass, float cost)
-            : base("NE_MIS1", "MIS1", "#ne_oms_mis1_title", "MIS-1", EquipmentRacks.PRINTER, mass, cost)
+            : base("NE_MIS1", "MIS1", "#ne_oms_mis1_title", "MIS-1", LabEquipmentType.PRINTER, mass, cost)
         {
             step = new ResourceExperimentStep(this, Resources.PRINT_LAYER, 100, "", 0);
         }
@@ -81,7 +81,7 @@ namespace NE_Science
     public class MIS2_ExperimentData : MSLExperimentData
     {
         public MIS2_ExperimentData(float mass, float cost)
-            : base("NE_MIS2", "MIS2", "#ne_oms_mis2_title", "MIS-2", EquipmentRacks.PRINTER, mass, cost)
+            : base("NE_MIS2", "MIS2", "#ne_oms_mis2_title", "MIS-2", LabEquipmentType.PRINTER, mass, cost)
         {
             step = new ResourceExperimentStep(this, Resources.PRINT_LAYER, 200, "", 0);
         }
@@ -90,7 +90,7 @@ namespace NE_Science
     public class MIS3_ExperimentData : MSLExperimentData
     {
         public MIS3_ExperimentData(float mass, float cost)
-            : base("NE_MIS3", "MIS3", "#ne_oms_mis3_title", "MIS-3", EquipmentRacks.PRINTER, mass, cost)
+            : base("NE_MIS3", "MIS3", "#ne_oms_mis3_title", "MIS-3", LabEquipmentType.PRINTER, mass, cost)
         {
             step = new ResourceExperimentStep(this, Resources.PRINT_LAYER, 300, "", 0);
         }
@@ -99,7 +99,7 @@ namespace NE_Science
     public class CVB_ExperimentData : MSLExperimentData
     {
         public CVB_ExperimentData(float mass, float cost)
-            : base("NE_CVB", "CVB", "#ne_oms_cvb_title", "CVB", EquipmentRacks.FIR, mass, cost)
+            : base("NE_CVB", "CVB", "#ne_oms_cvb_title", "CVB", LabEquipmentType.FIR, mass, cost)
         {
             step = new ResourceExperimentStep(this, Resources.FIR_TEST_RUN, 35, "", 0);
         }
@@ -108,7 +108,7 @@ namespace NE_Science
     public class PACE_ExperimentData : MSLExperimentData
     {
         public PACE_ExperimentData(float mass, float cost)
-            : base("NE_PACE", "PACE", "#ne_oms_pace_title", "PACE", EquipmentRacks.FIR, mass, cost)
+            : base("NE_PACE", "PACE", "#ne_oms_pace_title", "PACE", LabEquipmentType.FIR, mass, cost)
         {
             step = new ResourceExperimentStep(this, Resources.FIR_TEST_RUN, 22, "", 0);
         }
