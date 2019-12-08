@@ -25,24 +25,83 @@ namespace NE_Science
 {
     class ESCStorageManifest : PartModule
     {
-        private const int width = 400;
+        private const int minWidth = 400;
         private const int fixedHeight = 50;
         private const int slotHeight = 100;
         private static int maxHeight = Screen.height - 100;
 
         private Rect manifestWindowRect = new Rect(Screen.width / 2 - 300, Screen.height / 2 - 250, 250, 550);
-        List<ExperimentStorage> storageSlots = new List<ExperimentStorage>();
+        List<ExperimentStorage> storageSlots = null;
+
+        static PopupDialog dialog = null;
 
         [KSPEvent(guiActiveEditor = true, guiActive = true, guiName = "#ne_Storage_Manifest", active = true)]
         public void storageManifest()
         {
+            if (dialog != null)
+            {
+                dialog.Dismiss();
+            }
+
             storageSlots = new List<ExperimentStorage>(part.GetComponents<ExperimentStorage>());
-            showManifestWindow();
+            dialog = showManifestWindow();
+            dialog.OnDismiss = OnDismiss;
+
+            enabled = true;
         }
 
+        #region Monobehaviour Callbacks and Messages
+        /// <summary>
+        /// Called before the first Update
+        /// </summary>
+        void Start()
+        {
+            // Don't run this Monobehaviour unless the user opened the Dialog.
+            enabled = false;
+        }
+
+#if false
         void OnGUI()
         {
+            if (dialog == null) return;
+
+            // Close dialog if user clicks outside it.
+            // Doesn't seem to work, dialog.Hover is always false
+            //if (!dialog.Hover && Input.GetMouseButtonUp(0))
+            if (!dialog.Hover && (Input.GetMouseButton(0)||Input.GetMouseButton(1)))
+            {
+                dialog.Dismiss();
+            }
         }
+#endif
+        #endregion
+
+        #region Dialog callbacks
+        void OnDismiss()
+        {
+            dialog = null;
+            storageSlots = null;
+            enabled = false;
+        }
+
+        /// <summary>
+        /// Callback from the Dialog when the Move button is clicked for an entry.
+        /// </summary>
+        /// <param name="es"></param>
+        void OnMoveExperimentClicked(ExperimentStorage es)
+        {
+            es.moveExperiment();
+        }
+
+        /// <summary>
+        /// Callback from the Dialog when the Install button is clicked for an entry.
+        /// </summary>
+        /// <param name="es"></param>
+        void OnInstallExperimentClicked(ExperimentStorage es)
+        {
+            es.installExperiment();
+        }
+        #endregion
 
         /* +---------------------------------------------------+
          * |              Storage Manifest                     |
@@ -60,7 +119,7 @@ namespace NE_Science
          * |                  [Close]                          |
          * +---------------------------------------------------+
         */
-        private void showManifestWindow()
+        private PopupDialog showManifestWindow()
         {
             // This is a list of content items to add to the dialog
             List<DialogGUIBase> dialog = new List<DialogGUIBase>();
@@ -74,6 +133,8 @@ namespace NE_Science
             DialogGUIBase[] scrollList = new DialogGUIBase[numSlots + 1];
             scrollList[0] = new DialogGUIContentSizer(ContentSizeFitter.FitMode.Unconstrained, ContentSizeFitter.FitMode.PreferredSize, true);
             StringBuilder sb = new StringBuilder();
+
+            float width = minWidth;
             for (int i = 0; i < numSlots; i++)
             {
                 var e = storageSlots[i];
@@ -90,7 +151,32 @@ namespace NE_Science
                 }
 
                 var label = new DialogGUILabel(sb.ToString(), true, true);
-                var h = new DialogGUIHorizontalLayout(true, false, 4, new RectOffset(), TextAnchor.MiddleCenter, label);
+
+                DialogGUIBase[] contents = null;
+
+                if (HighLogic.LoadedSceneIsEditor || e.isEmpty())
+                {
+                    contents = new DialogGUIBase[] {
+                        label
+                    };
+                }
+                else
+                {
+                    // TODO: Check if we have valid move/install targets
+                    var bMove = new DialogGUIButton<ExperimentStorage>(Localizer.Format("#ne_Move"), new Callback<ExperimentStorage>(OnMoveExperimentClicked), e, true);
+                    var bInstall = new DialogGUIButton<ExperimentStorage>(Localizer.Format("#ne_Install"), new Callback<ExperimentStorage>(OnInstallExperimentClicked), e, true);
+
+                    contents = new DialogGUIBase[] {
+                        label,
+                        new DialogGUIFlexibleSpace(),
+                        bMove,
+                        bInstall,
+                    };
+
+                    // Add extra room for buttons to avoid text from wrapping
+                    width = minWidth + 200;
+                }
+                var h = new DialogGUIHorizontalLayout(true, false, 4, new RectOffset(), TextAnchor.UpperCenter, contents);
                 scrollList[i + 1] = h;
                 sb.Length = 0;
             }
@@ -120,9 +206,9 @@ namespace NE_Science
             }
 
             // Actually create and show the dialog
-            PopupDialog.SpawnPopupDialog(
+            return PopupDialog.SpawnPopupDialog(
                 new MultiOptionDialog("", "", Localizer.Format("#ne_Storage_Manifest"), HighLogic.UISkin, pos, dialog.ToArray()),
-                false, HighLogic.UISkin);
+                false, HighLogic.UISkin, false);
         }
     }
 }

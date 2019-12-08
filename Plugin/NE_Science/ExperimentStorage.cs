@@ -33,7 +33,7 @@ namespace NE_Science
     }
 
     /// <summary>
-    /// This implements the Container used to transport Experiments.
+    /// This implements a single ExperimentStorage slot in a Container.
     /// </summary>
     /// From a KSP perspective, this is also the actual experiment which
     /// generates science data.
@@ -191,11 +191,6 @@ namespace NE_Science
                         Events["installExperiment"].guiName = Localizer.Format("#ne_Install_1", expData.getAbbreviation());
                     }
                 }
-                Events["moveExp"].active = expData.canMove(part.vessel);
-                if (Events["moveExp"].active)
-                {
-                    Events["moveExp"].guiName = Localizer.Format("#ne_Move_1", expData.getAbbreviation());
-                }
                 Events["finalize"].active = expData.canFinalize();
                 if (Events["installExperiment"].active)
                 {
@@ -293,8 +288,13 @@ namespace NE_Science
             removeExperimentData();
         }
 
-        [KSPEvent(guiActive = true, guiName = "#ne_Move_Experiment", active = false)]
-        public void moveExp()
+        /// <summary>
+        /// This tries to move the Experiment to another location in the Vessel.
+        /// </summary>
+        /// Calling this will provide the user with a method to select a new
+        /// storage location for the ExperimentData. The move may not occur if
+        /// the user cancels the operation or there are no valid destinations.
+        public void moveExperiment()
         {
             expData.move(part.vessel);
         }
