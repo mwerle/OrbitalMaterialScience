@@ -14,7 +14,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NE_Science</RootNamespace>
     <AssemblyName>NE_Science</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -56,6 +56,7 @@
     <Compile Include="ESCStorageManifest.cs" />
     <Compile Include="ExperimentDataReturnExperimentParameter.cs" />
     <Compile Include="ExperimentDataDoExperimentParameter.cs" />
+    <Compile Include="ExperimentStorageCache.cs" />
     <Compile Include="KACWrapper.cs" />
     <Compile Include="KeminiExperimentContract.cs" />
     <Compile Include="Kemini_ExperimentData.cs" />

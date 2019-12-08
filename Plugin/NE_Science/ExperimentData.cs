@@ -56,10 +56,6 @@ namespace NE_Science
         internal IExperimentDataStorage store;
         protected string storageType = ExperimentFactory.OMS_EXPERIMENTS;
 
-        private Guid cachedVesselID;
-        private int partCount;
-        private ExperimentStorage[] contCache = null;
-
         protected string alarmId = null;
 
         /// <summary>
@@ -311,71 +307,36 @@ namespace NE_Science
 
         public virtual bool canMove(Vessel vessel)
         {
-            return id != "" && (state != ExperimentState.RUNNING) && getFreeExperimentContainers(vessel).Count > 0;
+            return id != "" && (state != ExperimentState.RUNNING) && hasFreeExperimentStorage(vessel);
         }
 
-        public List<ExperimentStorage> getFreeExperimentContainers(Vessel vessel)
+        /// <summary>
+        /// Returns true if there is at least one empty ExperimentStorage attached to the Vessel.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public bool hasFreeExperimentStorage(Vessel vessel)
         {
-            List<ExperimentStorage> freeCont = new List<ExperimentStorage>();
-            if (contCache == null || cachedVesselID != vessel.id && partCount != vessel.parts.Count)
-            {
-                contCache = UnityFindObjectsOfType(typeof(ExperimentStorage)) as ExperimentStorage[];
-                cachedVesselID = vessel.id;
-                partCount = vessel.parts.Count;
-                NE_Helper.log("Storage Cache refresh");
-            }
-
-            for (int idx = 0, count = contCache.Length; idx < count; idx++)
-            {
-                var c = contCache[idx];
-                if (c.vessel == vessel && c.isEmpty() && c.type == storageType)
-                {
-                    freeCont.Add(c);
-                }
-            }
-            return freeCont;
+            return ExperimentStorageCache.GetFreeExperimentStorage(vessel).Count > 0;
         }
 
-        private List<Part> _freeContainerParts = null;
         /// <summary>
         /// A list of Parts which have free ExperimentStorage.
         /// </summary>
-        public List<Part> freeContainerParts
+        public List<Part> getFreeContainerParts()
         {
-            get
-            {
-                Vessel vessel = store.getPart().vessel;
-                if (contCache == null || cachedVesselID != vessel.id && partCount != vessel.parts.Count)
-                {
-                    contCache = UnityFindObjectsOfType(typeof(ExperimentStorage)) as ExperimentStorage[];
-                    cachedVesselID = vessel.id;
-                    partCount = vessel.parts.Count;
-                    NE_Helper.log("Storage Cache refresh");
+            List<Part> rv = null;
+            var vessel = store.getPart().vessel;
+            var fes = ExperimentStorageCache.GetFreeExperimentStorage(vessel);
 
-                    _freeContainerParts.Clear();
-                    for (int idx = 0, count = contCache.Length; idx < count; idx++)
-                    {
-                        ExperimentStorage es = contCache[idx];
-                        if (es.vessel == vessel && es.isEmpty() && es.type == storageType)
-                        {
-                            _freeContainerParts.AddUnique<Part>(es.part);
-                        }
-                    }
-                }
-                if (_freeContainerParts == null)
-                {
-                    _freeContainerParts = new List<Part>();
-                    for (int idx = 0, count = contCache.Length; idx < count; idx++)
-                    {
-                        ExperimentStorage es = contCache[idx];
-                        if (es.vessel == vessel && es.isEmpty() && es.type == storageType)
-                        {
-                            _freeContainerParts.Add(es.part);
-                        }
-                    }
-                }
-                return _freeContainerParts;
+            // This is only called when we actually move an experiment, so it's not called very often.
+            rv = new List<Part>(fes.Count);
+
+            for (var idx = 0; idx < fes.Count; idx++)
+            {
+                rv.Add(fes[idx].part);
             }
+            return rv;
         }
 
         /// <summary>
@@ -468,7 +429,7 @@ namespace NE_Science
         {
             Debug.Assert(vessel == store.getPart().vessel);
 
-            List<Part> targets = freeContainerParts;
+            List<Part> targets = getFreeContainerParts();
             if ((state != ExperimentState.RUNNING) && targets.Count > 0)
             {
                 NE_Helper.ChooseMoveTargetUI.showDialog(targets, this, OnDestionationSelected);
@@ -489,6 +450,9 @@ namespace NE_Science
                 store.getPart(), store,
                 exp.part, exp )
             );
+
+            // Notify the cache that an experiment was scuccessfully moved.
+            ExperimentStorageCache.NotifyExperimentMoved();
         }
 
         internal void setStorage(IExperimentDataStorage storage)
