@@ -22,11 +22,40 @@ using KSP.Localization;
 
 namespace NE_Science
 {
-    using KAC;
-
+    /// <summary>
+    /// The different states an experiment can be in.
+    /// </summary>
     public enum ExperimentState
     {
-        STORED, INSTALLED, RUNNING, FINISHED, FINALIZED, COMPLETED
+        /// <summary>
+        /// Experiment has not been run and is not installed in a Lab.
+        /// </summary>
+        STORED,
+
+        /// <summary>
+        /// Experiment has not been run and is installed in a Lab.
+        /// </summary>
+        INSTALLED,
+
+        /// <summary>
+        /// Experiment is installed in a Lab and currently running.
+        /// </summary>
+        RUNNING,
+
+        /// <summary>
+        /// Experiment is installed in a Lab and has finished running.
+        /// </summary>
+        FINISHED,
+
+        /// <summary>
+        /// Experiment has finished running and no longer in a Lab.
+        /// </summary>
+        FINALIZED,
+
+        /// <summary>
+        /// Unused?
+        /// </summary>
+        COMPLETED
     }
 
     /// <summary>
@@ -278,21 +307,6 @@ namespace NE_Science
             exp.load(node);
             return exp; ;
         }
-
-        private static float stringToFloat(string p)
-        {
-            if (p != null)
-            {
-                try
-                {
-                    return float.Parse(p);
-                }catch(FormatException){
-                    return 0f;
-                }
-            }
-            return 0f;
-        }
-
 
 
         public static ExperimentData getNullObject()
