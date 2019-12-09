@@ -243,7 +243,7 @@ namespace NE_Science
 
         public override void installLabEquipment(LabEquipment le)
         {
-            switch (le.Type)
+            switch (le.LabEquipmentType)
             {
                 case LabEquipmentType.MSG:
                     if (tryInstallEquipment(le, msgSlot, msg))
@@ -328,62 +328,66 @@ namespace NE_Science
                 initERacksActive();
             }
 
-            if (!msgSlot.isEquipmentInstalled())
+            // MSG UI Buttons
+            Fields["msgStatus"].guiActive = msgSlot.isEquipmentInstalled();
+            if (Fields["msgStatus"].guiActive)
             {
-                Fields["msgStatus"].guiActive = false;
-            }
-            else
-            {
-                Events["moveMSGExp"].active = msgSlot.canExperimentMove(part.vessel);
-                Fields["msgStatus"].guiActive = true;
-                if (Events["moveMSGExp"].active)
-                {
-                    Events["moveMSGExp"].guiName = Localizer.Format("#ne_Move_1", msgSlot.getExperiment().getAbbreviation());
-                }
-
-                if (msgSlot.canActionRun())
+                Events["actionMSGExp"].active = msgSlot.canActionRun();
+                if (Events["actionMSGExp"].active)
                 {
                     string cirActionString = msgSlot.getActionString();
                     Events["actionMSGExp"].guiName = cirActionString;
                 }
-                Events["actionMSGExp"].active = msgSlot.canActionRun();
                 if (!msgSlot.experimentSlotFree())
                 {
                     msgStatus = msgSlot.getExperiment().getAbbreviation() + ": " + msgSlot.getExperiment().stateString();
-                }
-                else
-                {
-                    msgStatus = Localizer.GetStringByTag("#ne_No_Experiment");
+                    Events["moveMSGExp"].active = msgSlot.canExperimentMove(part.vessel);
+                    if (Events["moveMSGExp"].active)
+                    {
+                        Events["moveMSGExp"].guiName = Localizer.Format("#ne_Move_1", msgSlot.getExperiment().getAbbreviation());
+                    }
                 }
             }
 
-            if (!usuSlot.isEquipmentInstalled())
+            // USU UI Buttons
+            Fields["usuStatus"].guiActive = usuSlot.isEquipmentInstalled();
+            if (Fields["usuStatus"].guiActive)
             {
-                Fields["usuStatus"].guiActive = false;
-            }
-            else
-            {
-                Events["moveUSUExp"].active = usuSlot.canExperimentMove(part.vessel);
-                Fields["usuStatus"].guiActive = true;
-                if (Events["moveUSUExp"].active)
-                {
-                    Events["moveUSUExp"].guiName = Localizer.Format("#ne_Move_1", usuSlot.getExperiment().getAbbreviation());
-                }
-
-                if (usuSlot.canActionRun())
+                Events["actionUSUExp"].active = usuSlot.canActionRun();
+                if (Events["actionUSUExp"].active)
                 {
                     string usuActionString = usuSlot.getActionString();
                     Events["actionUSUExp"].guiName = usuActionString;
                 }
-                Events["actionUSUExp"].active = usuSlot.canActionRun();
                 if (!usuSlot.experimentSlotFree())
                 {
                     usuStatus = usuSlot.getExperiment().getAbbreviation() + ": " + usuSlot.getExperiment().stateString();
+                    Events["moveUSUExp"].active = usuSlot.canExperimentMove(part.vessel);
+                    if (Events["moveUSUExp"].active)
+                    {
+                        Events["moveUSUExp"].guiName = Localizer.Format("#ne_Move_1", usuSlot.getExperiment().getAbbreviation());
+                    }
                 }
-                else
-                {
+            }
+        }
+
+        public override void OnExperimentWillRemoveFromEquipment(LabEquipment equipment)
+        {
+            base.OnExperimentWillRemoveFromEquipment(equipment);
+            switch (equipment.LabEquipmentType)
+            {
+                case LabEquipmentType.USU:
+                    Fields["usuStatus"].guiActive = false;
+                    Events["moveUSUExp"].active = false;
                     usuStatus = Localizer.GetStringByTag("#ne_No_Experiment");
-                }
+                    break;
+                case LabEquipmentType.MSG:
+                    Fields["msgStatus"].guiActive = false;
+                    Events["moveMSGExp"].active = false;
+                    msgStatus = Localizer.GetStringByTag("#ne_No_Experiment");
+                    break;
+                default:
+                    throw new InvalidOperationException($"OnExperimentWilLRemoveFromEquipment() invoked with incompatible equipment {equipment.Abbreviation} for Lab {abbreviation}.");
             }
         }
 

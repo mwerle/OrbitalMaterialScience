@@ -49,17 +49,15 @@ namespace NE_Science
      /// <summary>
      /// The actual LabEquipment as used in this mod.
      /// </summary>
-     /// LabEquipment is a "virtual Part" in that the user cannot directly
-     /// manipulate the equipment. It is either stored in a
-     /// LabEquipmentContainer or installed in a LabEquipmentSlot inside
+     /// LabEquipment is a "virtual Part" in that the user cannot directly manipulate the equipment.
+     /// It is either stored in a EquipmentRackContainer or installed in a LabEquipmentSlot inside
      /// a Lab.
      ///
-     /// LabEquipment can have experiments (ExperimentData) installed in them
-     /// in order to run the exeperiment.
+     /// LabEquipment can have experiments (ExperimentData) installed in them in order to run the
+     /// experiment.
      /// 
-     /// LabEquipment will produce a Product using a Reactants. When
-     /// running an experiment, Product is accumulated until the experiment
-     /// is completed.
+     /// LabEquipment will produce a Product using a Reactants. When running an experiment, Product
+     /// is accumulated until the experiment is completed.
     public class LabEquipment : IExperimentDataStorage
     {
         public const string CONFIG_NODE_NAME = "NE_LabEquipment";
@@ -118,7 +116,7 @@ namespace NE_Science
         /// <summary>
         /// The EquipmentType of this Equipment.
         /// </summary>
-        public LabEquipmentType Type { get { return type; } }
+        public LabEquipmentType LabEquipmentType { get { return type; } }
 
         /// <summary>
         /// How many units of Product the lab generates per hour.
@@ -154,9 +152,14 @@ namespace NE_Science
             return cost + ((exp != null)? exp.getCost() : 0f);
         }
 
+        private static LabEquipment nullObject = null;
         static public LabEquipment getNullObject()
         {
-             return new LabEquipment("empty", "empty", LabEquipmentType.NONE, 0f, 0f, 0f, "", 0f, "");
+            if (nullObject == null)
+            {
+                nullObject = new LabEquipment("empty", "empty", LabEquipmentType.NONE, 0f, 0f, 0f, "", 0f, "");
+            }
+            return nullObject;
         }
 
         public ConfigNode getNode()
@@ -262,7 +265,7 @@ namespace NE_Science
         internal void installExperiment(ExperimentData exp)
         {
             this.exp = exp;
-            exp.installed(this);
+            exp.onInstalled(this);
             GameObject ego = lab.getExperimentGO(exp.getId());
             if (ego != null)
             {
@@ -275,6 +278,12 @@ namespace NE_Science
             return exp;
         }
 
+        /// <summary>
+        /// Returns whether the Experiment could be moved.
+        /// </summary>
+        /// Typically this checks the experiment state and whether there are any empty destinations in the Vessel.
+        /// <param name="vessel"></param>
+        /// <returns></returns>
         internal bool canExperimentMove(Vessel vessel)
         {
             if (exp != null)
@@ -287,21 +296,26 @@ namespace NE_Science
             }
         }
 
-        internal void moveExperiment(Vessel vessel)
+        /// <summary>
+        /// Action to try to move an Experiment to another ExperimentStorage in the Vessel.
+        /// </summary>
+        /// At this stage the move may fail and the experiment may remain in the LabEquipment.
+        /// <param name="vessel"></param>
+        internal void tryMoveExperiment(Vessel vessel)
         {
             if (exp != null)
             {
                 exp.move(vessel);
             }
-            GameObject ego = lab.getExperimentGO(exp.getId());
-            if (ego != null)
-            {
-                ego.SetActive(false);
-            }
         }
 
+        /// <summary>
+        /// Action to remove an Experiment from this LabEquipment.
+        /// </summary>
+        /// This action actually removes an Experiment from the LabEquipment.
         public void removeExperimentData()
         {
+            lab.OnExperimentWillRemoveFromEquipment(this);
             exp = null;
         }
 

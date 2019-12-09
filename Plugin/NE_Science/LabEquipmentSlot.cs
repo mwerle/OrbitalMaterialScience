@@ -22,7 +22,7 @@ using System.Text;
 namespace NE_Science
 {
     /// <summary>
-    /// Represents a slot in a Lab into which an EquipmentRack can be installed.
+    /// Represents a slot in a Lab into which an EquipmentRack (LabEquipment) can be installed.
     /// </summary>
     /// Currently each slot is locked to a particular EquipmentRackType.
     public class LabEquipmentSlot
@@ -47,7 +47,7 @@ namespace NE_Science
         public LabEquipmentSlot(LabEquipmentType t, LabEquipment e = null)
         {
             type = t;
-            if (e != null && type == e.Type)
+            if (e != null && type == e.LabEquipmentType)
             {
                 equ = e;
             }
@@ -71,6 +71,11 @@ namespace NE_Science
             }
         }
 
+        public LabEquipment getEquipment()
+        {
+            return equ;
+        }
+
         /// <summary>
         /// Returns the mass of installed equipment and experiments.
         /// </summary>
@@ -84,7 +89,7 @@ namespace NE_Science
 
         public void install(LabEquipment eq, Lab lab)
         {
-            if (eq != null && type == eq.Type)
+            if (eq != null && type == eq.LabEquipmentType)
             {
                 equ = eq;
                 eq.install(lab);
@@ -178,7 +183,7 @@ namespace NE_Science
         {
             if (equ != null)
             {
-                equ.moveExperiment(vessel);
+                equ.tryMoveExperiment(vessel);
             }
         }
 

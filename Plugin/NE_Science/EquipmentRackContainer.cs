@@ -70,7 +70,7 @@ namespace NE_Science
         {
             leq = er;
             status = leq.Name;
-            if (leq.Type == LabEquipmentType.NONE)
+            if (leq.LabEquipmentType == LabEquipmentType.NONE)
             {
                 Events["chooseEquipment"].guiName = Localizer.GetStringByTag("#ne_Add_Lab_Equipment");
                 Events["InstallEquipment"].active = false;
@@ -86,7 +86,7 @@ namespace NE_Science
 
         private void setTexture(LabEquipment equipment)
         {
-            GameDatabase.TextureInfo tex = texFac.getTextureForEquipment(equipment.Type);
+            GameDatabase.TextureInfo tex = texFac.getTextureForEquipment(equipment.LabEquipmentType);
             if (tex != null)
             {
                 changeTexture(tex);
@@ -110,10 +110,13 @@ namespace NE_Science
             }
         }
 
+        /// <summary>
+        /// UI Button available in the Editor to let the user add/remove equipment from the Container.
+        /// </summary>
         [KSPEvent(guiActiveEditor = true, guiName = "#ne_Add_Lab_Equipment", active = false)]
         public void chooseEquipment()
         {
-            if (leq.Type == LabEquipmentType.NONE)
+            if (leq.LabEquipmentType == LabEquipmentType.NONE)
             {
                 availableRacks = LabEquipmentRegistry.getAvailableLabEquipment();
                 showAddGui();
@@ -125,20 +128,18 @@ namespace NE_Science
         }
 
         /// <summary>
-        /// This event adds a UI button allowing the user to install equipment in a Lab
+        /// This event adds a UI button allowing the user to install equipment in a Lab.
         /// </summary>
-        /// If there is more than one piece of equipment, a selection box is
-        /// openend to let the user choose which equipment to install. Otherwise
-        /// the "standard" highlight-chooser is used to let the user select the
-        /// Lab into which to install the equipment.
+        /// When the user clicks this button, the HighlightChooser is used to allow the
+        /// user to select the destination Lab.
         //[KSPEvent(guiName = "#ne_Install_Lab_Equipment", active = false, category = "NEOS_c", groupDisplayName = "NEOS_dg", groupName = "NEOS_g", requireFullControl = true)]
         [KSPEvent(guiName = "#ne_Install_Lab_Equipment", guiActive = true, active = true)]
         public void InstallEquipment()
         {
-            // Create a list of target Parts
-            // TODO: Cache this!
+            // Create a list of target Parts. This is a fairly expensive operation, however this is
+            // only ever invoked as a direct result of user action.
             var labs = GameObject.FindObjectsOfType(typeof(Lab)) as Lab[];
-            var emptyLabs = System.Array.FindAll(labs, p => p.hasFreeEquipmentSlot(leq.Type));
+            var emptyLabs = System.Array.FindAll(labs, p => p.hasFreeEquipmentSlot(leq.LabEquipmentType));
             if (emptyLabs.Length > 0)
             {
                 List<Part> targets = new List<Part>(emptyLabs.Length);
@@ -160,7 +161,7 @@ namespace NE_Science
             // Install the LabEquipment if the destination has an empty slot of the correct type.
             var lab = destination.GetComponent<Lab>();
             
-            if ((lab != null) && lab.hasFreeEquipmentSlot(leq.Type))
+            if ((lab != null) && lab.hasFreeEquipmentSlot(leq.LabEquipmentType))
             {
                 // Move the Equipment to the Lab
                 lab.installLabEquipment(leq);
@@ -269,7 +270,7 @@ namespace NE_Science
 
         public LabEquipmentType getRackType()
         {
-            return leq.Type;
+            return leq.LabEquipmentType;
         }
 
         /// <summary>

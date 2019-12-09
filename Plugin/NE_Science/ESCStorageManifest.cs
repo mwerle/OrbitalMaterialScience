@@ -33,11 +33,13 @@ namespace NE_Science
         private Rect manifestWindowRect = new Rect(Screen.width / 2 - 300, Screen.height / 2 - 250, 250, 550);
         List<ExperimentStorage> storageSlots = null;
 
+        // Only allow a single StorageManifest window to be open at a time.
         static PopupDialog dialog = null;
 
         [KSPEvent(guiActiveEditor = true, guiActive = true, guiName = "#ne_Storage_Manifest", active = true)]
         public void storageManifest()
         {
+            // User clicked on another Part's StorageManifest, so close the current dialog.
             if (dialog != null)
             {
                 dialog.Dismiss();

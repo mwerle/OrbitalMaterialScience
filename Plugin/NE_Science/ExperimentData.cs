@@ -308,10 +308,10 @@ namespace NE_Science
             return exp; ;
         }
 
-
+        private static ExperimentData nullObject = new ExperimentData("", "", "null Experiment", "empty", LabEquipmentType.NONE, 0f, 0f);
         public static ExperimentData getNullObject()
         {
-            return new ExperimentData("", "", "null Experiment", "empty", LabEquipmentType.NONE, 0f, 0f);
+            return nullObject;
         }
 
         public virtual bool canInstall(Vessel vessel)
@@ -369,11 +369,14 @@ namespace NE_Science
         }
 
 
-        internal void installed(LabEquipment rack)
+        /// <summary>
+        /// Called when the Experiment is installed in Equipment and ready to run.
+        /// </summary>
+        /// <param name="equipment"></param>
+        internal void onInstalled(LabEquipment equipment)
         {
             state = ExperimentState.INSTALLED;
-            store = rack;
-            rack.getLab().part.mass += getMass();
+            store = equipment;
         }
 
         internal virtual void onStarted(bool started)
@@ -465,8 +468,6 @@ namespace NE_Science
                 exp.part, exp )
             );
 
-            // Notify the cache that an experiment was scuccessfully moved.
-            ExperimentStorageCache.NotifyExperimentMoved();
         }
 
         internal void setStorage(IExperimentDataStorage storage)

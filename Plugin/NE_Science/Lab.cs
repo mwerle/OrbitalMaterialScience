@@ -89,10 +89,39 @@ namespace NE_Science
             }
         }
 
-        public virtual void installExperiment(ExperimentData exp)
+        /// <summary>
+        /// Called when an Experiment is being installed in a Lab.
+        /// </summary>
+        /// It is the lab's job to find the correct piece of Equipment to install it into.
+        /// <param name="experiment"></param>
+        public virtual void installExperiment(ExperimentData experiment)
         {
+            part.mass += experiment.getMass();
 
+            var experimentGameObject = getExperimentGO(experiment.getId());
+            if (experimentGameObject != null)
+            {
+                experimentGameObject.SetActive(true);
+            }
         }
+
+        /// <summary>
+        /// Called when an Experiment is about to be removed from a piece of Equipment.
+        /// </summary>
+        /// The lab is being told which equipment the Experiment is being removed from.
+        /// <param name="equipment"></param>
+        public virtual void OnExperimentWillRemoveFromEquipment(LabEquipment equipment)
+        {
+            var experiment = equipment.getExperiment();
+            part.mass -= experiment.getMass();
+
+            var experimentGameObject = getExperimentGO(experiment.getId());
+            if (experimentGameObject != null)
+            {
+                experimentGameObject.SetActive(false);
+            }
+        }
+
 
         #region Equipment Management
         /// <summary>

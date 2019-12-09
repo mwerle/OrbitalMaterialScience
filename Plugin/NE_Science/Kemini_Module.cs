@@ -83,7 +83,7 @@ namespace NE_Science
 
         public void installEquipmentRack(LabEquipment le)
         {
-            switch (le.Type)
+            switch (le.LabEquipmentType)
             {
                 case LabEquipmentType.KEMINI:
 

@@ -129,6 +129,7 @@ namespace NE_Science
                 setTexture(expData);
             }
             RefreshMassAndCost();
+            ExperimentStorageCache.NotifyExperimentMoved();
         }
 
         public ExperimentData getStoredExperimentData()
@@ -179,6 +180,7 @@ namespace NE_Science
             base.OnUpdate();
             if (count == 0)
             {
+                #if false
                 Events["installExperiment"].active = expData.canInstall(part.vessel);
                 if (Events["installExperiment"].active)
                 {
@@ -191,11 +193,14 @@ namespace NE_Science
                         Events["installExperiment"].guiName = Localizer.Format("#ne_Install_1", expData.getAbbreviation());
                     }
                 }
+                #endif
                 Events["finalize"].active = expData.canFinalize();
+                #if false
                 if (Events["installExperiment"].active)
                 {
                     Events["finalize"].guiName = Localizer.Format("#ne_Finalize_1", expData.getAbbreviation());
                 }
+                #endif
                 Events["DeployExperiment"].active = false;
             }
             count = (count + 1) % 3;
@@ -258,6 +263,7 @@ namespace NE_Science
             }
         }
 
+        #if false
         [KSPEvent(guiActive = true, guiName = "#ne_Install_Experiment", active = false)]
         public void installExperiment()
         {
@@ -281,6 +287,49 @@ namespace NE_Science
                 NE_Helper.logError("Experiment install: No lab found");
             }
         }
+        #else
+
+        /// <summary>
+        /// Action to try and install an Experiment into a Lab. This action may fail.
+        /// </summary>
+        /// The User is prompted to select a Lab to install the Experiment into.
+        public void installExperiment()
+        {
+            // Create a list of target Parts. This is a fairly expensive operation, however this is
+            // only ever invoked as a direct result of user action.
+            //var labs = GameObject.FindObjectsOfType(typeof(Lab)) as Lab[];
+            //var emptyLabs = System.Array.FindAll(labs, p => p.hasFreeEquipmentSlot(leq.Type));
+
+            var emptyLabs = expData.getFreeLabs(part.vessel);
+
+            if (emptyLabs.Count > 0)
+            {
+                List<Part> targets = new List<Part>(emptyLabs.Count);
+                foreach(Lab l in emptyLabs)
+                {
+                    targets.Add(l.part);
+                }
+
+                NE_Helper.ChooseMoveTargetUI.showDialog(targets, expData, OnDestinationSelected);
+            }
+            else
+            {
+                var screenMessage = Localizer.Format("#ne_No_available_lab_found_for_1", expData.getDisplayName());
+                ScreenMessages.PostScreenMessage(screenMessage, 15, ScreenMessageStyle.UPPER_CENTER);
+            }
+        }
+
+        /// <summary>
+        /// Called when the user has selected a Lab to install the experiment into.
+        /// </summary>
+        /// <param name="p"></param>
+        void OnDestinationSelected(Part p)
+        {
+            var lab = p.GetComponent<Lab>();
+            installExperimentInLab(lab);
+        }
+        #endif
+
 
         private void installExperimentInLab(Lab lab)
         {
@@ -312,6 +361,7 @@ namespace NE_Science
             }
         }
 
+        #if false
         void OnGUI()
         {
         }
@@ -369,6 +419,7 @@ namespace NE_Science
         {
             resetHighlight();
         }
+        #endif
 
         private void resetHighlight()
         {

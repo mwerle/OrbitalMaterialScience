@@ -237,9 +237,17 @@ namespace NE_Science
             if (exp.getEquipmentNeeded() == LabEquipmentType.EXPOSURE && exposureSlot.experimentSlotFree())
             {
                 exposureSlot.installExperiment(exp);
-                experimentName = exp.getAbbreviation() + ": " + exp.stateString();
-                
+                experimentName = exposureSlot.getExperiment().getAbbreviation() + ": " + exposureSlot.getExperiment().stateString();
+                Fields["experimentName"].guiActive = true;
             }
+        }
+
+        public override void OnExperimentWillRemoveFromEquipment(LabEquipment equipment)
+        {
+            base.OnExperimentWillRemoveFromEquipment(equipment);
+            Fields["experimentName"].guiActive = false;
+            Events["moveExp"].active = false;
+            Events["actionExp"].active = false;
         }
 
         public LabEquipmentSlot getExposureSlot()
@@ -286,16 +294,17 @@ namespace NE_Science
                     break;
             }
 
-            // TODO: Need callbacks on experiment installed and removed.
-            Fields["experimentName"].guiActive = !exposureSlot.experimentSlotFree();
-            if( Fields["experimentName"].guiActive )
+            // If an experiment is installed:
+            if (Fields["experimentName"].guiActive)
             {
-                experimentName = exposureSlot.getExperiment().getAbbreviation() + ": " + exposureSlot.getExperiment().stateString();
+                var exp = exposureSlot.getExperiment();
 
+                // NB: This is quite expensive as the code searches for free ExperimentStorage parts
+                // in the current vessel.
                 Events["moveExp"].active = exposureSlot.canExperimentMove(part.vessel);
                 if (Events["moveExp"].active)
                 {
-                    Events["moveExp"].guiName = Localizer.Format("#ne_Move_1", exposureSlot.getExperiment().getAbbreviation());
+                    Events["moveExp"].guiName = Localizer.Format("#ne_Move_1", exp.getAbbreviation());
                 }
                 Events["actionExp"].active = exposureSlot.canActionRun();
                 if (Events["actionExp"].active)

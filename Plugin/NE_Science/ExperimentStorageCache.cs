@@ -121,7 +121,6 @@ namespace NE_Science
             GameEvents.onVesselDestroy.Add(OnVesselDestroyed);
             cacheEntries = new List<ExperimentStorage>();
             emptyCacheEntries = new List<ExperimentStorage>();
-            isEmptyCacheDirty = true;
             Clear();
         }
 
@@ -137,6 +136,7 @@ namespace NE_Science
             vesselPartCount = 0;
             cacheEntries.Clear();
             emptyCacheEntries.Clear();
+            isEmptyCacheDirty = true;
         }
 
         /// <summary>

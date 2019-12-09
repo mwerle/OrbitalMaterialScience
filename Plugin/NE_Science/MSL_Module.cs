@@ -186,6 +186,31 @@ namespace NE_Science
             }
         }
 
+        public override void OnExperimentWillRemoveFromEquipment(LabEquipment equipment)
+        {
+            base.OnExperimentWillRemoveFromEquipment(equipment);
+            switch (equipment.LabEquipmentType)
+            {
+                case LabEquipmentType.CIR:
+                    Fields["cirStatus"].guiActive = false;
+                    cirStatus = Localizer.GetStringByTag("#ne_No_Experiment");
+                    break;
+
+                case LabEquipmentType.FIR:
+                    Fields["firStatus"].guiActive = false;
+                    firStatus = Localizer.GetStringByTag("#ne_No_Experiment");
+                    break;
+
+                case LabEquipmentType.PRINTER:
+                    Fields["prStatus"].guiActive = false;
+                    prStatus = Localizer.GetStringByTag("#ne_No_Experiment");
+                    break;
+
+                default:
+                    throw new InvalidOperationException($"OnExperimentWilLRemoveFromEquipment() invoked with incompatible equipment {equipment.Abbreviation} for Lab {abbreviation}.");
+            }
+        }
+
         #region Equipment Management
         private void setEquipmentActive(LabEquipmentType rack)
         {
@@ -281,7 +306,7 @@ namespace NE_Science
 
         public override void installLabEquipment(LabEquipment le)
         {
-            switch (le.Type)
+            switch (le.LabEquipmentType)
             {
                 case LabEquipmentType.FIR:
                     if (!tryInstallEquipment(le, firSlot, fir))
@@ -358,10 +383,16 @@ namespace NE_Science
         protected override void updateLabStatus()
         {
             Fields["labStatus"].guiActive = false;
+            #if false
+            // This should never happen; let's wait for a nullref during testing
             if (cir == null || fir == null || printer == null)
             {
                 initERacksActive();
             }
+            #endif
+            cirSlot.updateCheck();
+            firSlot.updateCheck();
+            printerSlot.updateCheck();
 
             if (cirSlot.isEquipmentRunning() || firSlot.isEquipmentRunning() || printerSlot.isEquipmentRunning())
             {
@@ -373,91 +404,69 @@ namespace NE_Science
                 Events["labAction"].active = false;
             }
 
-            if (!cirSlot.isEquipmentInstalled())
+            // CIR UI buttons
+            Fields["cirStatus"].guiActive = cirSlot.isEquipmentInstalled();
+            if (Fields["cirStatus"].guiActive)
             {
-                Fields["cirStatus"].guiActive = false;
-            }
-            else
-            {
-                Events["moveCIRExp"].active = cirSlot.canExperimentMove(part.vessel);
-                Fields["cirStatus"].guiActive = true;
-                if (Events["moveCIRExp"].active)
-                {
-                    Events["moveCIRExp"].guiName = Localizer.Format("#ne_Move_1", cirSlot.getExperiment().getAbbreviation());
-                }
-
-                if (cirSlot.canActionRun())
-                {
-                    string cirActionString = cirSlot.getActionString();
-                    Events["actionCIRExp"].guiName = cirActionString;
-                }
                 Events["actionCIRExp"].active = cirSlot.canActionRun();
+                if (Events["actionCIRExp"].active)
+                {
+                    Events["actionCIRExp"].guiName = cirSlot.getActionString();
+                }
+                
                 if (!cirSlot.experimentSlotFree())
                 {
                     cirStatus = cirSlot.getExperiment().getAbbreviation() + ": " + cirSlot.getExperiment().stateString();
-                }
-                else
-                {
-                    cirStatus = Localizer.GetStringByTag("#ne_No_Experiment");
+                    Events["moveCIRExp"].active = cirSlot.canExperimentMove(part.vessel);
+                    if (Events["moveCIRExp"].active)
+                    {
+                        Events["moveCIRExp"].guiName = Localizer.Format("#ne_Move_1", cirSlot.getExperiment().getAbbreviation());
+                    }
                 }
             }
-            if (!firSlot.isEquipmentInstalled())
+
+            // FIR UI buttons
+            Fields["firStatus"].guiActive = firSlot.isEquipmentInstalled();
+            if (Fields["firStatus"].guiActive)
             {
-                Fields["firStatus"].guiActive = false;
-            }
-            else
-            {
-                Events["moveFIRExp"].active = firSlot.canExperimentMove(part.vessel);
-                Fields["firStatus"].guiActive = true;
-                if (Events["moveFIRExp"].active)
-                {
-                    Events["moveFIRExp"].guiName = Localizer.Format("#ne_Move_1", firSlot.getExperiment().getAbbreviation());
-                }
-                if (firSlot.canActionRun())
-                {
-                    string ffrActionString = firSlot.getActionString();
-                    Events["actionFIRExp"].guiName = ffrActionString;
-                }
                 Events["actionFIRExp"].active = firSlot.canActionRun();
+                if (Events["actionFIRExp"].active)
+                {
+                    Events["actionFIRExp"].guiName = firSlot.getActionString();
+                }
                 if (!firSlot.experimentSlotFree())
                 {
                     firStatus = firSlot.getExperiment().getAbbreviation() + ": " + firSlot.getExperiment().stateString();
-
-                }
-                else
-                {
-                    firStatus = Localizer.GetStringByTag("#ne_No_Experiment");
+                    Events["moveFIRExp"].active = firSlot.canExperimentMove(part.vessel);
+                    if (Events["moveFIRExp"].active)
+                    {
+                        Events["moveFIRExp"].guiName = Localizer.Format("#ne_Move_1", firSlot.getExperiment().getAbbreviation());
+                    }
                 }
             }
-            if (!printerSlot.isEquipmentInstalled())
-            {
-                Fields["prStatus"].guiActive = false;
-            }
-            else
-            {
-                Events["movePRExp"].active = printerSlot.canExperimentMove(part.vessel);
-                Fields["prStatus"].guiActive = true;
-                if (Events["movePRExp"].active)
-                {
-                    Events["movePRExp"].guiName = Localizer.Format("#ne_Move_1", printerSlot.getExperiment().getAbbreviation());
-                }
 
-                if (printerSlot.canActionRun())
+            // Printer UI buttons
+            Fields["prStatus"].guiActive = printerSlot.isEquipmentInstalled();
+            if (Fields["prStatus"].guiActive)
+            {
+                Events["actionPRExp"].active = printerSlot.canActionRun();
+                if (Events["actionPRExp"].active)
                 {
                     string prActionString = printerSlot.getActionString();
                     Events["actionPRExp"].guiName = prActionString;
                 }
-                Events["actionPRExp"].active = printerSlot.canActionRun();
                 if (!printerSlot.experimentSlotFree())
                 {
                     prStatus = printerSlot.getExperiment().getAbbreviation() + ": " + printerSlot.getExperiment().stateString();
-                }
-                else
-                {
-                    prStatus = Localizer.GetStringByTag("#ne_No_Experiment");
+                    Events["movePRExp"].active = printerSlot.canExperimentMove(part.vessel);
+                    if (Events["movePRExp"].active)
+                    {
+                        Events["movePRExp"].guiName = Localizer.Format("#ne_Move_1", printerSlot.getExperiment().getAbbreviation());
+                    }
                 }
             }
         }
+
 
         protected override bool onLabPaused()
         {
