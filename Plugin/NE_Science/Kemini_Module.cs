@@ -22,6 +22,14 @@ using KSP.Localization;
 
 namespace NE_Science
 {
+    /// <summary>
+    /// This class implements a Kemini Lab.
+    /// </summary>
+    /// A Kemini Lab is a simplified version of the general Lab used in NEOS. Kemini Labs always have the necessary
+    /// Equipment installed. In the base game, a Kemini Lab is integrated into some Command Pods which also have
+    /// the required ExperimentStorage. This is a similar setup to the US Gemini capsules. But it's possible for a Mod
+    /// to separate the Lab from the Experiment Storage. This would be more similar to the Russian Soyuz capsules which
+    /// tended to have Lab Equipment in the Orbital Module and returned the Experiments in the Descent Module.
     public class Kemini_Module : Lab, IScienceResultHelperClient
     {
 
@@ -77,17 +85,6 @@ namespace NE_Science
                     {
                         NE_Helper.logError("installExperiment, installed: " + keminiSlot.isEquipmentInstalled() + "; free: " + keminiSlot.experimentSlotFree());
                     }
-                    break;
-            }
-        }
-
-        public void installEquipmentRack(LabEquipment le)
-        {
-            switch (le.LabEquipmentType)
-            {
-                case LabEquipmentType.KEMINI:
-
-                    keminiSlot.install(le, this);
                     break;
             }
         }
@@ -200,17 +197,19 @@ namespace NE_Science
             return true;
         }
 
-        [KSPEvent(guiActive = true, guiName = "#ne_Move_Kemini_Experiment", active = false)]
+        #region UI - KSPEvents
+        [KSPEvent(guiActive = true, guiName = "#ne_Move_Kemini_Experiment", active = false, groupDisplayName ="Kemini", groupName = "Kemini")]
         public void moveKeminiExp()
         {
             keminiSlot.moveExperiment(part.vessel);
         }
 
-        [KSPEvent(guiActive = true, guiName = "#ne_Action_Kemini_Experiment", active = false)]
+        [KSPEvent(guiActive = true, guiName = "#ne_Action_Kemini_Experiment", active = false, groupDisplayName = "Kemini", groupName = "Kemini")]
         public void actionKeminiExp()
         {
             keminiSlot.experimentAction();
         }
+        #endregion
 
         public override string GetInfo()
         {

@@ -170,8 +170,21 @@ namespace NE_Science
             else
             {
                 Events["chooseEquipment"].active = false;
-            }
+                Events["chooseEquipment"].group.displayName = "NEOS";
+                Events["chooseEquipment"].group.name = "NEOS";
+
                 Events["DeployExperiment"].active = false;
+                if (type == ExperimentFactory.KEMINI_EXPERIMENTS)
+                {
+                    Events["DeployExperiment"].group.displayName = "Kemini";
+                    Events["DeployExperiment"].group.name = "Kemini";
+                }
+                else
+                {
+                    Events["DeployExperiment"].group.displayName = "NEOS";
+                    Events["DeployExperiment"].group.name = "NEOS";
+                }
+            }
         }
 
         public override void OnUpdate()
@@ -356,6 +369,12 @@ namespace NE_Science
             expData.move(part.vessel);
         }
 
+        /// <summary>
+        /// Invoking this completes an experiment; this actually creates the
+        /// Science and opens the Science Results Dialog.
+        /// </summary>
+        /// TODO: Ideally we'd want to move this to the Lab, but since this is a built-in action
+        /// of the KSP ModuleScienceExperiment, we can't.
         [KSPEvent(guiActive = true, guiName = "#ne_Finalize_Experiment", active = false)]
         public void finalize()
         {
