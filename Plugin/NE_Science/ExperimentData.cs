@@ -353,7 +353,10 @@ namespace NE_Science
 
             for (var idx = 0; idx < fes.Count; idx++)
             {
-                rv.Add(fes[idx].part);
+                if (fes[idx].type == storageType)
+                {
+                    rv.Add(fes[idx].part);
+                }
             }
             return rv;
         }
@@ -455,6 +458,11 @@ namespace NE_Science
             if ((state != ExperimentState.RUNNING) && targets.Count > 0)
             {
                 NE_Helper.ChooseMoveTargetUI.showDialog(targets, this, OnDestionationSelected);
+            }
+            else
+            {
+                var screenMessage = Localizer.Format("#ne_No_free_storage_available");
+                ScreenMessages.PostScreenMessage(screenMessage, 15, ScreenMessageStyle.UPPER_CENTER);
             }
         }
 

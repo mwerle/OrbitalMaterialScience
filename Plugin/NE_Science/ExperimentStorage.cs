@@ -171,7 +171,7 @@ namespace NE_Science
             {
                 Events["chooseEquipment"].active = false;
             }
-            Events["DeployExperiment"].active = false;
+                Events["DeployExperiment"].active = false;
         }
 
         public override void OnUpdate()
@@ -300,7 +300,15 @@ namespace NE_Science
             //var labs = GameObject.FindObjectsOfType(typeof(Lab)) as Lab[];
             //var emptyLabs = System.Array.FindAll(labs, p => p.hasFreeEquipmentSlot(leq.Type));
 
-            var emptyLabs = expData.getFreeLabs(part.vessel);
+            // Don't install in lab if the experiment has already been run
+            if (expData.state != ExperimentState.STORED)
+            {
+                var screenMessage = Localizer.Format("#ne_Experiment_is_finished");
+                ScreenMessages.PostScreenMessage(screenMessage, 15, ScreenMessageStyle.UPPER_CENTER, Color.red);
+                return;
+            }
+
+            var emptyLabs = expData.getFreeLabs(vessel);
 
             if (emptyLabs.Count > 0)
             {
@@ -314,8 +322,8 @@ namespace NE_Science
             }
             else
             {
-                var screenMessage = Localizer.Format("#ne_No_available_lab_found_for_1", expData.getDisplayName());
-                ScreenMessages.PostScreenMessage(screenMessage, 15, ScreenMessageStyle.UPPER_CENTER);
+                var screenMessage = Localizer.Format("#ne_No_Lab_Available");
+                ScreenMessages.PostScreenMessage(screenMessage, 15, ScreenMessageStyle.UPPER_CENTER, Color.red);
             }
         }
 
