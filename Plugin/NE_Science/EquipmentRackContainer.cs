@@ -192,6 +192,11 @@ namespace NE_Science
         {
             return leq.Name;
         }
+
+        bool IMoveable.canSourceBeDestination()
+        {
+            return false;
+        }
         #endregion
 
 

@@ -172,5 +172,12 @@ namespace NE_Science
             // The Kemini "Lab" generates 1 LAB_TIME per hour
             return step.getNeededAmount() * 60 * 60;
         }
+
+        #region IMoveable
+        public override bool canSourceBeDestination()
+        {
+            return true;
+        }
+        #endregion
     }
 }

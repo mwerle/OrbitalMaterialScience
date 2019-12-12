@@ -148,14 +148,19 @@ namespace NE_Science
         }
 
         #region IMoveable
-        public string getDisplayName()
+        public virtual string getDisplayName()
         {
             return abb;
         }
-        public Part getPart()
+        public virtual Part getPart()
         {
             return store.getPart();
         }
+        public virtual bool canSourceBeDestination()
+        {
+            return false;
+        }
+
         #endregion
 
         private string getReqString()

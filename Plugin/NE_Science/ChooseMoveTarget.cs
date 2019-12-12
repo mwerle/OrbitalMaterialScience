@@ -24,8 +24,23 @@ namespace NE_Science
 {
     interface IMoveable
     {
+        /// <summary>
+        /// Return the display name for this IMoveable.
+        /// </summary>
+        /// <returns></returns>
         string getDisplayName();
+
+        /// <summary>
+        /// Return the Part which this IMoveable belongs to.
+        /// </summary>
+        /// <returns></returns>
         Part getPart();
+
+        /// <summary>
+        /// Returns whether the source Part can also be a destination Part.
+        /// </summary>
+        /// <returns></returns>
+        bool canSourceBeDestination();
     }
 
     interface IMoveDestination
@@ -38,7 +53,8 @@ namespace NE_Science
         private ScreenMessage smInfo = null;
         private ScreenMessage smError = null;
         private Part currentPart = null;
-        private Part sourcePart = null;
+        //private Part sourcePart = null;
+        private IMoveable source = null;
         private List<Part> destinationParts = null;
         Action<Part> onDestinationSelected = null;
 
@@ -90,17 +106,22 @@ namespace NE_Science
                 return;
             }
 
+            source = f_pSource;
+            var sourcePart = source.getPart();
+
             // Highlight source part
-            sourcePart = f_pSource.getPart();
-            sourcePart.SetHighlightColor(dullOrange);
-            sourcePart.SetHighlightType(Part.HighlightType.AlwaysOn);
-            sourcePart.SetHighlight(true, false);
+            if (!source.canSourceBeDestination())
+            {
+                sourcePart.SetHighlightColor(dullOrange);
+                sourcePart.SetHighlightType(Part.HighlightType.AlwaysOn);
+                sourcePart.SetHighlight(true, false);
+            }
 
             // Highlight destination parts
             // NB: foreach for a list no longer creates garbage
             foreach (Part p in destinationParts)
             {
-                if (p == sourcePart)
+                if (!source.canSourceBeDestination() && (p == sourcePart))
                 {
                     continue;
                 }
@@ -175,7 +196,7 @@ namespace NE_Science
                 smError = null;
             }
             currentPart = null;
-            sourcePart = null;
+            source = null;
             destinationParts = null;
             onDestinationSelected = null;
             // Delay unlocking UI to end of frame to prevent KSP from handling ESC key
@@ -201,7 +222,7 @@ namespace NE_Science
 
         private void onMouseHoverExit(Part p)
         {
-            if (p == sourcePart)
+            if (!source.canSourceBeDestination() && (p == source.getPart()))
             {
                 p.SetHighlightColor(dullOrange);
             }
@@ -213,7 +234,7 @@ namespace NE_Science
 
         private void onMouseHoverEnter(Part p)
         {
-            if (p == sourcePart)
+            if (!source.canSourceBeDestination() && (p == source.getPart()))
             {
                 p.SetHighlightColor(orange);
             }
@@ -225,7 +246,7 @@ namespace NE_Science
 
         private void onMouseClick(Part p)
         {
-            if (p == sourcePart)
+            if (!source.canSourceBeDestination() && (p == source.getPart()))
             {
                 showError("#ne_This_is_the_source_part");
             }
@@ -252,7 +273,7 @@ namespace NE_Science
 
         private void resetHighlight()
         {
-            sourcePart.SetHighlightDefault();
+            source.getPart().SetHighlightDefault();
             for(int i = 0, count = destinationParts.Count; i < count; i++)
             {
                 destinationParts[i].SetHighlightDefault();
