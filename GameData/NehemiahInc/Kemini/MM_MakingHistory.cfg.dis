@@ -30,6 +30,12 @@
 		chanceTexture = false
 		type = KEMINI
 	}
+
+
+	MODULE
+	{
+		name = ESCStorageManifest
+	}
 }
 
 // -- Disabled by default; enable if you want these pods to have Kemini experiments too
@@ -56,5 +62,11 @@
 		identifier = Kemini 1
 		chanceTexture = false
 		type = KEMINI
+	}
+
+
+	MODULE
+	{
+		name = ESCStorageManifest
 	}
 }
