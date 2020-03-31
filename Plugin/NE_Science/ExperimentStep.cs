@@ -121,7 +121,21 @@ namespace NE_Science
 
         internal virtual bool canStart()
         {
-            return exp.state == ExperimentState.INSTALLED && !exp.store.getPart().vessel.isBoring();
+            if(exp.state != ExperimentState.INSTALLED)
+            {
+                return false;
+            }
+            var le = exp.store as LabEquipment;
+            var lab = le?.getPart();
+            if( le == null || lab.vessel.isBoring() )
+            {
+                return false;
+            }
+            if( lab.protoModuleCrew.Count < le.getLab().minimumCrew )
+            {
+                return false;
+            }
+            return true;
         }
 
         public virtual string getNeededResource()
