@@ -310,7 +310,7 @@ namespace NE_Science
 
             ExperimentData exp = ExperimentFactory.getExperiment(node.GetValue(TYPE_VALUE), mass, cost);
             exp.load(node);
-            return exp; ;
+            return exp;
         }
 
         private static ExperimentData nullObject = new ExperimentData("", "", "null Experiment", "empty", LabEquipmentType.NONE, 0f, 0f);

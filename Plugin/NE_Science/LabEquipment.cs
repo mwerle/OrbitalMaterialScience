@@ -119,11 +119,27 @@ namespace NE_Science
         public LabEquipmentType LabEquipmentType { get { return type; } }
 
         /// <summary>
+        /// The Product which this Lab produces
+        /// </summary>
+        public string Product
+        {
+            get { return product; }
+        }
+
+        /// <summary>
         /// How many units of Product the lab generates per hour.
         /// </summary>
         public float ProductPerHour
         {
             get { return productPerHour; }
+        }
+
+        /// <summary>
+        /// The Reactant which this Lab requires
+        /// </summary>
+        public string Reactant
+        {
+            get { return reactant; }
         }
 
         /// <summary>
@@ -206,6 +222,13 @@ namespace NE_Science
             float reactantPerProduct = node.GetFloat(REACTANT_PER_PRODUCT_VALUE);
 
             LabEquipmentType type = LabEquipmentRegistry.getType(node.GetValue(TYPE_VALUE));
+
+            // Backwards compatibility for save games prior to NEOS 0.9
+            // TODO: Remove sometime in the future
+            if(type == LabEquipmentType.KEMINI)
+            {
+                product = Resources.KEMINI_LAB_TIME;
+            }
 
             LabEquipment eq = new LabEquipment(abb, name, type, mass, cost, productPerHour, product, reactantPerProduct, reactant);
             eq.lab = lab;

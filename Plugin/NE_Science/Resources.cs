@@ -22,6 +22,7 @@ namespace NE_Science
 {
     class Resources
     {
+        public const string KEMINI_LAB_TIME = "Kemini_LabTime";
 
         public const string CIR_BURN_TIME = "CIRBurnTime";
 
