@@ -230,6 +230,7 @@ namespace NE_Science
             base.runLabAction();
             if (state == ExperimentState.FINISHED)
             {
+                #if false
                 ExperimentStorage[] storages = store.getPartGo().GetComponents<ExperimentStorage>();
                 for (int idx = 0, count = storages.Length; idx < count; idx++)
                 {
@@ -239,6 +240,7 @@ namespace NE_Science
                         moveTo(es);
                     }
                 }
+                #endif
             }
         }
 
