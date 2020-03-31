@@ -64,7 +64,12 @@ namespace NE_Science
                 LabEquipment keminiLab = new LabEquipment("KL", "Kemini Lab", LabEquipmentType.KEMINI, 0f, 0f, 1f, Resources.LAB_TIME, 10f, Resources.ELECTRIC_CHARGE);
                 keminiSlot.install(keminiLab, this);
             }
+            // Override settings for inherited fields and events which are shown in the GUI.
             Fields["labStatus"].guiName = "#ne_Kemini_Lab";
+            Fields["labStatus"].group.name = "Kemini";
+            Fields["labStatus"].group.displayName = "Kemini";
+            Events["labAction"].group.name = "Kemini";
+            Events["labAction"].group.displayName = "Kemini";
         }
 
 
