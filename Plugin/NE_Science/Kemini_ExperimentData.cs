@@ -49,7 +49,7 @@ namespace NE_Science
                 if( vessel.Parts.Count != partCount )
                 {
                     partCount = vessel.Parts.Count;
-                    labCache = vessel.GetComponents<Kemini_Module>();
+                    labCache = vessel.FindPartModulesImplementing<Kemini_Module>().ToArray();
                     NE_Helper.log("Lab Cache refresh for vessel " + vessel.id);
                 }
             }
