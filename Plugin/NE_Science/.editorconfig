@@ -21,10 +21,12 @@ trim_trailing_whitespace = true
 ; Specify characterset to use
 ;charset = utf-8
 
-; 4-column space indentation
 [*.cs]
+; 4-column space indentation
 indent_style = space
 indent_size = 4
+; and set column guides
+guidelines = 80, 100, 120
 
 ; 2-column tab indentation
 ;[*.{c,cpp,js}]
