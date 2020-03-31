@@ -113,6 +113,11 @@ namespace NE_Science
         private bool isEmptyCacheDirty;
 
         /// <summary>
+        /// Game time when the cache was last accessed
+        /// </summary>
+        private double lastTime = 0;
+
+        /// <summary>
         /// Private constructor to enforce Singleton.
         /// </summary>
         private ExperimentStorageCache()
@@ -201,7 +206,9 @@ namespace NE_Science
 
         private void UpdateCache(Vessel vessel)
         {
-            if ((vessel.id != vesselId) || (vessel.Parts.Count != vesselPartCount))
+            if ((vessel.id != vesselId)
+                || (vessel.Parts.Count != vesselPartCount)
+                || (HighLogic.CurrentGame.UniversalTime < lastTime))
             {
                 vesselId = vessel.id;
                 vesselPartCount = vessel.Parts.Count;
@@ -209,6 +216,7 @@ namespace NE_Science
                 cacheEntries = vessel.FindPartModulesImplementing<ExperimentStorage>();
                 NE_Helper.log("ExperimentStorage Cache refresh for vessel " + vessel.id);
             }
+            lastTime = HighLogic.CurrentGame.UniversalTime;
         }
 
     #endregion

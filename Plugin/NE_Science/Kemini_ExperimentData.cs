@@ -23,8 +23,85 @@ namespace NE_Science
     /// <summary>
     /// A cache for all the Kemini Labs in all the Vessels.
     /// </summary>
-    public static class KeminiLabCache
+    public class KeminiLabCache
     {
+        #region Public Interface
+        public static KeminiLabCache Instance
+        {
+            get {
+                if (instance == null)
+                {
+                    instance = new KeminiLabCache();
+                }
+                return instance;
+            }
+        }
+
+        /// <summary>
+        /// Gets all the Kemini Labs in the Vessel.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public static Kemini_Module[] GetLabs(Vessel v)
+        {
+            CacheEntry ce = Instance.getCache(v);
+
+            return ce.LabCache;
+        }
+
+        public static void Clear()
+        {
+            Instance.vesselCache.Clear();
+        }
+
+        #endregion // public 
+
+
+        #region Private Implementation
+        private static KeminiLabCache instance = null;
+
+        private KeminiLabCache()
+        {
+            GameEvents.onLevelWasLoaded.Add(OnLevelWasLoaded);
+            GameEvents.onVesselDestroy.Add(OnVesselDestroyed);
+        }
+
+        ~KeminiLabCache()
+        {
+            GameEvents.onLevelWasLoaded.Remove(OnLevelWasLoaded);
+            GameEvents.onVesselDestroy.Remove(OnVesselDestroyed);
+        }
+
+        /// <summary>
+        /// Called when the player switches scenes.
+        /// </summary>
+        /// <param name="newScene"></param>
+        private void OnLevelWasLoaded(GameScenes newScene)
+        {
+            switch(newScene)
+            {
+                // Ignore when flying
+                case GameScenes.SPACECENTER:
+                case GameScenes.FLIGHT:
+                case GameScenes.TRACKSTATION:
+                    break;
+
+                // Clear cache for all other scenes
+                default:
+                    Clear();
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Called when a vessel is about to be destroyed.
+        /// </summary>
+        /// <param name="v"></param>
+        private void OnVesselDestroyed(Vessel v)
+        {
+            Instance.vesselCache.Remove(v.id);
+        }
+
         private class CacheEntry
         {
             private Vessel vessel = null;
@@ -58,33 +135,27 @@ namespace NE_Science
         /// <summary>
         /// Contains the caches for all the vessels.
         /// </summary>
-        private static Dictionary<Guid,CacheEntry> vesselCache = new Dictionary<Guid,CacheEntry>();
+        private Dictionary<Guid,CacheEntry> vesselCache = new Dictionary<Guid,CacheEntry>();
 
         /// <summary>
-        /// Gets all the Kemini Labs in the Vessel.
+        /// Game time when the cache was last accessed
         /// </summary>
-        /// <param name="v"></param>
-        /// <returns></returns>
-        public static Kemini_Module[] GetLabs(Vessel v)
-        {
-            CacheEntry ce = getCache(v);
-
-            return ce.LabCache;
-        }
-
-        public static void Clear()
-        {
-            vesselCache.Clear();
-        }
+        private double lastTime = 0;
 
         /// <summary>
         /// Creates or updates the cache for the given vessel.
         /// </summary>
         /// <param name="v"></param>
         /// <returns></returns>
-        private static CacheEntry getCache(Vessel v)
+        private CacheEntry getCache(Vessel v)
         {
             CacheEntry ce = null;
+
+            // If time is earlier, the player reverted, so clear the cache.
+            if (HighLogic.CurrentGame.UniversalTime < lastTime)
+            {
+                vesselCache.Clear();
+            }
 
             if( !vesselCache.TryGetValue(v.id, out ce) )
             {
@@ -92,9 +163,13 @@ namespace NE_Science
                 vesselCache.Add(v.id, ce);
             }
 
+            // Update last accessed time
+            lastTime = HighLogic.CurrentGame.UniversalTime;
+
             return ce;
-        }
-    }
+        } // class CacheEntry
+        #endregion // private
+    } // class KeminiLabCache
 
     /*
     * Experiments for the Kemini Research Program
