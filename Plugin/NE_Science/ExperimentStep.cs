@@ -195,7 +195,7 @@ namespace NE_Science
         protected override void load(ConfigNode node)
         {
             base.load(node);
-            res = node.GetValue(RES_VALUE);
+            res = Resources.getCanonicalResourceName(node.GetValue(RES_VALUE));
             amount = NE_Helper.GetValueAsFloat(node, AMOUNT_VALUE);
         }
 

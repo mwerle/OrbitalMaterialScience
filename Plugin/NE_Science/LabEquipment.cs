@@ -179,7 +179,7 @@ namespace NE_Science
             float mass = NE_Helper.GetValueAsFloat(node, MASS_VALUE);
             float cost = NE_Helper.GetValueAsFloat(node, COST_VALUE);
 
-            string product = node.GetValue(PRODUCT_VALUE);
+            string product = Resources.getCanonicalResourceName(node.GetValue(PRODUCT_VALUE));
             float productPerHour = NE_Helper.GetValueAsFloat(node, PRODUCT_PER_HOUR_VALUE);
 
             string reactant = node.GetValue(REACTANT_VALUE);

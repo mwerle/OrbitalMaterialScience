@@ -28,7 +28,9 @@ namespace NE_Science
 
         public const string FIR_TEST_RUN = "FIRTestRun";
 
-        public const string EXPOSURE_TIME = "ExposureTime";
+        public const string LEGACY_EXPOSURE_TIME = "ExposureTime";
+
+        public const string EXPOSURE_TIME = "NE_ExposureTime";
 
         public const string PRINT_LAYER = "3D_PrintLayer";
 
@@ -39,5 +41,14 @@ namespace NE_Science
         public const string ELECTRIC_CHARGE = "ElectricCharge";
 
         public const string ULTRASOUND_GEL = "Ultrasound_Gel";
+
+        public static string getCanonicalResourceName(string name)
+        {
+            if (name == LEGACY_EXPOSURE_TIME)
+            {
+                return EXPOSURE_TIME;
+            }
+            return name;
+        }
     }
 }

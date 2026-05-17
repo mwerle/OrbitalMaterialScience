@@ -23,10 +23,49 @@ namespace NE_Science
 {
     class ResourceHelper
     {
+        private static PartResource migrateLegacyExposureTime(Part part)
+        {
+            if (part == null)
+            {
+                return null;
+            }
+
+            PartResourceList resourceList = part.Resources;
+            PartResource legacy = resourceList.Get(Resources.LEGACY_EXPOSURE_TIME);
+            PartResource current = resourceList.Get(Resources.EXPOSURE_TIME);
+            if (legacy == null)
+            {
+                return current;
+            }
+
+            if (current == null)
+            {
+                ConfigNode node = new ConfigNode("RESOURCE");
+                node.AddValue("name", Resources.EXPOSURE_TIME);
+                node.AddValue("amount", legacy.amount);
+                node.AddValue("maxAmount", legacy.maxAmount);
+                current = resourceList.Add(node);
+            }
+            else
+            {
+                current.amount = Math.Max(current.amount, legacy.amount);
+                current.maxAmount = Math.Max(current.maxAmount, legacy.maxAmount);
+            }
+            resourceList.Remove(legacy);
+            return current;
+        }
+
         public static PartResource getResource(Part part, string name)
         {
             PartResourceList resourceList = part.Resources;
-            return resourceList.Get(name);
+            string resourceName = Resources.getCanonicalResourceName(name);
+            PartResource res = resourceList.Get(resourceName);
+            if (resourceName == Resources.EXPOSURE_TIME)
+            {
+                PartResource migrated = migrateLegacyExposureTime(part);
+                res = migrated != null ? migrated : res;
+            }
+            return res;
         }
 
         public static double getResourceAmount(Part part, string name)
@@ -52,11 +91,12 @@ namespace NE_Science
 
         public static PartResource setResourceMaxAmount(Part part, string name, double max)
         {
-            PartResource res = getResource(part, name);
+            string resourceName = Resources.getCanonicalResourceName(name);
+            PartResource res = getResource(part, resourceName);
             if (res == null && max > 0)
             {
                 ConfigNode node = new ConfigNode("RESOURCE");
-                node.AddValue("name", name);
+                node.AddValue("name", resourceName);
                 node.AddValue("amount", 0);
                 node.AddValue("maxAmount", max);
                 res = part.Resources.Add (node);
@@ -82,7 +122,12 @@ namespace NE_Science
 
         public static double getDemand(Part part, string name)
         {
-            var res_def = PartResourceLibrary.Instance.GetDefinition(name);
+            string resourceName = Resources.getCanonicalResourceName(name);
+            if (resourceName == Resources.EXPOSURE_TIME)
+            {
+                migrateLegacyExposureTime(part);
+            }
+            var res_def = PartResourceLibrary.Instance.GetDefinition(resourceName);
             if (res_def == null) return 0;
             double amount;
             double maxAmount;
@@ -94,7 +139,12 @@ namespace NE_Science
         /** Returns the total amount of available resources connected to the current part */
         public static double getAvailable(Part part, string name)
         {
-            var res_def = PartResourceLibrary.Instance.GetDefinition(name);
+            string resourceName = Resources.getCanonicalResourceName(name);
+            if (resourceName == Resources.EXPOSURE_TIME)
+            {
+                migrateLegacyExposureTime(part);
+            }
+            var res_def = PartResourceLibrary.Instance.GetDefinition(resourceName);
             if (res_def == null) return 0;
             double amount;
             double maxAmount;
@@ -106,35 +156,41 @@ namespace NE_Science
 
         public static double requestResourcePartial(Part part, string name, double amount)
         {
+            string resourceName = Resources.getCanonicalResourceName(name);
+            if (resourceName == Resources.EXPOSURE_TIME)
+            {
+                migrateLegacyExposureTime(part);
+            }
+
             if (amount > 0)
             {
                 //NE_Helper.log(name + " request: " + amount);
-                double taken = part.RequestResource(name, amount);
+                double taken = part.RequestResource(resourceName, amount);
                 //NE_Helper.log(name + " request taken: " + taken);
                 if (taken >= amount * .99999)
                     return taken;
-                double available = getAvailable(part, name);
+                double available = getAvailable(part, resourceName);
                 //NE_Helper.log(name + " request available: " + available);
                 double new_amount = Math.Min(amount, available) * .99999;
                 //NE_Helper.log(name + " request new_amount: " + new_amount);
                 if (new_amount > taken)
-                    return taken + part.RequestResource(name, new_amount - taken);
+                    return taken + part.RequestResource(resourceName, new_amount - taken);
                 else
                     return taken;
             }
             else if (amount < 0)
             {
                 //NE_Helper.log(name + " request: " + amount);
-                double taken = part.RequestResource(name, amount);
+                double taken = part.RequestResource(resourceName, amount);
                 //NE_Helper.log(name+" request taken: " + taken);
                 if (taken <= amount * .99999)
                     return taken;
-                double available = getDemand(part, name);
+                double available = getDemand(part, resourceName);
                 //NE_Helper.log(name + " request available: " + available);
                 double new_amount = Math.Max(amount, available) * .99999;
                 //NE_Helper.log(name + " request new_amount: " + new_amount);
                 if (new_amount < taken)
-                    return taken + part.RequestResource(name, new_amount - taken);
+                    return taken + part.RequestResource(resourceName, new_amount - taken);
                 else
                     return taken;
             }
