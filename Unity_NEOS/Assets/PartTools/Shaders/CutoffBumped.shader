@@ -17,7 +17,7 @@ Shader "KSP/Alpha/Cutoff Bumped"
         Tags{ "Queue" = "AlphaTest" "IgnoreProjector" = "True" "RenderType" = "TransparentCutout" }
         LOD 300
 
-        CGPROGRAM
+        CGPROGRAM		
 		#include "../LightingKSP.cginc"
         #pragma surface surf Lambert alphatest:_Cutoff
 		#pragma target 3.0
@@ -50,7 +50,7 @@ Shader "KSP/Alpha/Cutoff Bumped"
         o.Albedo = fog.rgb;
         o.Emission = emission * fog.a;
         o.Alpha = c.a * fog.a;
-        o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
+        o.Normal = UnpackNormalDXT5nm(tex2D(_BumpMap, IN.uv_BumpMap));
     }
     ENDCG
     }

@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
 Shader "TextMeshPro/Distance Field Overlay" {
 
 Properties {
@@ -116,8 +118,7 @@ SubShader {
 		#pragma shader_feature __ BEVEL_ON
 		#pragma shader_feature __ UNDERLAY_ON UNDERLAY_INNER
 		#pragma shader_feature __ GLOW_ON
-
-		#pragma multi_compile __ UNITY_UI_ALPHACLIP
+		#pragma shader_feature __ MASK_OFF
 
 
 		#include "UnityCG.cginc"
@@ -281,13 +282,17 @@ SubShader {
 			faceColor.rgb += glowColor.rgb * glowColor.a;
 		#endif
 
-		// Alternative implementation to UnityGet2DClipping with support for softness.
-		half2 m = saturate((_ClipRect.zw - _ClipRect.xy - abs(input.mask.xy)) * input.mask.zw);
-		faceColor *= m.x * m.y;
-
-		#if UNITY_UI_ALPHACLIP
-			clip(faceColor.a - 0.001);
+		// #if !MASK_OFF
+		#if UNITY_VERSION < 530
+			// Unity 5.2 2D Rect Mask Support
+			if (_UseClipRect)
+				faceColor *= UnityGet2DClipping(input.mask.xy, _ClipRect);
+		#else
+			// Alternative implementation to UnityGet2DClipping with support for softness.
+			half2 m = saturate((_ClipRect.zw - _ClipRect.xy - abs(input.mask.xy)) * input.mask.zw);
+			faceColor *= m.x * m.y;
 		#endif
+		//#endif
 
   		return faceColor * input.color.a;
 		}

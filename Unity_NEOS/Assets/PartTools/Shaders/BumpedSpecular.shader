@@ -24,10 +24,10 @@ Shader "KSP/Bumped Specular"
 		ZWrite On
 		ZTest LEqual
 		Blend SrcAlpha OneMinusSrcAlpha 
+		ColorMask RGBA
 
 		CGPROGRAM
-
-        #include "../LightingKSP.cginc"
+		#include "../LightingKSP.cginc"
         #pragma surface surf BlinnPhongSmooth keepalpha
 		#pragma target 3.0
 		
@@ -56,7 +56,7 @@ Shader "KSP/Bumped Specular"
 		void surf (Input IN, inout SurfaceOutput o)
 		{
 			float4 color = tex2D(_MainTex,(IN.uv_MainTex)) * _BurnColor * _Color * IN.color;
-			float3 normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
+			float3 normal = UnpackNormalDXT5nm(tex2D(_BumpMap, IN.uv_BumpMap));
 
 			half rim = 1.0 - saturate(dot (normalize(IN.viewDir), normal));
 

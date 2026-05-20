@@ -34,8 +34,7 @@ Shader "KSP/Bumped Specular (Transparent)"
 		ZTest LEqual
 		Blend SrcAlpha OneMinusSrcAlpha 
 
-		CGPROGRAM
-
+		CGPROGRAM		
         #include "../LightingKSP.cginc"
 		#pragma surface surf BlinnPhongSmooth alpha:fade
 		#pragma target 3.0
@@ -63,7 +62,7 @@ Shader "KSP/Bumped Specular (Transparent)"
 		void surf (Input IN, inout SurfaceOutput o)
 		{
 			float4 color = tex2D(_MainTex,(IN.uv_MainTex)) * _BurnColor;
-			float3 normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
+			float3 normal = UnpackNormalDXT5nm(tex2D(_BumpMap, IN.uv_BumpMap));
 			
 			half rim = 1.0 - saturate(dot (normalize(IN.viewDir), normal));
 

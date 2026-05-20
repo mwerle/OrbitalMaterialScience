@@ -9,6 +9,7 @@ Shader "KSP/Bumped Specular (Mapped)"
 		_SpecMap ("Specular Map", 2D) = "white"{}
 		_SpecTint ("Specular Tint", Range (0, 0.1)) = 0.05
 		_Shininess ("Shininess", Range (0.03, 1)) = 0.4
+		_AmbientMultiplier("Ambient Multiplier", Range(0.00, 2)) = 1.0
         [Header(Effects)]
 		[PerRendererData]_Opacity("_Opacity", Range(0,1) ) = 1
 			[PerRendererData]_RimFalloff("_RimFalloff", Range(0.01,5) ) = 0.1
@@ -24,9 +25,9 @@ Shader "KSP/Bumped Specular (Mapped)"
 		ZWrite On
 		ZTest LEqual
 		Blend SrcAlpha OneMinusSrcAlpha 
+		ColorMask RGBA
 
-		CGPROGRAM
-
+		CGPROGRAM		
         #include "../LightingKSP.cginc"
         #pragma surface surf  StandardSpecular keepalpha
 		#pragma target 3.0
@@ -44,6 +45,9 @@ Shader "KSP/Bumped Specular (Mapped)"
 		float4 _TemperatureColor;
 		float4 _BurnColor;
 
+		float _SpecularAmbientBoostDiffuse;
+		float _AmbientMultiplier;
+		float _SpecularAmbientBoostEmissive;
 		
 		struct Input
 		{
@@ -58,8 +62,9 @@ Shader "KSP/Bumped Specular (Mapped)"
 
 		void surf (Input IN, inout SurfaceOutputStandardSpecular o)
 		{
-			float4 color = tex2D(_MainTex,(IN.uv_MainTex)) * _BurnColor * IN.color;
-			float3 normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
+			float4 color = tex2D(_MainTex, (IN.uv_MainTex)) * _BurnColor * IN.color;
+			color = color + color * _SpecularAmbientBoostDiffuse * _AmbientMultiplier;
+			float3 normal = UnpackNormalDXT5nm(tex2D(_BumpMap, IN.uv_BumpMap));
 			float3 specularMap = tex2D(_SpecMap,(IN.uv_SpecMap)).rgb;
 
 			half rim = 1.0 - saturate(dot (normalize(IN.viewDir), normal));
@@ -70,7 +75,7 @@ Shader "KSP/Bumped Specular (Mapped)"
 			float4 fog = UnderwaterFog(IN.worldPos, color);
 
 			o.Albedo = fog.rgb;
-			o.Emission = (emission+ specularMap)*_SpecTint;
+			o.Emission = emission + (specularMap * _SpecTint) + (color * _SpecularAmbientBoostEmissive);
 		    //o.Gloss = color.a;
 			o.Smoothness = _Shininess;
 			o.Specular = specularMap;

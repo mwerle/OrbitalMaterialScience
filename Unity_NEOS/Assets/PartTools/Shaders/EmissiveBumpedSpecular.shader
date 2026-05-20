@@ -28,8 +28,7 @@ Shader "KSP/Emissive/Bumped Specular"
 		ZTest LEqual
 		Blend SrcAlpha OneMinusSrcAlpha 
 
-		CGPROGRAM
-
+		CGPROGRAM		
         #include "../LightingKSP.cginc"
         #pragma surface surf BlinnPhongSmooth keepalpha
 		#pragma target 3.0
@@ -61,7 +60,7 @@ Shader "KSP/Emissive/Bumped Specular"
 		{
 			float4 color = tex2D(_MainTex,(IN.uv_MainTex)) * _BurnColor * _Color * IN.color;
 			float3 emissive = tex2D(_Emissive, (IN.uv_Emissive));
-			float3 normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
+			float3 normal = UnpackNormalDXT5nm(tex2D(_BumpMap, IN.uv_BumpMap));
 
 			half rim = 1.0 - saturate(dot (normalize(IN.viewDir), normal));
 

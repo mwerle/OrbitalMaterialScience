@@ -26,54 +26,51 @@
 		Blend SrcAlpha OneMinusSrcAlpha
 
 		CGPROGRAM
-
-
-
-#include "../LightingKSP.cginc"
-#pragma surface surf BlinnPhongSmooth  alphatest:_Cutoff
-#pragma target 3.0
+		#include "../LightingKSP.cginc"
+		#pragma surface surf BlinnPhongSmooth  alphatest:_Cutoff
+		#pragma target 3.0
 
 		half _Shininess;
 
-	sampler2D _MainTex;
-	sampler2D _BumpMap;
+		sampler2D _MainTex;
+		sampler2D _BumpMap;
 
-	float _Opacity;
-	float _RimFalloff;
-	float4 _RimColor;
-	float4 _TemperatureColor;
-	float4 _BurnColor;
+		float _Opacity;
+		float _RimFalloff;
+		float4 _RimColor;
+		float4 _TemperatureColor;
+		float4 _BurnColor;
 
 
-	struct Input
-	{
-		float2 uv_MainTex;
-		float2 uv_BumpMap;
-		float3 viewDir;
-		float3 worldPos;
-	};
+		struct Input
+		{
+			float2 uv_MainTex;
+			float2 uv_BumpMap;
+			float3 viewDir;
+			float3 worldPos;
+		};
 
-	void surf(Input IN, inout SurfaceOutput o)
-	{
-		float4 color = tex2D(_MainTex,(IN.uv_MainTex)) * _BurnColor * _Color;
-		float3 normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
+		void surf(Input IN, inout SurfaceOutput o)
+		{
+			float4 color = tex2D(_MainTex,(IN.uv_MainTex)) * _BurnColor * _Color;
+			float3 normal = UnpackNormalDXT5nm(tex2D(_BumpMap, IN.uv_BumpMap));
 
-		half rim = 1.0 - saturate(dot(normalize(IN.viewDir), normal));
-		float3 emission = (_RimColor.rgb * pow(rim, _RimFalloff)) * _RimColor.a;
-		emission += _TemperatureColor.rgb * _TemperatureColor.a;
+			half rim = 1.0 - saturate(dot(normalize(IN.viewDir), normal));
+			float3 emission = (_RimColor.rgb * pow(rim, _RimFalloff)) * _RimColor.a;
+			emission += _TemperatureColor.rgb * _TemperatureColor.a;
 
-		float4 fog = UnderwaterFog(IN.worldPos, color);
+			float4 fog = UnderwaterFog(IN.worldPos, color);
 
-		o.Albedo = fog.rgb;
-		o.Emission = emission;
-		o.Gloss = color.a;
-		o.Specular = _Shininess;
-		o.Normal = normal;
+			o.Albedo = fog.rgb;
+			o.Emission = emission;
+			o.Gloss = color.a;
+			o.Specular = _Shininess;
+			o.Normal = normal;
 
-		o.Emission *= _Opacity * fog.a;
-		o.Alpha = _Opacity * fog.a;
+			o.Emission *= _Opacity * fog.a;
+			o.Alpha = _Opacity * fog.a;
+		}
+		ENDCG
 	}
-	ENDCG
-	}
-		Fallback "Standard"
+	Fallback "Standard"
 }
