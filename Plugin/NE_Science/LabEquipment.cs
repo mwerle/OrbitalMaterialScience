@@ -187,6 +187,13 @@ namespace NE_Science
 
             EquipmentRacks type = EquipmentRacksFactory.getType(node.GetValue(TYPE_VALUE));
 
+            // Backwards compatibility for save games prior to NEOS 0.9
+            // TODO: Remove sometime in the future
+            if(type == EquipmentRacks.KEMINI)
+            {
+                product = Resources.KEMINI_LAB_TIME;
+            }
+
             LabEquipment eq = new LabEquipment(abb, name, type, mass, cost, productPerHour, product, reactantPerProduct, reactant);
             eq.lab = lab;
             ConfigNode expNode = node.GetNode(ExperimentData.CONFIG_NODE_NAME);

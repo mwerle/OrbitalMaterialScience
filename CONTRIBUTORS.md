@@ -1,10 +1,14 @@
 # NEOS - Contributors
 
-This mod was originally designed and developed by **Nehemiah**, and is currently being maintained by **Micha**.
+This mod was originally designed and developed by **Nehemiah**, and is
+currently being maintained by **Micha**.
 
-A huge thank you to everybody who has, in any way, contributed to NEOS - whether by raising bug reports, contributing configurations or bug-fixes, or just playing and enjoying this mod. It wouldn't be alive if it wasn't for you!
+A huge thank you to everybody who has, in any way, contributed to NEOS
+- whether by raising bug reports, contributing configurations or bug-fixes,
+or just playing and enjoying this mod. It wouldn't be alive if it wasn't for you!
 
-The following is an (incomplete) list of people who have contributed to the development and release of NEOS.
+The following is an (incomplete) list of people who have contributed to the
+development and release of NEOS.
 
 **Note:** these lists are in alphabetical order.
 
@@ -48,7 +52,8 @@ The following is an (incomplete) list of people who have contributed to the deve
 * Sangrias
 * volkkeslate
 
-..And many many more individuals who have contributed via the forum threads, raising issues, making feature requests, and playing the pre-releases.
+..And many many more individuals who have contributed via the forum threads,
+raising issues, making feature requests, and playing the pre-releases.
 
 
 [1]: http://www.freesfx.co.uk/

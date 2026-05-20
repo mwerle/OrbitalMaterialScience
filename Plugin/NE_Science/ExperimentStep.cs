@@ -121,7 +121,21 @@ namespace NE_Science
 
         internal virtual bool canStart()
         {
-            return exp.state == ExperimentState.INSTALLED && !OMSExperiment.checkBoring(exp.store.getPart().vessel);
+            if(exp.state != ExperimentState.INSTALLED)
+            {
+                return false;
+            }
+            var le = exp.store as LabEquipment;
+            var lab = le?.getPart();
+            if( lab == null || OMSExperiment.checkBoring(lab.vessel) )
+            {
+                return false;
+            }
+            if( lab.protoModuleCrew.Count < le.getLab().minimumCrew )
+            {
+                return false;
+            }
+            return true;
         }
 
         public virtual string getNeededResource()

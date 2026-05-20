@@ -53,7 +53,7 @@ namespace NE_Science
             keminiSlot.onStart(this);
             if (!keminiSlot.isEquipmentInstalled())
             {
-                LabEquipment keminiLab = new LabEquipment("KL", "Kemini Lab", EquipmentRacks.KEMINI, 0f, 0f, 1f, Resources.LAB_TIME, 10f, Resources.ELECTRIC_CHARGE);
+                LabEquipment keminiLab = new LabEquipment("KL", "Kemini Lab", EquipmentRacks.KEMINI, 0f, 0f, 1f, Resources.KEMINI_LAB_TIME, 10f, Resources.ELECTRIC_CHARGE);
                 keminiSlot.install(keminiLab, this);
             }
             Fields["labStatus"].guiName = "#ne_Kemini_Lab";

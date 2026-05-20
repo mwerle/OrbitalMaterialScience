@@ -33,8 +33,21 @@ namespace NE_Science
             : base(id, type, name, abb, EquipmentRacks.KEMINI, mass, cost)
         {
             storageType = ExperimentFactory.KEMINI_EXPERIMENTS;
-            step = new ResourceExperimentStep(this, Resources.LAB_TIME, labTime, "", 0);
+            step = new ResourceExperimentStep(this, Resources.KEMINI_LAB_TIME, labTime, "", 0);
         }
+
+        protected override void load(ConfigNode node)
+        {
+            base.load(node);
+            // Backwards-compatibility for save games from before KSP1.8
+            // TODO: Remove sometime in the future
+            if(step.getNeededResource() == Resources.LAB_TIME)
+            {
+                var stepNode = step.getNode();
+                stepNode.SetValue("Res", Resources.KEMINI_LAB_TIME);
+                step = ExperimentStep.getExperimentStepFromConfigNode(stepNode, this);
+            }
+        }         
 
         public override List<Lab> getFreeLabsWithEquipment(Vessel vessel)
         {
@@ -65,12 +78,13 @@ namespace NE_Science
 
         public override bool canMove(Vessel vessel)
         {
-            return state == ExperimentState.INSTALLED;
+            return state == ExperimentState.INSTALLED || state == ExperimentState.FINISHED;
         }
 
         public override void runLabAction()
         {
             base.runLabAction();
+            // UI Optimisation - if lab is in same part as storage, automatically move a finished experiment to storage.
             if (state == ExperimentState.FINISHED)
             {
                 ExperimentStorage[] storages = store.getPartGo().GetComponents<ExperimentStorage>();

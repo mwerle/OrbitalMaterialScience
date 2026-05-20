@@ -473,7 +473,7 @@ namespace NE_Science
         #region OMSExperiment Overloads
         internal override float getRemainingExperimentTime()
         {
-            float exposureTimeInSeconds = exposureTimeRequired * KeesLab.ExposureTimePerHour * 60 * 60;
+            float exposureTimeInSeconds = exposureTimeRemaining * KeesLab.ExposureTimePerHour * 60 * 60;
             return exposureTimeInSeconds;
         }
 

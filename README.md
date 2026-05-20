@@ -74,9 +74,13 @@ Related and Recommended Mods
 
 * [Corvus Command Pod](http://forum.kerbalspaceprogram.com/index.php?showtopic=163101) - works very well with Kemini and KEES.
 
+* [Kerbal Alarm Clock](https://forum.kerbalspaceprogram.com/index.php?showtopic=22809) - _very_ useful when managing multiple missions while leaving experiments running in the background.
+
 * [Universal Storage](http://www.kingtiger.co.uk/kingtiger/wordpress/universal-storage-a-mod-for-kerbal-space-program/) - when installed, additional US wedges are available for storing experiments.
 
 * [Connected Living Spaces](https://github.com/codepoetpbowden/ConnectedLivingSpace) - various parts are compatible with CLS and allow Kerbals to move through them.
+
+* [Custom Bulkhead Profiles](https://forum.kerbalspaceprogram.com/index.php?showtopic=181645) - supplies additional bulkhead profile descriptions used by NEOS.
 
 Download Links
 --------------
@@ -85,6 +89,6 @@ Download Links
 
 * [SpaceDock](https://spacedock.info/mod/1393)
 
-* [CurseForge](https://mods.curse.com/ksp-mods/kerbal/270269-neos)
+* [CurseForge](https://www.curseforge.com/kerbal/ksp-mods/neos)
 
 * And via the [CKAN](https://forum.kerbalspaceprogram.com/threads/100067) tool.

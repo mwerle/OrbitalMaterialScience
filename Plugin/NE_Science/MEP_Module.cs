@@ -19,6 +19,7 @@
 
 using System;
 using System.Linq;
+using Experience.Effects;
 using UnityEngine;
 using KSP.Localization;
 
@@ -163,6 +164,26 @@ namespace NE_Science
         [KSPEvent(active = false, externalToEVAOnly = true, guiActiveUnfocused = true, unfocusedRange = 3.0f, guiName = "#ne_Fix_robotic_arm")]
         public void FixArm()
         {
+            // A Kerbal on EVA is a vessel with a single crewmember - the Kerbal itself.
+            var vessel = FlightGlobals.ActiveVessel;
+            if (!vessel.isEVA)
+            {
+                NE_Helper.logError($"FixArm() - active vessel is not a Kerbal: {vessel}");
+                return;
+            }
+
+            // We could check the Kerbals' "trait" property for "Engineer", but mods could potentially create new
+            // Kerbal careers. So instead we check if the Kerbal has the "FailureRepairSkill" effect which, by default,
+            // all Engineer Kerbals have.
+            var kerbal = vessel.GetVesselCrew()[0];
+            if (!kerbal.HasEffect<FailureRepairSkill>())
+            {
+                // It would be more correct to state the effect, but most Players won't know this
+                ScreenMessages.PostScreenMessage("#ne_Only_Engineer_can_fix_arm", 6, ScreenMessageStyle.UPPER_CENTER);
+                return;
+            }
+
+
             Events["FixArm"].active = false;
             armOps = 0;
             switch (MEPlabState)
@@ -313,6 +334,11 @@ namespace NE_Science
                     Events["actionExp"].guiName = exposureSlot.getActionString();
                 }
             }
+            else
+            {
+                Events["moveExp"].active = false;
+                Events["actionExp"].active = false;
+            }
         }
 
         protected override bool canPerformLabActions()
@@ -323,11 +349,6 @@ namespace NE_Science
 
         protected override bool onLabPaused()
         {
-            if (!canPerformLabActions())
-            {
-                ScreenMessages.PostScreenMessage("#ne_Not_enough_crew_in_this_module", 6, ScreenMessageStyle.UPPER_CENTER);
-                return false;
-            }
             if( !base.onLabPaused() )
             {
                 return false;
@@ -349,11 +370,6 @@ namespace NE_Science
 
         protected override bool onLabStarted()
         {
-            if (!canPerformLabActions())
-            {
-                ScreenMessages.PostScreenMessage("#ne_Not_enough_crew_in_this_module", 6, ScreenMessageStyle.UPPER_CENTER);
-                return false;
-            }
             if( !base.onLabStarted() )
             {
                 return false;
@@ -451,14 +467,32 @@ namespace NE_Science
             Events["FixArm"].active = true;
         }
 
+        // Mainly used during debugging, but possibly keep as a future options switch
+        private bool automaticRestartOnFix = true;
+
         private void onAnimStartFixFinished(Animation anim)
         {
-            playAnimation(startExpAnimName, 1f, 0, onAnimExpStartFinished);
+            // Robot arm is fixed, the lab is ready again and the player can try starting the experiment again.
+            MEPlabState = MEPLabStatus.READY;
+            if (automaticRestartOnFix)
+            {
+
+                // Automatically try deploying the experiment again
+                // playAnimation(startExpAnimName, 1f, 0, onAnimExpStartFinished);
+                actionExp();
+            }
         }
 
         private void onAnimStopFixFinished(Animation anim)
         {
-            onAnimExpStopFinished(anim);
+            // Robot arm is fixed, the lab is ready again and the player can try starting the experiment again.
+            MEPlabState = MEPLabStatus.RUNNING;
+            if (automaticRestartOnFix)
+            {
+                // Robot arm fixed, automatically try finishing the experiment again
+                //playAnimation(startExpAnimName, -1f, 1f, onAnimExpStopFinished);
+                actionExp();
+            }
         }
 
         /// <summary>

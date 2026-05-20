@@ -60,7 +60,7 @@ namespace NE_Science
                 */
 
                 MEP_Module lab = part.GetComponent<MEP_Module>();
-                if (lab.MEPlabState == MEPLabStatus.ERROR_ON_START || lab.MEPlabState == MEPLabStatus.ERROR_ON_STOP)
+                if (lab.hasError())
                 {
                     animateAlarmLight();
                     playSoundFX();

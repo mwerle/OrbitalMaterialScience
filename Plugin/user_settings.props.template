@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Copy (or merge) this file to "common_settings.user, uncomment the following
+       lines, and edit to suit your development environment.
+       See "Contributing.md" for more details.
+  -->
+  <PropertyGroup>
+    <!-- KSP_DIR - this can be set either as an environment variable or via
+       -           this file. The following are the default locations for the
+       -           Steam installation. It is HIGHLY RECOMMENDED to make a copy
+       -           of your KSP directory and use that instead for mod
+       -           development, then updating the location accordingly.
+      -->
+    <!-- Windows -->
+    <!-- <KSP_DIR>C:\Program Files (x86)\Steam\SteamApps\common\Kerbal Space Program\</KSP_DIR> -->
+    <!-- Linux -->
+    <!-- <KSP_DIR>~/.steam/steam/steamapps/common/Kerbal Space Program/</KSP_DIR> -->
+    <!-- Mac -->
+    <!-- <KSP_DIR>~/Library/Application Support/Steam/steamapps/common/Kerbal Space Program/</KSP_DIR> -->
+  </PropertyGroup>
+</Project>

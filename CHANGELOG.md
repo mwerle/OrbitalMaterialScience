@@ -3,6 +3,66 @@ Changelog for Nehemiah Engineering Orbital Science
 
 Major features are **bolded**, contributors are *emphasized*.
 
+{VERSION} (for KSP {KSPVERSION}) {DATE}
+-----------------------------------------------------------
+
+0.10.0.0 (for KSP 1.12.5) 2026-05-20
+-----------------------------------------------------------
+### General
+* Recompiled for KSP 1.12.5 (should be compatible with KSP
+  1.11 and higher)
+* Update included version of ModuleManager to v4.2.3
+
+### MEP
+* Fix MEP not returning to operational state after fixing
+  the robot arm
+* Require Engineer to fix robot arm
+
+0.9.1 (for KSP 1.9)
+-----------------------------------------------------------
+### General
+* Significantly nerfed science payout for all experiments.
+* Bugs fixed:
+  + Fix experiments automatically starting if there are insufficient
+    crew in the Lab. (No longer creates a KAC alarm unless the experiment is
+    actually running).
+  + Fix experiments not pausing when crew leaves the Lab.
+  + Fix "Finalize" not showing the experiment abbreviation.
+
+### Kemini
+* Bugs fixed:
+  + Fix being unable to Move and Finalize an experiment if the Lab does not
+    also have storage as is the case with the HGR SoyJuice pods.
+  + Fix multiple experiments accruing Lab Time from all Labs.
+
+0.9.0 (for KSP 1.9)
+-----------------------------------------------------------
+### General
+* Recompiled for KSP 1.9 (should be compatible with KSP 1.8 or higher)
+  + NOTE: This version of NEOS will no longer work with earlier versions of KSP!
+* Updated included ModuleManager to 4.1.3
+* No longer include MiniAVC in the package
+* Bugs fixed:
+  + Fixed a bug preventing loading of very old save files.
+  + Fixed a bug preventing the settings file from getting created.
+
+### KEES
+* Reduced max G-force for KEES PEC.
+* Bugs fixed:
+  + Contract rewards for Kemini and KEES (#47)
+  + Correct alarm time when restarting KEES experiments (#48)
+
+### Kemini
+* Added support for the HGR "SoyJuice" pods.
+* Bugs fixed:
+  + Contract rewards for Kemini and KEES (#47)
+
+ 
+0.8.2 (for KSP 1.7)
+-----------------------------------------------------------
+* Hotfix release for issue #46 - KEES experiments not starting.
+
+  
 0.8.1 (for KSP 1.7)
 -----------------------------------------------------------
 ### General

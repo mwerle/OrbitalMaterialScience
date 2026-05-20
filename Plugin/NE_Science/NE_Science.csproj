@@ -1,57 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!-- Configuration Defaults; can be overridden in the .user file -->
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="$(SolutionDir)common_settings.props" Condition="Exists('$(SolutionDir)common_settings.props')" />
   <PropertyGroup>
-    <KSP_DIR>$(SolutionDir)..\..\KSP_Dev\</KSP_DIR>
-    <PDB2MDB_TOOL>$(SolutionDir)..\..\pdb2mdb.exe</PDB2MDB_TOOL>
-  </PropertyGroup>
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <!-- Default to Release|AnyCPU configuration if none specified -->
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{F27FFBD4-9611-49CA-816E-504A1C283071}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NE_Science</RootNamespace>
     <AssemblyName>NE_Science</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ReleaseVersion>0.71</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
+    <Deterministic>true</Deterministic>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>$(SolutionDir)\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Deterministic>true</Deterministic>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>$(SolutionDir)\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <!-- Non-KSP References -->
   <ItemGroup>
-    <Reference Include="System">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>$(KSP_DIR)KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>$(KSP_DIR)KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>$(KSP_DIR)KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="System" />
   </ItemGroup>
+  <!-- This ItemGroup specifies all source files. -->
   <ItemGroup>
     <Compile Include="ChooseMoveTarget.cs" />
     <Compile Include="CIR_Laptop.cs" />
@@ -107,31 +94,53 @@
     <Compile Include="DependancyChecker.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="../../GameData/NehemiahInc/NE_Science_Common/Plugins/" />
-    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="../../GameData/NehemiahInc/NE_Science_Common/Plugins/" Condition=" '$(Configuration)' == 'Debug' " />
-    <Copy SourceFiles="$(TargetPath).mdb" DestinationFolder="../../GameData/NehemiahInc/NE_Science_Common/Plugins/" Condition=" '$(Configuration)' == 'Debug' " />
   </Target>
   -->
-  <ItemGroup>
-    <TargetFiles Include="$(TargetPath)" />
-    <TargetFiles Include="$(TargetDir)$(TargetName).pdb" Condition=" '$(Configuration)' == 'Debug' " />
-    <TargetFiles Include="$(TargetDir)$(TargetFileName).mdb" Condition=" '$(Configuration)' == 'Debug' " />
-  </ItemGroup>
-  <Target Name="AfterBuild">
-    <Copy SourceFiles="@(TargetFiles)" DestinationFolder="../../GameData/NehemiahInc/NE_Science_Common/Plugins/" />
+  <!-- Generate the version file from the compiled binary -->
+  <Target Name="GetAssemblyVersion" AfterTargets="Build" BeforeTargets="AfterBuild">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="Targets" />
+    </GetAssemblyIdentity>
+    <Message Text="Assembly Version: %(Targets.Version)" Importance="high" />
+    <WriteLinesToFile File="$(SolutionDir)/version.txt" Overwrite="true" Lines="%(Targets.Version)" />
+    <ItemGroup>
+      <VersionNumber Include="@(Targets->'%(Version)')" />
+    </ItemGroup>
   </Target>
-  <ItemGroup>
-    <None Include="../../GameData/**/*.*">
-      <Link>%(RecursiveDir)%(FileName)</Link>
-    </None>
-    <None Include="NE_Science.cd" />
-  </ItemGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <PostBuildEvent>$(PDB2MDB_TOOL) "$(TargetPath)"</PostBuildEvent>
+  <!-- Target to copy the compiled binary into the Mod's GameData directory -->
+  <Target Name="CopyToDistDir" AfterTargets="Build">
+    <ItemGroup>
+      <PluginFiles Include="$(TargetPath)" />
+      <PluginFiles Include="$(TargetDir)$(TargetName).pdb" Condition=" '$(Configuration)' == 'Debug' " />
+    </ItemGroup>
+    <Copy SourceFiles="@(PluginFiles)"
+          DestinationFolder="$(MOD_DIR)GameData/NehemiahInc/NE_Science_Common/Plugins/"
+          SkipUnchangedFiles="true"
+          OverwriteReadOnlyFiles="true"
+          Retries="3"
+          RetryDelayMilliseconds="300" />
+  </Target>
+  <!-- Target to copy all files to KSP's GameData directory -->
+  <Target Name="CopyToKspDir" AfterTargets="CopyToDistDir" Condition="Exists('$(KSP_DIR)GameData/NehemiahInc')">
+    <ItemGroup>
+      <GameDataFiles Include="$(MOD_DIR)GameData/NehemiahInc/**/*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(GameDataFiles)"
+          DestinationFolder="$(KSP_DIR)GameData/NehemiahInc/%(RecursiveDir)"
+          SkipUnchangedFiles="true"
+          OverwriteReadOnlyFiles="true"
+          Retries="3"
+          RetryDelayMilliseconds="300" />
+  </Target>
+  <!-- Target to start KSP from within an IDE -->
+  <PropertyGroup>
+    <StartAction>Program</StartAction>
+    <StartProgram>$(KSP_DIR)$(KSP_BIN)</StartProgram>
+    <StartWorkingDirectory>$(KSP_DIR)</StartWorkingDirectory>
   </PropertyGroup>
 </Project>

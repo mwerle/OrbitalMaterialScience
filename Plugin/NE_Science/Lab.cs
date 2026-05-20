@@ -108,21 +108,24 @@ namespace NE_Science
             ConfigNode cn = configNode.GetNode(LabEquipmentSlot.CONFIG_NODE_NAME, "type", type);
             if (cn == null)
             {
-                // Pre-Kemini-0.3 savegames have another level of nesting of ConfigNodes so let's recursively look into the child-nodes
-                foreach(ConfigNode child in configNode.nodes)
+                // Pre-NEOS-0.3 savegames have another level of nesting of ConfigNodes so let's search the child-nodes
+                foreach(ConfigNode childNode in configNode.nodes)
                 {
-                    rv = getLabEquipmentSlotByType(child, type);
-                    if (rv != null)
+                    cn = childNode.GetNode(LabEquipmentSlot.CONFIG_NODE_NAME, "type", type);
+                    if (cn != null)
                     {
-                        goto done;
+                        break;
                     }
                 }
 
-                // Not found, so let's raise an error
-                NE_Helper.logError("Lab getLabEquipmentSlotByType: node " + configNode.name
-                    + " does not contain a " + LabEquipmentSlot.CONFIG_NODE_NAME
-                    + " node of type " + type);
-                goto done;
+                // Not found, so let's log an error
+                if (cn == null)
+                {
+                    NE_Helper.logError("Lab getLabEquipmentSlotByType: node " + configNode.name
+                        + " does not contain a " + LabEquipmentSlot.CONFIG_NODE_NAME
+                        + " node of type " + type);
+                    goto done;
+                }
             }
             rv = LabEquipmentSlot.getLabEquipmentSlotFromConfigNode(cn, this);
 
@@ -232,14 +235,14 @@ namespace NE_Science
             /* Default implementation : no-op */
         }
 
-        /** Called whenever the state of the lab changes to stopped, such as when understaffed or paused */
+        /// <summary>
+        /// Called whenever the lab is paused either via user-action, or if the
+        /// lab becomes understaffed.
+        /// </summary>
+        /// <param name="force">If force is true, the lab will be paused even if it cannot perform lab actions</param>
+        /// <returns></returns>
         protected virtual bool onLabPaused()
         {
-            if (!canPerformLabActions())
-            {
-                return false;
-            }
-
             doResearch = false;
             Events["labAction"].guiName = "#ne_Resume_Research";
             return true;
@@ -280,11 +283,6 @@ namespace NE_Science
         /// <returns>True if the lab was started</returns>
         protected virtual bool onLabStarted()
         {
-            if (!canPerformLabActions())
-            {
-                ScreenMessages.PostScreenMessage("#ne_Not_enough_crew_in_this_module", 6, ScreenMessageStyle.UPPER_CENTER);
-                return false;
-            }
             if (OMSExperiment.checkBoring(vessel, true))
             {
                 return false;
@@ -347,20 +345,35 @@ namespace NE_Science
             }
         }
 
-        public void startResearch()
+        /// <summary>
+        /// Called directly from GUI; starts research if there are no other
+        /// factors stopping it.
+        /// </summary>
+        private void startResearch()
         {
-            if( !onLabStarted() )
+            if( !canPerformLabActions() )
             {
+                ScreenMessages.PostScreenMessage("#ne_Not_enough_crew_in_this_module", 6, ScreenMessageStyle.UPPER_CENTER);
                 return;
             }
+
+            // Success; lab can start
+            onLabStarted();
         }
 
+        /// <summary>
+        /// Called directly from GUI; stops research if possible.
+        /// </summary>
         public void stopResearch()
         {
-            if( !onLabPaused() )
+            if( !canPerformLabActions() )
             {
+                ScreenMessages.PostScreenMessage("#ne_Not_enough_crew_in_this_module", 6, ScreenMessageStyle.UPPER_CENTER);
                 return;
             }
+
+            // Success; lab can pause
+            onLabPaused();
         }
 
         #region KSPEvents

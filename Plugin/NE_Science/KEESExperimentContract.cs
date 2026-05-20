@@ -195,8 +195,8 @@ namespace NE_Science.Contracts
             base.SetExpiry();
             base.SetScience(5f, targetBody);
             base.SetDeadlineYears(1f, targetBody);
-            base.SetReputation(80f, 30f, targetBody);
-            base.SetFunds(15000f, 30000f, 5000f, targetBody);
+            base.SetReputation(7f, 5f, targetBody);
+            base.SetFunds(15000f, 25000f, 15000f, targetBody);
             agent = AgentList.Instance.GetAgent("Nehemiah Engineering");
             NE_Helper.log("Generate Contract: done Exp: " + experiment.getAbbreviation() + " Body: " + targetBody.name + " funds Adv: " + this.FundsAdvance);
             return true;

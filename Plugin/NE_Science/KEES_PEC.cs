@@ -28,7 +28,7 @@ namespace NE_Science
         public bool decoupled = false;
 
         [KSPField(isPersistant = false)]
-        public double maxGforce = 2.5;
+        public double maxGforce = 1.5;
 
         protected AttachNode node
         {

@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Deploy" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="15.8">
+    <ImportGroup Label="PropertySheets">
+        <Import Project="../Plugin/common_settings.props" />
+    </ImportGroup>
+
+    <!-- Variables (override in user_settings.props) -->
+    <PropertyGroup>
+        <!-- Default build type - release -->
+        <BuildConfiguration Condition="'$(BuildConfiguration)' == ''">Release</BuildConfiguration>
+
+        <!-- Project root folder -->
+        <ProjectRoot Condition="'$(ProjectRoot)' == ''">$([System.IO.Path]::GetFullPath($(MOD_DIR)))</ProjectRoot>
+
+        <!-- Release Folder -->
+        <!-- To change the output folder, use the following parameter: /p:ReleaseDir=C:\KSP\Mods\Releases\ConnectedLivingSpace -->
+        <ReleaseDir Condition="'$(ReleaseDir)' == ''">$(ProjectRoot)/_release_tmp/</ReleaseDir>
+
+        <!-- BuildDir Folder -->
+        <!-- This is the folder where the distribution will be built -->
+        <BuildDir>$(ReleaseDir)build/</BuildDir>
+
+        <!--
+          - NEOS - Nehemiah Engineering Orbital Science (was: All-in-One)
+          - OSS - Orbital Station Science (was: Kerbal Life Science (KLS), Orbital Material Science (OMS), and MPP)
+          - KRP - Kemini Research Program
+          - KEES - Kerbal Environmental Effects Study
+        -->
+        <BuildDir_neos>$(BuildDir)NEOS/</BuildDir_neos>
+        <BuildDir_oss>$(BuildDir)OSS/</BuildDir_oss>
+        <BuildDir_krp>$(BuildDir)KRP/</BuildDir_krp>
+        <BuildDir_kees>$(BuildDir)KEES/</BuildDir_kees>
+
+        <!-- This will be set to one of the ones above during the recursive invocation -->
+        <CurrMod_dir Condition="'$(CurrMod_dir)'==''">dummy</CurrMod_dir>
+        <CurrMod_name Condition="'$(CurrMod_name)'==''">Dummy</CurrMod_name>
+
+        <!-- SourceDir Folder -->
+        <!-- This is the folder which contains the solution and source files -->
+        <SourceDir>$(ProjectRoot)/Plugin/</SourceDir>
+
+        <!-- DistDir Folder -->
+        <!-- This is the folder where the static distribution files are kept -->
+        <DistDir Condition="'$(DistDir)'==''">$(ProjectRoot)/</DistDir>
+
+        <!-- The GameData directory containing the static assets -->
+        <GameDataDir>$(ProjectRoot)/GameData/NehemiahInc/</GameDataDir>
+
+        <!-- This project outputs its release binaries directly into the distribution directory. -->
+    </PropertyGroup>
+
+    <!-- All top-level projects -->
+    <Target Name="ALL"
+            DependsOnTargets="Deploy;Release">
+    </Target>
+
+    <!-- "Autostart" This target deploys the build artefacts to the KSP Directory. -->
+    <Target Name="Deploy">
+        <CallTarget Targets="Compile"/>
+        <CallTarget Targets="DoDeploy"/>
+    </Target>
+
+    <!-- This target builds the release archive. -->
+    <Target Name="Release">
+        <CallTarget Targets="Compile"/>
+        <CallTarget Targets="MakeRelease"/>
+    </Target>
+
+    <!-- compile solution as release
+      -  NOTE: this updates the DLL in the GameData directory as well
+    -->
+    <Target Name="Compile">
+        <MSBuild Projects="$(SourceDir)NE_Science.sln" Properties="Configuration=$(BuildConfiguration)"/>
+    </Target>
+
+    <Target Name="BuildDir">
+        <MakeDir Directories="$(BuildDir)" Condition="!Exists('$(BuildDir)')" />
+    </Target>
+
+    <!-- Update the Unity asset bundles in the distribution directory. -->
+    <Target Name="UpdateAssetBundles">
+        <!-- The KSPedia asset bundle is auto-loaded by KSP, so give it a ".ksp" extension -->
+        <Copy
+                SourceFiles="$(ProjectRoot)/Unity Projects/KSPedia/AssetBundles/neos.ksp"
+                DestinationFiles="$(GameDataDir)NE_Science_Common/KSPedia/neos.ksp"
+                SkipUnchangedFiles="true" />
+    </Target>
+
+    <!-- This target deploys the build artefacts to the KSP directory -->
+    <Target Name="DoDeploy"
+            DependsOnTargets="GenerateVersionFile;UpdateAssetBundles">
+        <PropertyGroup>
+            <SourceFolder>$(GameDataDir)</SourceFolder>
+            <DestFolder>$(KSP_DIR)/GameData/NehemiahInc</DestFolder>
+        </PropertyGroup>
+
+        <MakeDir Directories="$(DestFolder)" Condition="!Exists('$(DestFolder)')" />
+        <ItemGroup>
+            <ReleaseFiles
+                    Include="$(SourceFolder)/**/*.*"
+                    Exclude="">
+            </ReleaseFiles>
+        </ItemGroup>
+        <Copy
+                SourceFiles="@(ReleaseFiles)"
+                DestinationFolder="$(DestFolder)/%(RecursiveDir)"
+                SkipUnchangedFiles="true" >
+            <Output TaskParameter="CopiedFiles" ItemName="Copied" />
+        </Copy>
+        <ItemGroup>
+            <OutdatedFiles Include="$(DestFolder)/**" Exclude="@(Copied)" />
+        </ItemGroup>
+        <Delete Files="@(OutdatedFiles)"/>
+        <ItemGroup>
+            <ReleaseFiles Remove="@(ReleaseFiles)" />
+            <OutdatedFiles Remove="@(OutdatedFiles)" />
+        </ItemGroup>
+    </Target>
+
+    <!-- This target builds the release package -->
+    <Target Name="MakeRelease"
+            DependsOnTargets="GenerateVersionFile;UpdateAssetBundles">
+
+        <!-- Clean the build directory -->
+        <RemoveDir Directories="$(BuildDir)"/>
+
+        <CallTarget Targets="GenerateChangelog" />
+
+        <!-- Recursively call the release tasks, giving them specific properties -->
+        <MSBuild Projects="$(MSBuildProjectFullPath)"
+                 Properties="CurrMod_dir=$(BuildDir_krp);CurrMod_name=KeminiResearchProgram"
+                 Targets="Release_KRP" />
+        <MSBuild Projects="$(MSBuildProjectFullPath)"
+                 Properties="CurrMod_dir=$(BuildDir_kees);CurrMod_name=KerbalEnvironmentalEffectsStudy"
+                 Targets="Release_KEES" />
+        <MSBuild Projects="$(MSBuildProjectFullPath)"
+                 Properties="CurrMod_dir=$(BuildDir_oss);CurrMod_name=OrbitalStationScience"
+                 Targets="Release_OSS" />
+        <MSBuild Projects="$(MSBuildProjectFullPath)"
+                 Properties="CurrMod_dir=$(BuildDir_neos);CurrMod_name=NehemiahEngineeringOrbitalScience"
+                 Targets="Release_NEOS" />
+    </Target>
+
+    <Target Name="CleanModDir" DependsOnTargets="BuildDir">
+        <RemoveDir Directories="$(CurrMod_dir)"/>
+        <MakeDir Directories="$(CurrMod_dir)" Condition="!Exists('$(CurrMod_dir)')" />
+    </Target>
+
+    <!-- This one is special since we're copying it from a nested directory into a
+         specific destionation; ie, not using RecursiveDir -->
+    <Target Name="CopyFiles_Dependencies">
+        <ItemGroup>
+           <Files_ModuleManager Include="$(ProjectRoot)ExternalDependencies/ModuleManager/*.dll" />
+        </ItemGroup>
+        <Copy SourceFiles="@(Files_ModuleManager)"
+              DestinationFolder="$(CurrMod_dir)/GameData/" />
+    </Target>
+
+    <Target Name="CopyFiles_Common">
+        <ItemGroup>
+            <Files_common
+                    Include="$(GameDataDir)/NE_Science_Common/**/*.*"
+                    Exclude="*.pdb" />
+        </ItemGroup>
+        <Copy SourceFiles="@(Files_Common)"
+              DestinationFolder="$(CurrMod_Dir)/GameData/NehemiahInc/NE_Science_Common/%(RecursiveDir)" />
+        <Copy SourceFiles="$(ProjectRoot)/README.md;$(ProjectRoot)/LICENSE"
+              DestinationFolder="$(CurrMod_Dir)/" />
+    </Target>
+
+    <Target Name="CopyFiles_KRP">
+        <CallTarget Targets="CopyFiles_Common" />
+        <ItemGroup>
+            <Files_KRP Include="$(GameDataDir)Kemini/**/*.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(Files_KRP)"
+              DestinationFolder="$(CurrMod_Dir)/GameData/NehemiahInc/Kemini/%(RecursiveDir)" />
+    </Target>
+
+    <Target Name="CopyFiles_KEES">
+        <CallTarget Targets="CopyFiles_Common" />
+        <ItemGroup>
+            <Files_KEES Include="$(GameDataDir)KEES/**/*.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(Files_KEES)"
+              DestinationFolder="$(CurrMod_Dir)/GameData/NehemiahInc/KEES/%(RecursiveDir)" />
+    </Target>
+
+    <Target Name="CopyFiles_OSS">
+        <CallTarget Targets="CopyFiles_Common" />
+        <ItemGroup>
+            <Files_KLS Include="$(GameDataDir)KerbalLifeScience/**/*.*" />
+            <Files_MPP Include="$(GameDataDir)MultiPurposeParts/**/*.*" />
+            <Files_OMS Include="$(GameDataDir)OMS/**/*.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(Files_KLS)"
+              DestinationFolder="$(CurrMod_Dir)/GameData/NehemiahInc/KerbalLifeScience/%(RecursiveDir)" />
+        <Copy SourceFiles="@(Files_MPP)"
+              DestinationFolder="$(CurrMod_Dir)/GameData/NehemiahInc/MultiPurposeParts/%(RecursiveDir)" />
+        <Copy SourceFiles="@(Files_OMS)"
+              DestinationFolder="$(CurrMod_Dir)/GameData/NehemiahInc/OMS/%(RecursiveDir)" />
+    </Target>
+
+    <!-- Kemini Research Program -->
+    <Target Name="Release_KRP" Condition="'$(CurrMod_dir)'=='$(BuildDir_krp)'">
+        <CallTarget Targets="CleanModDir" />
+        <CallTarget Targets="CopyFiles_Dependencies" />
+        <CallTarget Targets="CopyFiles_Common" />
+        <CallTarget Targets="CopyFiles_KRP" />
+        <Copy SourceFiles="$(GameDataDir)NE-KRP.version"
+              DestinationFolder="$(CurrMod_Dir)/GameData/NehemiahInc/" />
+        <CallTarget Targets="ZipRelease"/>
+    </Target>
+
+    <Target Name="Release_KEES" Condition="'$(CurrMod_dir)'=='$(BuildDir_kees)'">
+        <CallTarget Targets="CleanModDir" />
+        <CallTarget Targets="CopyFiles_Dependencies" />
+        <CallTarget Targets="CopyFiles_Common" />
+        <CallTarget Targets="CopyFiles_KEES" />
+        <Copy SourceFiles="$(GameDataDir)NE-KEES.version"
+              DestinationFolder="$(CurrMod_Dir)/GameData/NehemiahInc/" />
+        <CallTarget Targets="ZipRelease"/>
+    </Target>
+
+    <Target Name="Release_OSS" Condition="'$(CurrMod_dir)'=='$(BuildDir_oss)'">
+        <CallTarget Targets="CleanModDir" />
+        <CallTarget Targets="CopyFiles_Dependencies" />
+        <CallTarget Targets="CopyFiles_Common" />
+        <CallTarget Targets="CopyFiles_OSS" />
+        <Copy SourceFiles="$(GameDataDir)NE-OSS.version"
+              DestinationFolder="$(CurrMod_Dir)/GameData/NehemiahInc/" />
+        <CallTarget Targets="ZipRelease"/>
+    </Target>
+
+    <!-- The main package; contains everything -->
+    <Target Name="Release_NEOS" Condition="'$(CurrMod_dir)'=='$(BuildDir_neos)'">
+        <!-- Clean build-directory -->
+        <CallTarget Targets="CleanModDir" />
+        <CallTarget Targets="CopyFiles_Dependencies" />
+        <CallTarget Targets="CopyFiles_Common" />
+        <CallTarget Targets="CopyFiles_KRP" />
+        <CallTarget Targets="CopyFiles_KEES" />
+        <CallTarget Targets="CopyFiles_OSS" />
+        <Copy SourceFiles="$(GameDataDir)NEOS.version"
+              DestinationFolder="$(CurrMod_Dir)/GameData/NehemiahInc/" />
+
+        <!-- Generate templated text files -->
+        <!-- TODO
+        <CallTarget Targets="GenerateChangelog"/>
+        <CallTarget Targets="GenerateReadme"/>
+        -->
+        <CallTarget Targets="ZipRelease"/>
+    </Target>
+
+    <!-- create zip file with content of release/bin folder -->
+    <Target Name="ZipRelease"
+            DependsOnTargets="getversion;gettime">
+        <MakeDir Directories="$(ReleaseDir)" Condition="!Exists('$(ReleaseDir)')" />
+        <Delete Files="$(ReleaseDir)/$(CurrMod_name)-$(DLLVersion)*.zip" />
+        <ZipDirectory Condition="Exists('$(CurrMod_dir)')"
+                      SourceDirectory="$(CurrMod_dir)"
+                      DestinationFile="$(ReleaseDir)/$(CurrMod_name)-$(DLLVersion)_$(CurrentDate).zip" />
+    </Target>
+
+    <Target Name="gettime">
+        <PropertyGroup>
+            <CurrentDate>$([System.DateTime]::Now.ToString(yyyyMMddHHmmss))</CurrentDate>
+        </PropertyGroup>
+        <Message Text="CurrentDate = $(CurrentDate)" Importance="high" />
+    </Target>
+
+    <Target Name="getversion"
+            DependsOnTargets="Compile">
+        <GetAssemblyIdentity AssemblyFiles="$(GameDataDir)/NE_Science_Common/Plugins/NE_Science.dll">
+            <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo"/>
+        </GetAssemblyIdentity>
+        <PropertyGroup>
+            <DLLVersion>%(myAssemblyInfo.Version)</DLLVersion>
+        </PropertyGroup>
+    </Target>
+
+    <UsingTask TaskName="GrepInFile"
+               TaskFactory="CodeTaskFactory"
+               AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+        <ParameterGroup>
+            <Path ParameterType="System.String" Required="true" />
+            <Expression ParameterType="System.String" Required="true" />
+            <Value ParameterType="System.String" Output="true" />
+        </ParameterGroup>
+        <Task>
+            <Using Namespace="System.Text.RegularExpressions" />
+            <Code Type="Fragment" Language="cs"><![CDATA[
+      //Console.WriteLine("Searching in file " + Path);
+      //Console.WriteLine("Search expression is " + Expression);
+      var re = new Regex(Expression);
+      foreach(var line in File.ReadLines(Path))
+      {
+        var match = re.Match(line);
+        //Console.WriteLine("Checking line : {0}", line);
+        if(match.Success)
+        {
+          Value = match.Groups[1].Value;
+          //Console.WriteLine("Pattern {0} matched; value: {1}!", Expression, Value);
+          break;
+        }
+      }
+]]></Code>
+        </Task>
+    </UsingTask>
+
+    <Target Name="getkspversion">
+        <Error Text="Can not find KSP readme.txt in '$(KSP_DIR)'"
+               Condition="!Exists('$(KSP_DIR)/readme.txt')" />
+        <GrepInFile Path="$(KSP_DIR)/readme.txt" Expression="Version ([0-9]+[^0-9][0-9]+([^0-9][0-9]+)?)$">
+            <Output PropertyName="KSPVersion" TaskParameter="Value" />
+        </GrepInFile>
+        <Message Text="KSP Version is $(KSPVersion)" Importance="High" />
+    </Target>
+
+    <UsingTask  TaskName="ReplaceTagsInFile"
+                TaskFactory="CodeTaskFactory"
+                AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+        <ParameterGroup>
+            <TemplateFile ParameterType="System.String" Required="true" />
+            <TargetFile ParameterType="System.String" Required="true" />
+            <Tokens ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+        </ParameterGroup>
+        <Task>
+            <Using Namespace="System.Text.RegularExpressions" />
+            <Code Type="Fragment" Language="cs"><![CDATA[
+      var tokens = new Dictionary<string,string>();
+      foreach(var item in Tokens) {
+        tokens.Add(item.ItemSpec, item.GetMetadata("Value"));
+      }
+      string template = File.ReadAllText(TemplateFile);
+      string content = Regex.Replace(template, @"\{[A-Z0-9_]+\}", match => tokens[match.Value]);
+      File.WriteAllText(TargetFile, content);
+]]></Code>
+        </Task>
+    </UsingTask>
+
+    <Target Name="GenerateReadme"
+            Inputs="$(DistDir)/Readme.txt"
+            Outputs="$(BuildDir)/Readme.txt"
+            DependsOnTargets="getversion;BuildDir">
+        <PropertyGroup>
+            <uc_Date>$([System.DateTime]::Now.ToString(dd MMM yyyy))</uc_Date>
+        </PropertyGroup>
+        <ItemGroup>
+            <Tokens Include="{VERSION}"><Value>$(DLLVersion)</Value></Tokens>
+        </ItemGroup>
+        <ReplaceTagsInFile
+                TemplateFile="$(DistDir)/Readme.txt"
+                TargetFile="$(BuildDir)/Readme.txt"
+                Tokens="@(Tokens)" />
+        <ItemGroup>
+            <Tokens Remove="@(Tokens)" />
+        </ItemGroup>
+    </Target>
+
+    <Target Name="GenerateChangelog"
+            Inputs="$(DistDir)/CHANGELOG.md"
+            Outputs="$(BuildDir)/CHANGELOG.md"
+            DependsOnTargets="getversion;getkspversion;BuildDir">
+        <PropertyGroup>
+            <uc_Date>$([System.DateTime]::Now.ToString(yyyy-MM-dd))</uc_Date>
+        </PropertyGroup>
+        <ItemGroup>
+            <Tokens Include="{VERSION}"><Value>$(DLLVersion)</Value></Tokens>
+            <Tokens Include="{KSPVERSION}"><Value>$(KSPVersion)</Value></Tokens>
+            <Tokens Include="{DATE}"><Value>$(uc_Date)</Value></Tokens>
+        </ItemGroup>
+        <ReplaceTagsInFile
+                TemplateFile="$(DistDir)/CHANGELOG.md"
+                TargetFile="$(BuildDir)/CHANGELOG.md"
+                Tokens="@(Tokens)" />
+        <ItemGroup>
+            <Tokens Remove="@(Tokens)" />
+        </ItemGroup>
+    </Target>
+
+    <Target Name="GenerateVersionFile"
+            Inputs="Version.template;$(GameDataDir)/NE_Science_Common/Plugins/NE_Science.dll"
+            Outputs="$(GameDataDir)/NEOS.version"
+            DependsOnTargets="Compile;getversion;getkspversion">
+        <ItemGroup>
+            <Tokens Include="{MAJOR}"><Value>$([System.Version]::Parse($(DLLVersion)).Major.ToString())</Value></Tokens>
+            <Tokens Include="{MINOR}"><Value>$([System.Version]::Parse($(DLLVersion)).Minor.ToString())</Value></Tokens>
+            <Tokens Include="{PATCH}"><Value>$([System.Version]::Parse($(DLLVersion)).Build.ToString())</Value></Tokens>
+            <Tokens Include="{BUILD}"><Value>$([System.Version]::Parse($(DLLVersion)).Revision.ToString())</Value></Tokens>
+            <Tokens Include="{KSP_MAJOR}"><Value>$([System.Version]::Parse($(KSPVersion)).Major.ToString())</Value></Tokens>
+            <Tokens Include="{KSP_MINOR}"><Value>$([System.Version]::Parse($(KSPVersion)).Minor.ToString())</Value></Tokens>
+            <Tokens Include="{KSP_PATCH}"><Value>$([System.Version]::Parse($(KSPVersion)).Build.ToString())</Value></Tokens>
+        </ItemGroup>
+        <ReplaceTagsInFile
+                TemplateFile="Version.template"
+                TargetFile="$(GameDataDir)/NEOS.version"
+                Tokens="@(Tokens)" />
+        <ItemGroup>
+            <Tokens Remove="@(Tokens)" />
+        </ItemGroup>
+    </Target>
+
+
+
+    <!-- Sets up debug configuration; can't be inside "Deploy-DEBUG" due to a limitation of MSBuild -->
+    <Target Name="SetDebugConfiguration">
+        <CreateProperty Value="Debug">
+            <Output TaskParameter="Value" PropertyName="BuildConfiguration"/>
+        </CreateProperty>
+    </Target>
+
+    <!-- Builds and deploys the debug version of DPAI -->
+    <Target Name="Deploy-DEBUG">
+        <CallTarget Targets="SetDebugConfiguration"/>
+        <CallTarget Targets="Compile"/>
+        <CallTarget Targets="DoDeploy"/>
+        <CallTarget Targets="DoDeploy-DEBUG"/>
+    </Target>
+
+    <!-- This target deploys the debug-build artefacts over the top of the standard artifacts in the KSP directory -->
+    <Target Name="DoDeploy-DEBUG">
+        <PropertyGroup>
+            <SourceFolder>$(SourceDir)/bin/Debug</SourceFolder>
+            <DestFolder>$(KSP_DIR)/GameData/NehemiahInc/NE_Science_Common/Plugins/</DestFolder>
+        </PropertyGroup>
+        <MakeDir Directories="$(DestFolder)" Condition="!Exists('$(DestFolder)')" />
+        <ItemGroup>
+            <ReleaseFiles
+                    Include="$(SourceFolder)/*.*"
+                    Exclude="">
+            </ReleaseFiles>
+        </ItemGroup>
+        <Copy
+                SourceFiles="@(ReleaseFiles)"
+                DestinationFolder="$(DestFolder)/"
+                SkipUnchangedFiles="true" >
+        </Copy>
+        <ItemGroup>
+            <ReleaseFiles Remove="@(ReleaseFiles)" />
+        </ItemGroup>
+    </Target>
+
+</Project>

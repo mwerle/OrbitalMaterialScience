@@ -180,7 +180,7 @@ namespace NE_Science
                     Events["moveExp"].guiName = Localizer.Format("#ne_Move_1", expData.getAbbreviation());
                 }
                 Events["finalize"].active = expData.canFinalize();
-                if (Events["installExperiment"].active)
+                if (Events["finalize"].active)
                 {
                     Events["finalize"].guiName = Localizer.Format("#ne_Finalize_1", expData.getAbbreviation());
                 }

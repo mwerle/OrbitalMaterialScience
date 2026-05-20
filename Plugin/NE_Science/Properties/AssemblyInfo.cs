@@ -29,11 +29,11 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("0.8.3.38")]
+[assembly: AssemblyVersion("0.10.0.0")]
 #if DEBUG
-[assembly: AssemblyInformationalVersion("0.8.3 Debug for KSP 1.7+")]
+[assembly: AssemblyInformationalVersion("0.10.0 Debug for KSP 1.11+")]
 #else
-[assembly: AssemblyInformationalVersion("0.8.3 for KSP 1.7+")]
+[assembly: AssemblyInformationalVersion("0.10.0 for KSP 1.11+")]
 #endif
-[assembly: AssemblyFileVersion("0.8.3.38")]
-[assembly: KSPAssembly("NE_Science", 0, 83)]
+[assembly: AssemblyFileVersion("0.10.0.0")]
+[assembly: KSPAssembly("NE_Science", 0, 10)]
