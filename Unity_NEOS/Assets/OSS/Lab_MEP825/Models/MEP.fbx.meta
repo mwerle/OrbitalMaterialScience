@@ -1,223 +1,629 @@
 fileFormatVersion: 2
 guid: 7e0d51e7302bbb14c9de676b37abf1f6
 ModelImporter:
-  serializedVersion: 19
-  fileIDToRecycleName:
-    100000: _Hand_Base
-    100002: Arm_1
-    100004: Arm_2
-    100006: Arm_Base
-    100008: Arm_Rotor
-    100010: Hand_1
-    100012: Hand_2
-    100014: Lamp
-    100016: //RootNode
-    100018: Platform_Base
-    100020: Plattform
-    100022: Plattform_2
-    100024: Sample_1
-    100026: Sample_2
-    100028: Sample_3
-    100030: Sample_4
-    100032: SampleRack
-    100034: SampleRack_BW
-    100036: SampleRack_Cover
-    100038: SampleRack_FW
-    100040: SampleRack_SW1
-    100042: SampleRack_SW2
-    100044: Warn_Light
-    100046: MEP_Base
-    100048: Rail_Long
-    100050: Rail_Short_1
-    100052: Rail_Short_2
-    100054: RailBase
-    100056: RailBase_2
-    100058: RailBase_3
-    100060: RailBase_4
-    100062: RailBase_5
-    100064: RailBase_6
-    100066: Camera
-    100068: Flag
-    100070: Lamp_001
-    100072: Airlock
-    100074: Decal
-    400000: _Hand_Base
-    400002: Arm_1
-    400004: Arm_2
-    400006: Arm_Base
-    400008: Arm_Rotor
-    400010: Hand_1
-    400012: Hand_2
-    400014: Lamp
-    400016: //RootNode
-    400018: Platform_Base
-    400020: Plattform
-    400022: Plattform_2
-    400024: Sample_1
-    400026: Sample_2
-    400028: Sample_3
-    400030: Sample_4
-    400032: SampleRack
-    400034: SampleRack_BW
-    400036: SampleRack_Cover
-    400038: SampleRack_FW
-    400040: SampleRack_SW1
-    400042: SampleRack_SW2
-    400044: Warn_Light
-    400046: MEP_Base
-    400048: Rail_Long
-    400050: Rail_Short_1
-    400052: Rail_Short_2
-    400054: RailBase
-    400056: RailBase_2
-    400058: RailBase_3
-    400060: RailBase_4
-    400062: RailBase_5
-    400064: RailBase_6
-    400066: Camera
-    400068: Flag
-    400070: Lamp_001
-    400072: Airlock
-    400074: Decal
-    2300000: _Hand_Base
-    2300002: Arm_1
-    2300004: Arm_2
-    2300006: Arm_Base
-    2300008: Arm_Rotor
-    2300010: Hand_1
-    2300012: Hand_2
-    2300014: Lamp
-    2300016: //RootNode
-    2300018: Platform_Base
-    2300020: Plattform
-    2300022: Plattform_2
-    2300024: Sample_1
-    2300026: Sample_2
-    2300028: Sample_3
-    2300030: Sample_4
-    2300032: SampleRack
-    2300034: SampleRack_BW
-    2300036: SampleRack_Cover
-    2300038: SampleRack_FW
-    2300040: SampleRack_SW1
-    2300042: SampleRack_SW2
-    2300044: Warn_Light
-    2300046: MEP_Base
-    2300048: Rail_Long
-    2300050: Rail_Short_1
-    2300052: Rail_Short_2
-    2300054: RailBase
-    2300056: RailBase_2
-    2300058: RailBase_3
-    2300060: RailBase_4
-    2300062: RailBase_5
-    2300064: RailBase_6
-    2300066: Flag
-    2300068: Airlock
-    2300070: Decal
-    3300000: _Hand_Base
-    3300002: Arm_1
-    3300004: Arm_2
-    3300006: Arm_Base
-    3300008: Arm_Rotor
-    3300010: Hand_1
-    3300012: Hand_2
-    3300014: Lamp
-    3300016: //RootNode
-    3300018: Platform_Base
-    3300020: Plattform
-    3300022: Plattform_2
-    3300024: Sample_1
-    3300026: Sample_2
-    3300028: Sample_3
-    3300030: Sample_4
-    3300032: SampleRack
-    3300034: SampleRack_BW
-    3300036: SampleRack_Cover
-    3300038: SampleRack_FW
-    3300040: SampleRack_SW1
-    3300042: SampleRack_SW2
-    3300044: Warn_Light
-    3300046: MEP_Base
-    3300048: Rail_Long
-    3300050: Rail_Short_1
-    3300052: Rail_Short_2
-    3300054: RailBase
-    3300056: RailBase_2
-    3300058: RailBase_3
-    3300060: RailBase_4
-    3300062: RailBase_5
-    3300064: RailBase_6
-    3300066: Flag
-    3300068: Airlock
-    3300070: Decal
-    4300000: MEP_Base
-    4300002: Lamp
-    4300004: Platform_Base
-    4300006: Plattform
-    4300008: Warn_Light
-    4300010: SampleRack
-    4300012: Sample_1
-    4300014: Sample_2
-    4300016: Sample_3
-    4300018: Sample_4
-    4300020: SampleRack_BW
-    4300022: SampleRack_Cover
-    4300024: SampleRack_FW
-    4300026: SampleRack_SW1
-    4300028: SampleRack_SW2
-    4300030: Arm_Base
-    4300032: Arm_Rotor
-    4300034: Arm_1
-    4300036: Arm_2
-    4300038: _Hand_Base
-    4300040: Hand_1
-    4300042: Hand_2
-    4300044: Plattform_2
-    4300046: RailBase_2
-    4300048: RailBase_5
-    4300050: RailBase_6
-    4300052: RailBase_4
-    4300054: RailBase_3
-    4300056: RailBase
-    4300058: Rail_Short_2
-    4300060: Rail_Long
-    4300062: Rail_Short_1
-    4300064: Flag
-    4300066: Airlock
-    4300068: Decal
-    7400000: Deploy
-    7400002: StartExperiment
-    7400004: ErrorOnStart
-    7400006: ErrorOnStop
-    9500000: //RootNode
-    11100000: //RootNode
+  serializedVersion: 19301
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: _Hand_Base
+  - first:
+      1: 100002
+    second: Arm_1
+  - first:
+      1: 100004
+    second: Arm_2
+  - first:
+      1: 100006
+    second: Arm_Base
+  - first:
+      1: 100008
+    second: Arm_Rotor
+  - first:
+      1: 100010
+    second: Hand_1
+  - first:
+      1: 100012
+    second: Hand_2
+  - first:
+      1: 100014
+    second: Lamp
+  - first:
+      1: 100016
+    second: //RootNode
+  - first:
+      1: 100018
+    second: Platform_Base
+  - first:
+      1: 100020
+    second: Plattform
+  - first:
+      1: 100022
+    second: Plattform_2
+  - first:
+      1: 100024
+    second: Sample_1
+  - first:
+      1: 100026
+    second: Sample_2
+  - first:
+      1: 100028
+    second: Sample_3
+  - first:
+      1: 100030
+    second: Sample_4
+  - first:
+      1: 100032
+    second: SampleRack
+  - first:
+      1: 100034
+    second: SampleRack_BW
+  - first:
+      1: 100036
+    second: SampleRack_Cover
+  - first:
+      1: 100038
+    second: SampleRack_FW
+  - first:
+      1: 100040
+    second: SampleRack_SW1
+  - first:
+      1: 100042
+    second: SampleRack_SW2
+  - first:
+      1: 100044
+    second: Warn_Light
+  - first:
+      1: 100046
+    second: MEP_Base
+  - first:
+      1: 100048
+    second: Rail_Long
+  - first:
+      1: 100050
+    second: Rail_Short_1
+  - first:
+      1: 100052
+    second: Rail_Short_2
+  - first:
+      1: 100054
+    second: RailBase
+  - first:
+      1: 100056
+    second: RailBase_2
+  - first:
+      1: 100058
+    second: RailBase_3
+  - first:
+      1: 100060
+    second: RailBase_4
+  - first:
+      1: 100062
+    second: RailBase_5
+  - first:
+      1: 100064
+    second: RailBase_6
+  - first:
+      1: 100066
+    second: Camera
+  - first:
+      1: 100068
+    second: Flag
+  - first:
+      1: 100070
+    second: Lamp_001
+  - first:
+      1: 100072
+    second: Airlock
+  - first:
+      1: 100074
+    second: Decal
+  - first:
+      4: 400000
+    second: _Hand_Base
+  - first:
+      4: 400002
+    second: Arm_1
+  - first:
+      4: 400004
+    second: Arm_2
+  - first:
+      4: 400006
+    second: Arm_Base
+  - first:
+      4: 400008
+    second: Arm_Rotor
+  - first:
+      4: 400010
+    second: Hand_1
+  - first:
+      4: 400012
+    second: Hand_2
+  - first:
+      4: 400014
+    second: Lamp
+  - first:
+      4: 400016
+    second: //RootNode
+  - first:
+      4: 400018
+    second: Platform_Base
+  - first:
+      4: 400020
+    second: Plattform
+  - first:
+      4: 400022
+    second: Plattform_2
+  - first:
+      4: 400024
+    second: Sample_1
+  - first:
+      4: 400026
+    second: Sample_2
+  - first:
+      4: 400028
+    second: Sample_3
+  - first:
+      4: 400030
+    second: Sample_4
+  - first:
+      4: 400032
+    second: SampleRack
+  - first:
+      4: 400034
+    second: SampleRack_BW
+  - first:
+      4: 400036
+    second: SampleRack_Cover
+  - first:
+      4: 400038
+    second: SampleRack_FW
+  - first:
+      4: 400040
+    second: SampleRack_SW1
+  - first:
+      4: 400042
+    second: SampleRack_SW2
+  - first:
+      4: 400044
+    second: Warn_Light
+  - first:
+      4: 400046
+    second: MEP_Base
+  - first:
+      4: 400048
+    second: Rail_Long
+  - first:
+      4: 400050
+    second: Rail_Short_1
+  - first:
+      4: 400052
+    second: Rail_Short_2
+  - first:
+      4: 400054
+    second: RailBase
+  - first:
+      4: 400056
+    second: RailBase_2
+  - first:
+      4: 400058
+    second: RailBase_3
+  - first:
+      4: 400060
+    second: RailBase_4
+  - first:
+      4: 400062
+    second: RailBase_5
+  - first:
+      4: 400064
+    second: RailBase_6
+  - first:
+      4: 400066
+    second: Camera
+  - first:
+      4: 400068
+    second: Flag
+  - first:
+      4: 400070
+    second: Lamp_001
+  - first:
+      4: 400072
+    second: Airlock
+  - first:
+      4: 400074
+    second: Decal
+  - first:
+      23: 2300000
+    second: _Hand_Base
+  - first:
+      23: 2300002
+    second: Arm_1
+  - first:
+      23: 2300004
+    second: Arm_2
+  - first:
+      23: 2300006
+    second: Arm_Base
+  - first:
+      23: 2300008
+    second: Arm_Rotor
+  - first:
+      23: 2300010
+    second: Hand_1
+  - first:
+      23: 2300012
+    second: Hand_2
+  - first:
+      23: 2300014
+    second: Lamp
+  - first:
+      23: 2300016
+    second: //RootNode
+  - first:
+      23: 2300018
+    second: Platform_Base
+  - first:
+      23: 2300020
+    second: Plattform
+  - first:
+      23: 2300022
+    second: Plattform_2
+  - first:
+      23: 2300024
+    second: Sample_1
+  - first:
+      23: 2300026
+    second: Sample_2
+  - first:
+      23: 2300028
+    second: Sample_3
+  - first:
+      23: 2300030
+    second: Sample_4
+  - first:
+      23: 2300032
+    second: SampleRack
+  - first:
+      23: 2300034
+    second: SampleRack_BW
+  - first:
+      23: 2300036
+    second: SampleRack_Cover
+  - first:
+      23: 2300038
+    second: SampleRack_FW
+  - first:
+      23: 2300040
+    second: SampleRack_SW1
+  - first:
+      23: 2300042
+    second: SampleRack_SW2
+  - first:
+      23: 2300044
+    second: Warn_Light
+  - first:
+      23: 2300046
+    second: MEP_Base
+  - first:
+      23: 2300048
+    second: Rail_Long
+  - first:
+      23: 2300050
+    second: Rail_Short_1
+  - first:
+      23: 2300052
+    second: Rail_Short_2
+  - first:
+      23: 2300054
+    second: RailBase
+  - first:
+      23: 2300056
+    second: RailBase_2
+  - first:
+      23: 2300058
+    second: RailBase_3
+  - first:
+      23: 2300060
+    second: RailBase_4
+  - first:
+      23: 2300062
+    second: RailBase_5
+  - first:
+      23: 2300064
+    second: RailBase_6
+  - first:
+      23: 2300066
+    second: Flag
+  - first:
+      23: 2300068
+    second: Airlock
+  - first:
+      23: 2300070
+    second: Decal
+  - first:
+      33: 3300000
+    second: _Hand_Base
+  - first:
+      33: 3300002
+    second: Arm_1
+  - first:
+      33: 3300004
+    second: Arm_2
+  - first:
+      33: 3300006
+    second: Arm_Base
+  - first:
+      33: 3300008
+    second: Arm_Rotor
+  - first:
+      33: 3300010
+    second: Hand_1
+  - first:
+      33: 3300012
+    second: Hand_2
+  - first:
+      33: 3300014
+    second: Lamp
+  - first:
+      33: 3300016
+    second: //RootNode
+  - first:
+      33: 3300018
+    second: Platform_Base
+  - first:
+      33: 3300020
+    second: Plattform
+  - first:
+      33: 3300022
+    second: Plattform_2
+  - first:
+      33: 3300024
+    second: Sample_1
+  - first:
+      33: 3300026
+    second: Sample_2
+  - first:
+      33: 3300028
+    second: Sample_3
+  - first:
+      33: 3300030
+    second: Sample_4
+  - first:
+      33: 3300032
+    second: SampleRack
+  - first:
+      33: 3300034
+    second: SampleRack_BW
+  - first:
+      33: 3300036
+    second: SampleRack_Cover
+  - first:
+      33: 3300038
+    second: SampleRack_FW
+  - first:
+      33: 3300040
+    second: SampleRack_SW1
+  - first:
+      33: 3300042
+    second: SampleRack_SW2
+  - first:
+      33: 3300044
+    second: Warn_Light
+  - first:
+      33: 3300046
+    second: MEP_Base
+  - first:
+      33: 3300048
+    second: Rail_Long
+  - first:
+      33: 3300050
+    second: Rail_Short_1
+  - first:
+      33: 3300052
+    second: Rail_Short_2
+  - first:
+      33: 3300054
+    second: RailBase
+  - first:
+      33: 3300056
+    second: RailBase_2
+  - first:
+      33: 3300058
+    second: RailBase_3
+  - first:
+      33: 3300060
+    second: RailBase_4
+  - first:
+      33: 3300062
+    second: RailBase_5
+  - first:
+      33: 3300064
+    second: RailBase_6
+  - first:
+      33: 3300066
+    second: Flag
+  - first:
+      33: 3300068
+    second: Airlock
+  - first:
+      33: 3300070
+    second: Decal
+  - first:
+      43: 4300000
+    second: MEP_Base
+  - first:
+      43: 4300002
+    second: Lamp
+  - first:
+      43: 4300004
+    second: Platform_Base
+  - first:
+      43: 4300006
+    second: Plattform
+  - first:
+      43: 4300008
+    second: Warn_Light
+  - first:
+      43: 4300010
+    second: SampleRack
+  - first:
+      43: 4300012
+    second: Sample_1
+  - first:
+      43: 4300014
+    second: Sample_2
+  - first:
+      43: 4300016
+    second: Sample_3
+  - first:
+      43: 4300018
+    second: Sample_4
+  - first:
+      43: 4300020
+    second: SampleRack_BW
+  - first:
+      43: 4300022
+    second: SampleRack_Cover
+  - first:
+      43: 4300024
+    second: SampleRack_FW
+  - first:
+      43: 4300026
+    second: SampleRack_SW1
+  - first:
+      43: 4300028
+    second: SampleRack_SW2
+  - first:
+      43: 4300030
+    second: Arm_Base
+  - first:
+      43: 4300032
+    second: Arm_Rotor
+  - first:
+      43: 4300034
+    second: Arm_1
+  - first:
+      43: 4300036
+    second: Arm_2
+  - first:
+      43: 4300038
+    second: _Hand_Base
+  - first:
+      43: 4300040
+    second: Hand_1
+  - first:
+      43: 4300042
+    second: Hand_2
+  - first:
+      43: 4300044
+    second: Plattform_2
+  - first:
+      43: 4300046
+    second: RailBase_2
+  - first:
+      43: 4300048
+    second: RailBase_5
+  - first:
+      43: 4300050
+    second: RailBase_6
+  - first:
+      43: 4300052
+    second: RailBase_4
+  - first:
+      43: 4300054
+    second: RailBase_3
+  - first:
+      43: 4300056
+    second: RailBase
+  - first:
+      43: 4300058
+    second: Rail_Short_2
+  - first:
+      43: 4300060
+    second: Rail_Long
+  - first:
+      43: 4300062
+    second: Rail_Short_1
+  - first:
+      43: 4300064
+    second: Flag
+  - first:
+      43: 4300066
+    second: Airlock
+  - first:
+      43: 4300068
+    second: Decal
+  - first:
+      74: 7400000
+    second: Deploy
+  - first:
+      74: 7400002
+    second: StartExperiment
+  - first:
+      74: 7400004
+    second: ErrorOnStart
+  - first:
+      74: 7400006
+    second: ErrorOnStop
+  - first:
+      95: 9500000
+    second: //RootNode
+  - first:
+      111: 11100000
+    second: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MEP Material
+    second: {fileID: 2100000, guid: 0d976b9c0da16e74cae6aec2c94794bf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MEP Sample Mat
+    second: {fileID: 2100000, guid: 0d976b9c0da16e74cae6aec2c94794bf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: No Name
+    second: {fileID: 2100000, guid: 27b309ef763079dd88480dc97fac8d03, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Warn Light
+    second: {fileID: 2100000, guid: 0d976b9c0da16e74cae6aec2c94794bf, type: 2}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
       name: Deploy
       takeName: Default Take
+      internalID: 0
       firstFrame: 0
-      lastFrame: 47
+      lastFrame: 48
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -244,6 +650,7 @@ ModelImporter:
     - serializedVersion: 16
       name: StartExperiment
       takeName: Default Take
+      internalID: 0
       firstFrame: 48
       lastFrame: 280
       wrapMode: 0
@@ -272,6 +679,7 @@ ModelImporter:
     - serializedVersion: 16
       name: ErrorOnStart
       takeName: Default Take
+      internalID: 0
       firstFrame: 48
       lastFrame: 165
       wrapMode: 0
@@ -300,6 +708,7 @@ ModelImporter:
     - serializedVersion: 16
       name: ErrorOnStop
       takeName: Default Take
+      internalID: 0
       firstFrame: 170
       lastFrame: 280
       wrapMode: 0
@@ -331,13 +740,24 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 0
     importBlendShapes: 1
+    importCameras: 0
+    importLights: 1
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
@@ -347,9 +767,14 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 4
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -359,11 +784,16 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 1
   humanoidOversampling: 1
+  avatarSetup: 0
   additionalBone: 1
   userData: 
   assetBundleName: 

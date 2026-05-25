@@ -1,103 +1,295 @@
 fileFormatVersion: 2
 guid: 9803ddc48c3ed7642a513f1266d42bad
 ModelImporter:
-  serializedVersion: 19
-  fileIDToRecycleName:
-    100000: Airlock
-    100002: Arm_Control_Base_L
-    100004: Arm_Control_Base_R
-    100006: //RootNode
-    100008: Platform_Base
-    100010: Screen
-    100012: Stick_L
-    100014: Stick_R
-    100016: Window
-    100018: AlarmLight
-    100020: Screen1
-    100022: Screen2
-    100024: Camera
-    100026: Hatch
-    100028: IVA
-    100030: Lamp_001
-    400000: Airlock
-    400002: Arm_Control_Base_L
-    400004: Arm_Control_Base_R
-    400006: //RootNode
-    400008: Platform_Base
-    400010: Screen
-    400012: Stick_L
-    400014: Stick_R
-    400016: Window
-    400018: AlarmLight
-    400020: Screen1
-    400022: Screen2
-    400024: Camera
-    400026: Hatch
-    400028: IVA
-    400030: Lamp_001
-    2300000: Airlock
-    2300002: Arm_Control_Base_L
-    2300004: Arm_Control_Base_R
-    2300006: //RootNode
-    2300008: Platform_Base
-    2300010: Screen
-    2300012: Stick_L
-    2300014: Stick_R
-    2300016: Window
-    2300018: AlarmLight
-    2300020: Screen1
-    2300022: Screen2
-    2300024: Hatch
-    2300026: IVA
-    3300000: Airlock
-    3300002: Arm_Control_Base_L
-    3300004: Arm_Control_Base_R
-    3300006: //RootNode
-    3300008: Platform_Base
-    3300010: Screen
-    3300012: Stick_L
-    3300014: Stick_R
-    3300016: Window
-    3300018: AlarmLight
-    3300020: Screen1
-    3300022: Screen2
-    3300024: Hatch
-    3300026: IVA
-    4300000: IVA
-    4300002: Platform_Base
-    4300004: Window
-    4300006: Airlock
-    4300008: Screen
-    4300010: Arm_Control_Base_R
-    4300012: Stick_R
-    4300014: Arm_Control_Base_L
-    4300016: Stick_L
-    4300018: AlarmLight
-    4300020: Screen1
-    4300022: Screen2
-    4300024: Hatch
-    7400000: Default Take
-    9500000: //RootNode
+  serializedVersion: 19301
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: Airlock
+  - first:
+      1: 100002
+    second: Arm_Control_Base_L
+  - first:
+      1: 100004
+    second: Arm_Control_Base_R
+  - first:
+      1: 100006
+    second: //RootNode
+  - first:
+      1: 100008
+    second: Platform_Base
+  - first:
+      1: 100010
+    second: Screen
+  - first:
+      1: 100012
+    second: Stick_L
+  - first:
+      1: 100014
+    second: Stick_R
+  - first:
+      1: 100016
+    second: Window
+  - first:
+      1: 100018
+    second: AlarmLight
+  - first:
+      1: 100020
+    second: Screen1
+  - first:
+      1: 100022
+    second: Screen2
+  - first:
+      1: 100024
+    second: Camera
+  - first:
+      1: 100026
+    second: Hatch
+  - first:
+      1: 100028
+    second: IVA
+  - first:
+      1: 100030
+    second: Lamp_001
+  - first:
+      4: 400000
+    second: Airlock
+  - first:
+      4: 400002
+    second: Arm_Control_Base_L
+  - first:
+      4: 400004
+    second: Arm_Control_Base_R
+  - first:
+      4: 400006
+    second: //RootNode
+  - first:
+      4: 400008
+    second: Platform_Base
+  - first:
+      4: 400010
+    second: Screen
+  - first:
+      4: 400012
+    second: Stick_L
+  - first:
+      4: 400014
+    second: Stick_R
+  - first:
+      4: 400016
+    second: Window
+  - first:
+      4: 400018
+    second: AlarmLight
+  - first:
+      4: 400020
+    second: Screen1
+  - first:
+      4: 400022
+    second: Screen2
+  - first:
+      4: 400024
+    second: Camera
+  - first:
+      4: 400026
+    second: Hatch
+  - first:
+      4: 400028
+    second: IVA
+  - first:
+      4: 400030
+    second: Lamp_001
+  - first:
+      23: 2300000
+    second: Airlock
+  - first:
+      23: 2300002
+    second: Arm_Control_Base_L
+  - first:
+      23: 2300004
+    second: Arm_Control_Base_R
+  - first:
+      23: 2300006
+    second: //RootNode
+  - first:
+      23: 2300008
+    second: Platform_Base
+  - first:
+      23: 2300010
+    second: Screen
+  - first:
+      23: 2300012
+    second: Stick_L
+  - first:
+      23: 2300014
+    second: Stick_R
+  - first:
+      23: 2300016
+    second: Window
+  - first:
+      23: 2300018
+    second: AlarmLight
+  - first:
+      23: 2300020
+    second: Screen1
+  - first:
+      23: 2300022
+    second: Screen2
+  - first:
+      23: 2300024
+    second: Hatch
+  - first:
+      23: 2300026
+    second: IVA
+  - first:
+      33: 3300000
+    second: Airlock
+  - first:
+      33: 3300002
+    second: Arm_Control_Base_L
+  - first:
+      33: 3300004
+    second: Arm_Control_Base_R
+  - first:
+      33: 3300006
+    second: //RootNode
+  - first:
+      33: 3300008
+    second: Platform_Base
+  - first:
+      33: 3300010
+    second: Screen
+  - first:
+      33: 3300012
+    second: Stick_L
+  - first:
+      33: 3300014
+    second: Stick_R
+  - first:
+      33: 3300016
+    second: Window
+  - first:
+      33: 3300018
+    second: AlarmLight
+  - first:
+      33: 3300020
+    second: Screen1
+  - first:
+      33: 3300022
+    second: Screen2
+  - first:
+      33: 3300024
+    second: Hatch
+  - first:
+      33: 3300026
+    second: IVA
+  - first:
+      43: 4300000
+    second: IVA
+  - first:
+      43: 4300002
+    second: Platform_Base
+  - first:
+      43: 4300004
+    second: Window
+  - first:
+      43: 4300006
+    second: Airlock
+  - first:
+      43: 4300008
+    second: Screen
+  - first:
+      43: 4300010
+    second: Arm_Control_Base_R
+  - first:
+      43: 4300012
+    second: Stick_R
+  - first:
+      43: 4300014
+    second: Arm_Control_Base_L
+  - first:
+      43: 4300016
+    second: Stick_L
+  - first:
+      43: 4300018
+    second: AlarmLight
+  - first:
+      43: 4300020
+    second: Screen1
+  - first:
+      43: 4300022
+    second: Screen2
+  - first:
+      43: 4300024
+    second: Hatch
+  - first:
+      74: 7400000
+    second: Default Take
+  - first:
+      95: 9500000
+    second: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: AlarmLight.001
+    second: {fileID: 2100000, guid: c06557da67a8d296098dd8d88b0b58db, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MEP Control Base.001
+    second: {fileID: 2100000, guid: c06557da67a8d296098dd8d88b0b58db, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MEP Control Stick.001
+    second: {fileID: 2100000, guid: c06557da67a8d296098dd8d88b0b58db, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MEP IVA Mat.002
+    second: {fileID: 2100000, guid: c06557da67a8d296098dd8d88b0b58db, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MEP IVA Window.001
+    second: {fileID: 2100000, guid: c06557da67a8d296098dd8d88b0b58db, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MEP Screen.001
+    second: {fileID: 2100000, guid: c06557da67a8d296098dd8d88b0b58db, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MEP_Hatch.001
+    second: {fileID: 2100000, guid: c06557da67a8d296098dd8d88b0b58db, type: 2}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
     isReadable: 1
   meshes:
@@ -105,13 +297,24 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 0
     importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
@@ -121,9 +324,14 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 4
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -133,11 +341,16 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 1
   humanoidOversampling: 1
+  avatarSetup: 0
   additionalBone: 1
   userData: 
   assetBundleName: 
