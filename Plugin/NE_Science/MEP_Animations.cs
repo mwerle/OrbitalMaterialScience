@@ -27,7 +27,7 @@ namespace NE_Science
 
         private MEP_Module lab;
 
-        private Light warnLight;
+        private Light warnRotationLight;
         private Light warnPointLight;
 
         private bool error = false;
@@ -70,12 +70,14 @@ namespace NE_Science
 
             for (int idx = 0, count = lights.Length; idx < count; idx++)
             {
+                // NOTE: The light names are the names of the corresponding
+                // light objects in the Unity project
                 var light = lights[idx];
-                if (light.name == "rotationLight")
+                if (light.name == "WarnRotationLight")
                 {
-                    warnLight = light;
+                    warnRotationLight = light;
                 }
-                else if (light.name == "WarnPointLlight")
+                else if (light.name == "WarnPointLight")
                 {
                     warnPointLight = light;
                 }
@@ -91,7 +93,7 @@ namespace NE_Science
                     switchLightsOn();
                     error = true;
                 }
-                warnLight?.transform.Rotate(Time.deltaTime * 180, 0, 0);
+                warnRotationLight?.transform.Rotate(Time.deltaTime * 180, 0, 0);
             }
             else
             {
@@ -105,9 +107,9 @@ namespace NE_Science
 
         private void switchLightsOff()
         {
-            if (warnLight != null)
+            if (warnRotationLight != null)
             {
-                warnLight.intensity = 0f;
+                warnRotationLight.intensity = 0f;
             }
             else
             {
@@ -125,9 +127,9 @@ namespace NE_Science
 
         private void switchLightsOn()
         {
-            if (warnLight != null)
+            if (warnRotationLight != null)
             {
-                warnLight.intensity = 6f;
+                warnRotationLight.intensity = 6f;
             }
             else
             {

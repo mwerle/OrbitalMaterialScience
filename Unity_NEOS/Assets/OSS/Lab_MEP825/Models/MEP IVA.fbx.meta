@@ -233,7 +233,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: AlarmLight.001
-    second: {fileID: 2100000, guid: c06557da67a8d296098dd8d88b0b58db, type: 2}
+    second: {fileID: 2100000, guid: 78f7e5b8e724e522693700cb7a2e2d22, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -263,7 +263,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: MEP_Hatch.001
-    second: {fileID: 2100000, guid: c06557da67a8d296098dd8d88b0b58db, type: 2}
+    second: {fileID: 2100000, guid: d79cdc77a5cbc87858151f3961b12c6b, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -299,10 +299,10 @@ ModelImporter:
     addColliders: 0
     useSRGBMaterialColor: 1
     sortHierarchyByName: 1
-    importVisibility: 0
+    importVisibility: 1
     importBlendShapes: 1
-    importCameras: 0
-    importLights: 0
+    importCameras: 1
+    importLights: 1
     fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
