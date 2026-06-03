@@ -1,0 +1,89 @@
+Kemini - experiments in Mk1 pod
+
+Configuration
+=============
+Kemini experiments are hard-coded in Kemini_ExperimentData.cs
+
+SUGGEST: Experiments are loaded from a definition file
+-> Would allow people to define additional experiments
+-> Would allow translators to ship experiments in local languages
+
+
+Basic tests
+===========
+
+Assume:
+- experiments can only be recovered, not transmitted?
+- experiments can only be performed once?
+
+TESTS SCENARIOS:
+1. Perform as expected
+	Build rocket with Mk1 pod, add experiment(s), perform experiment(s), land, recover
+1. perform experiment; try to transmit / collect / move to another pod
+2. perform experiemnt; try to clear
+
+
+Test 1: Add experiments
+- Create new ship, start with Command Pod Mk1
+- Right-click on Pod
+	YES: Have 2x Add Experiment
+- Click on Add Experiment
+	Popup: Allows to select D5, D8, MSC3, D7, D10 or Close
+	SUGGEST: Full-name of each experiment!
+
+Can add/remove experiments
+
+** NOTE: can click on both add-experiment buttons, get 2 popups
+	-> Does not appear to cause problems; can move both popups and select in any order
+	-> Suggest: lock input if possible to only allow a single popup
+
+	
+D5 - Star Occultation
+D8 - Spacecraft Radiation Level
+
+
+OMS ESC - cannot add Kemini Experiments
+** Yes/No?
+
+Performing Experiments
+======================
+1. On launchpad
+	Odd, must "install" first?  Wouldn't it make sense to have them already installed?
+	-> Can only install 1 at a time.
+	-> "Start" and "Pause Research" button available, even though Research was not started.
+	-> Once research bar is full, can still "Pause Research" or "End D5"
+	-> After "End", can "Finalize"
+	
+	** NOTE: Too many steps.
+	** NOTE: After "install", UI is not updated to start. Must right-click on pod again
+	
+	** NOTE: On "Finalize", error message comes up if experiment can't be done
+		-> SUGGEST: Error message should be on "Start"
+	
+	After "Finalize", "Review" buttons become available for each experiment
+	-> Should they not be just part of the standard Review GUI?
+	Review Screen:
+		Reset, Keep, Transmit
+		RESET: After reset, shows Finalize button again
+
+2. Errors On Landing:
+(On recovery, no science or flight complete popup - possible I selected return to space centre instead of recover vessel)
+Ship still listed as not recovered!
+
+Transmitting Experiment
+=======================
+After transmitting, can finalize again
+After transmitting, can clean experiment
+
+Resetting Experiment
+====================
+After resetting, can finalize again; appears to keep experiment data
+
+Moving Experiments
+==================
+Can only move experiment after it was installed
+ESC pods:
+	Cannot load Kemini experiments in VAB
+	But can move experiment to ESC pods in flight
+
+

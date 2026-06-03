@@ -1,0 +1,107 @@
+# MEP825
+========
+
+## Model
+
+## Unity
+When importing the model into Unity, the following settings are required
+
+### External
+
+#### Import Settings
+- split the animation into 4, which are referenced inside the code and played
+  forwards or backwards as required:
+  - "Deploy": frames 0 - 48
+  - "StartExperiment": frames 48 - 280
+  - "ErrorOnStart": frames 48 - 165
+  - "ErrorOnStop": frames 170 - 280
+
+#### Unity Editor
+- Add an empty GameObject and add the model under this
+  - Add the "PartTools" script to this and fill out
+    - ModelName: "NE_MEP825" (referenced in part configuration)
+
+- Ensure the model is rotated such that the platform faces Y+ and the airlock
+  faces Z+
+  - apply any necessary rotations to root-level object, not the GameObject
+
+- Add an "Animation" component to the root-level object and add the four
+  animations to it
+
+- Shaders: ensure this is set to "KSP/Bumped Specular" for all objects and use
+  the "NE_MEP825_Texture" and "NE_MEP825_NormalMap" for it
+
+- Add named lights, which are referenced inside the code:
+  - "platformLight - the spotlight illuminating the platform
+  - "WarnPointLight" - the warning light on the platform
+  - "WarnRotationLight" - the rotating warning light on the platform
+  - TODO: add these lights in Blender
+  
+- Add colliders
+  - NOTE: Ladders need to be tagged "Ladder", Airlocks need to be tagged 
+    "Airlock".
+  - Add a "MeshCollider" to the main object and set the collider mesh to
+    "MEB_Base"
+    - TODO: add the collider mesh to Blender so it can be simpler
+    - TODO: want a collider mesh for the platform as well..
+  - For the Airlock, add ladder and collider
+  - For the Platform Rails, add ladders
+
+### Overlay
+
+### Internal
+- Add named lights, which are referenced in the script:
+  - "AlarmLight" - the light on the control board
+  - "SpotLight" - the light illuninating the interior
+- Add named transform for the Kerbal Seat, referenced in the part configuration
+  - "InternalSeat"
+
+### Internal Screen
+- NOTE: this model is used by both the Status Screen and the Experiment Screen
+  props. Additional textures need to be installed in GameData which are
+  referenced in the script.
+
+
+
+
+
+## Overview
+-----------
+
+- MEP-825 and MSL-1000 need to be attached to the station.
+- MSL-1000 needs to be staffed in order to generate "Lab Time"
+- Exposure experiment needs to be brought to station
+- Exposure experiment needs to be "moved" to MEP-825
+- Exposure experiment needs to be "Prepared" (requires "Lab Time")
+- Exposure experiment needs to be "Exposed" (requires "Exposure Time")
+- Exposure experiment needs to be "Finished"
+- Exposure experiement needs to be "moved" to a storage container
+- Exposure experiment needs to be "finalized" and returned to Kerbin for (more) science
+
+
+- whenever an experiment is exposed or retrieved, there is an increasing chance
+  that the robot arm gets stuck and will require fixing via EVA
+  - in this case, the external alarm light and the internal alarm light is
+    animated. Animation consists of setting intensity of a light object.
+
+## Proposed Changes
+-------------------
+
+### Functional
+
+1. SHOULD NOT need MSL to "Prepare" an experiment
+2. SHOULD need to be staffed in order to "Prepare" an experiment
+   - removing crew should PAUSE the Preparation, adding crew back in should resume it
+3. SHOULD be able to Pause/Resume "Preparation"
+3. SHOULD need to be staffed in order to perform any experiment action
+4. SHOULD NOT need to be staffed in order for "Exposure" stage of experiment to proceed
+5. SHOULD NOT be able to Pause/Resume exposure research
+
+### Graphical
+
+1. Alarm lights should be based on the actual object mesh using an emissive
+   material. Instead of having separate point lights, simply animate by changing
+   the emission of the object. Make it look like a real light!
+   - TODO: experiment
+
+

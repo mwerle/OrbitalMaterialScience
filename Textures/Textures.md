@@ -1,13 +1,16 @@
 NEOS Texturing
 ==============
 
-Textures for NEOS are made using GIMP and stored in Git as GIMP XCF files.
+Textures for NEOS are made using GIMP and stored in Git as GIMP `XCF` files.
 
-Each XCF is a multi-layered file containing, at a minimum, the UV Layout layer and the actual texture. In most cases it will also contain a normal map layer.
+Each `XCF` is a multi-layered file containing, at a minimum, the UV Layout
+layer and the actual texture. In most cases it will also contain a normal map
+layer.
 
-**Note:** The XCF file-format is a binary format and various features may not be compatible with future versions of GIMP.
+**Note:** The `XCF` file-format is a binary format and various features may not
+be compatible with past or future versions of GIMP.
 
-The latest version of GIMP used is 2.8.22.
+The latest version of GIMP used is 3.0.4.
 
 Requirements
 ------------
@@ -21,10 +24,12 @@ Inputs
   
 Outputs
 -------
-Outputs can be saved directly into the "Unity Projects" folder into the relevant Asset directory.
+Outputs should be saved directly into the "Unity Projects" folder into the
+relevant Asset directory to avoid file duplication in the project.
 
-* The texture, in PNG format
-* (Optional) The normal map, also in PNG format
+* The texture, in `PNG` format
+* (Optional) The normal map, also in `PNG` format
+* (Optional) The emission map, also in `PNG` format
 
 Procedure
 ---------
@@ -34,7 +39,8 @@ Procedure
    - Name the layer Texture
 1. Duplicate the Texture layer
    - Name it Texture_Cropped
-   - Overlay the UV_Layout layer then crop the texture to only cover the areas of the UV layout
+   - Overlay the UV_Layout layer then crop the texture to only cover the areas
+     of the UV layout
 1. Duplicate the Texture_Cropped layer
    - Name it Normal_Map
    - Desaturate the colours (Colors -> Desaturate)

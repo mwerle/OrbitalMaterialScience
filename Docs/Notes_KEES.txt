@@ -1,0 +1,64 @@
+KEES Experiments:
+1. store on PEC
+Right-click options:
+	Start Experiment
+
+2. Start Experiment (EVA or from ship)
+
+** Can interrupt experiment by grabbing it.
+ (BUG - experiment folds up after grabbed; either it should be non-grabbable,
+  or there should be a way to stop it first.  Ideally non-grabbable while
+  running, but have option to interrupt experiment and fold it up.
+  Possibly able to finalize before exposure is complete for partial science?)
+
+3. When exposure done, experiment folds up automatically
+	SUGGEST: Finalize should do that.
+Right-click options:
+	Finalize (in flight)
+	Deploy (when landed; debug only?)
+	(BUG? - only available from ship, not EVA)
+	(BUG? shows data review screen, with options to reset and transmit)
+
+4. Finalize experiment (assuming nothing has killed it)
+Right-click options:
+	Review Data
+	(BUG? shows data review screen, with options to reset and transmit)
+	-> Reset - does nothing? but stops the "Review Data" button from being shown
+		Does remove the science data!
+	-> Transmit - transmits; afterwards allows lab to clean experiment (but experiment remains "finalized"); "Review Data" button is hidden.
+	-> Keep Data - does nothing; can review data again afterwards.
+
+
+
+Aborted Run (Changed biomes)
+1. store on PEC
+Right-click options:
+	Start Experiment
+
+2. Start Experiment (EVA or from ship)
+	-> Experiment unfold and message "Experiment started" displayed.
+
+3. Change biome
+	-> Experiment folds up and message "Experiment ruined" displayed.
+	Right-click options:
+		Start Experiment (BUG; expect none and status "ruined" displayed)
+
+4. Start Experiment
+	-> (BUG) Experiment unfolds and message "Experiment started" displayed.
+		EXPECT: error message "Experiment Ruined" displayed
+
+		
+(resettable=false; rerunnable=?)
+Start; Complete; Reset
+	=> ?? Still shows as Finalized; no RMB options.  Lab offers "Process Lab Data"
+	-> Process Data -> Shows "Review Data" dialog
+	
+Start; Complete; Transmit
+	=> ?? Still shows as Finalized; no RMB options.  Lab offers "Clean Experiment"
+	-> Clean -> no effect?
+
+(resettable=false; rerunnable=false)
+Start; Complete; Reset
+	=>
+Start; Complete; Transmit
+	=>

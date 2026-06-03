@@ -97,7 +97,7 @@ for ultimate interoperability and kindness to Git.
 [30]: https://www.blender.org/
 
 ## Unity Projects
-The **Unity Projects** directory contains the Unity configuration for all parts
+The `Unity_NEOS` directory contains the Unity configuration for all parts
 used in NEOS.
 
 The projects are in the process of being updated to Unity ~~5.4.0p4~~ 
@@ -108,31 +108,31 @@ Each project contains the [PartTools][41] plugin, which must be added to any
 new projects. Older projects are in the process of being upgraded from
 PartTools 0.23.
 
-For the sake of interoperability, the *PartTools.cfg* file should be edited
-manually to provide a relative path to the *GameData* directory, which should
+For the sake of interoperability, the `PartTools.cfg` file should be edited
+manually to provide a relative path to the `GameData` directory, which should
 be set to be the one at the root directory of NEOS.
 
 **IMPORTANT:** Ensure that each project is configured to use
 *"Visible Meta Files"* (Edit -> Project Settings -> Editor) and that the
-meta-files are added to Git.  The "Library" folder should not be added!
+meta-files are added to Git.  The `Library` folder should not be added!
 Furthermore the *"Asset Serialisation"* setting should be set to
 *"Force Text"*. 
 
-[See more](Unity%20Projects/Unity.md)
+[See more](Unity_NEOS/Unity.md)
 
 ### Textures
-Model textures must be exported in the **MDM** format to ensure that they
-can be replaced with other formats with different file extensions.
+The texture source files are managed in the `Textures` directory and are in
+the GIMP `.xcf` format.
+
+The individual texture files are exported from Gimp in `.png` format and saved
+directly in the Unity projects directory.
 
 **IMPORTANT:** Only the textures which are actually attached to the model are
-exported by *PartTools*. As each experiment has its own texture which
-overwrites the default model texture, the experiment textures must be manually
-copied into the output directory if they have been modified.
+exported by *PartTools*. As various parts overwrite the actual texture used
+in the game during runtime, all textures which are used but not directly
+attached to a model must be manually updated in the `GameData` directory.
 
-After generating the final files, textures should be converted to **DDS**
-format. While various utilities exist, the easiest by far is the
-[KSP to DDS textured converter][42] although it is currently only available
-for Windows.
+This comprises textures such as experiment textures and IVA screen textures.
 
 [See more](Textures/Textures.md)
 
@@ -151,10 +151,10 @@ create KSPedia articles.
 
 ## Part Configurations
 The actual KSP Part and Experiment Configurations are maintained directly in
-the **GameData** directory.
+the `GameData` directory.
 
 ## Localization
-The localization files are also maintained directly in the **GameData**
+The localization files are also maintained directly in the `GameData`
 directory.
 
 ## Making a Release
