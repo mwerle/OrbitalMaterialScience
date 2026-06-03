@@ -269,7 +269,7 @@ GameObject:
   - component: {fileID: 499029336}
   - component: {fileID: 499029338}
   - component: {fileID: 499029337}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Airlock Box
   m_TagString: Airlock
   m_Icon: {fileID: 0}
@@ -1001,7 +1001,7 @@ GameObject:
   - component: {fileID: 1474216484}
   - component: {fileID: 1474216486}
   - component: {fileID: 1474216485}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Ladder
   m_TagString: Ladder
   m_Icon: {fileID: 0}
