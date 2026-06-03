@@ -119,8 +119,7 @@ namespace NE_Science
             {
                 if (_alarmLight == null)
                 {
-                    var screen = part.internalModel?.FindModelTransform("AlarmLight");
-                    var light = screen?.GetComponent<Light>();
+                    var light = part.internalModel.FindModelComponent<Light>("AlarmLight");
                     if( light == null )
                     {
                         NE_Helper.logError("MEP_IVA_Alarm_Animation: Could not find AlarmLight");
@@ -137,7 +136,7 @@ namespace NE_Science
             {
                 if (_lightMat == null)
                 {
-                    _lightMat = alarmLight?.GetComponent<Renderer>()?.material;
+                    _lightMat = part.internalModel.FindModelComponent<Renderer>("AlarmLight")?.material;
                 }
                 return _lightMat;
             }

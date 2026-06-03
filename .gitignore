@@ -139,9 +139,15 @@ UpgradeLog*.htm
 App_Data/*.mdf
 App_Data/*.ldf
 
-############### merge backups (git merge / kdiff3 / ...)#############*.orig
+#############
+## merge backups (git merge / kdiff3 / ...)
+#############
+*.orig
 
-############### Blender#############*.blend1
+#############
+## Blender
+#############
+*.blend1
 
 #############
 ## Unity
