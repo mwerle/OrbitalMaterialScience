@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MSL1000_Interior
+  m_Name: MSL1000_Prop_CIR
   m_Shader: {fileID: 4800000, guid: 440ec76b6cd2107448cec7a61105b099, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
@@ -30,7 +30,8 @@ Material:
     m_Floats:
     - _Opacity: 1
     - _RimFalloff: 0.1
-    - _Shininess: 0.052858572
+    - _Shininess: 0.078125
+    - _UnderwaterFogFactor: 0
     m_Colors:
     - _BurnColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
