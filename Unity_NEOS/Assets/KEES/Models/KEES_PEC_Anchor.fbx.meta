@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 3f3f160086d7aaa4d853303fabb5152c
+guid: 808b5b65f86d7984d894619b1ba62c7a
 ModelImporter:
   serializedVersion: 19301
   internalIDToNameTable: []
@@ -7,8 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: KEES_PEC
-    second: {fileID: 2100000, guid: 19e7c45a338f5c84f93bf719bfef28d7, type: 2}
+      name: KEES_PEC_Anchor
+    second: {fileID: 2100000, guid: 63c25b642d0522b95b5e381a62311bb2, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
