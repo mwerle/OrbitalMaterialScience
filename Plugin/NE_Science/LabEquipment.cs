@@ -1,6 +1,6 @@
 ﻿/*
  *   This file is part of Orbital Material Science.
- *   
+ *
  *   Orbital Material Science is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -21,7 +21,7 @@ using KSP.Localization;
 namespace NE_Science
 {
     /*
-     *Module used to add Lab Equipment to the Tech tree. 
+     *Module used to add Lab Equipment to the Tech tree.
      */
     public class LabEquipmentModule : PartModule
     {
@@ -42,6 +42,17 @@ namespace NE_Science
         [KSPField(isPersistant = false)]
         public string reactant = "";
 
+        public override void OnLoad(ConfigNode node)
+        {
+            base.OnLoad(node);
+            // Upgrade from v0.10.0 and earlier games
+            if (product.Equals(Resources.LEGACY_EXPOSURE_TIME))
+            {
+                product = Resources.EXPOSURE_TIME;
+
+
+            }
+        }
     }
 
     /*
@@ -180,6 +191,11 @@ namespace NE_Science
             float cost = NE_Helper.GetValueAsFloat(node, COST_VALUE);
 
             string product = node.GetValue(PRODUCT_VALUE);
+            // Upgrade ExposureTime from 0.10.0 and earlier savegames
+            if (product.Equals(Resources.LEGACY_EXPOSURE_TIME))
+            {
+                product = Resources.EXPOSURE_TIME;
+            }
             float productPerHour = NE_Helper.GetValueAsFloat(node, PRODUCT_PER_HOUR_VALUE);
 
             string reactant = node.GetValue(REACTANT_VALUE);

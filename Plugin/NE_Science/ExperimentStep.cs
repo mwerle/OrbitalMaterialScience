@@ -1,6 +1,6 @@
 ﻿/*
  *   This file is part of Orbital Material Science.
- *   
+ *
  *   Orbital Material Science is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -196,6 +196,13 @@ namespace NE_Science
         {
             base.load(node);
             res = node.GetValue(RES_VALUE);
+            // Upgrade from v0.10.0 and earlier
+            if (res.Equals(Resources.LEGACY_EXPOSURE_TIME))
+            {
+                NE_Helper.log(String.Format("Upgrading ExposureTime in node {0}",
+                    node.name));
+                res = Resources.EXPOSURE_TIME;
+            }
             amount = NE_Helper.GetValueAsFloat(node, AMOUNT_VALUE);
         }
 
@@ -212,22 +219,22 @@ namespace NE_Science
 
         public override void start(startCallback cbMethod)
         {
-            NE_Helper.log("ResExppStep.start()");
+            NE_Helper.log("ResExpStep.start()");
             if(canStart()){
                 Lab lab = ((LabEquipment)exp.store).getLab();
                 if (lab != null && !OMSExperiment.checkBoring(lab.vessel, true))
                 {
-                    NE_Helper.log("ResExppStep.start(): create Resource");
+                    NE_Helper.log("ResExpStep.start(): create Resource");
                     ((LabEquipment)exp.store).createResourceInLab(res, amount);
                     cbMethod(true);
                     return;
                 }
                 else
                 {
-                    NE_Helper.logError("ResExppStep.start(): Lab null or boring. Boring: " + OMSExperiment.checkBoring(lab.vessel, true));
+                    NE_Helper.logError("ResExpStep.start(): Lab null or boring. Boring: " + OMSExperiment.checkBoring(lab.vessel, true));
                 }
             }
-            NE_Helper.log("ResExppStep.start(): can NOT start");
+            NE_Helper.log("ResExpStep.start(): can NOT start");
             cbMethod(false);
         }
 

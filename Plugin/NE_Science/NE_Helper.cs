@@ -46,6 +46,39 @@ namespace NE_Science
             {
                 KACWrapper.InitKACWrapper();
             }
+            GameEvents.onVesselLoaded.Add(OnVesselLoaded);
+        }
+
+        private void OnVesselLoaded(Vessel v)
+        {
+            NE_Helper.log("OnVesselLoaded: " + v.name);
+            // Upgrade ExposureTime from v0.10.0 and earlier save games
+            // TOOD: switch this on/off based on save game version
+            var parts = v.Parts.FindAll(part => part.name.Equals("NE.MEP") || part.name.StartsWith("NE.KEES"));
+            foreach (var p in parts)
+            {
+                if (!p.Resources.Contains(Resources.LEGACY_EXPOSURE_TIME))
+                {
+                    continue;
+                }
+
+                NE_Helper.log(String.Format("Upgrading ExposureTime in Part {0} of Vessel {1} from {2} to {3}",
+                    p.name, v.name, Resources.LEGACY_EXPOSURE_TIME, Resources.EXPOSURE_TIME));
+                var exposureTimeResource = p.Resources.Get(Resources.LEGACY_EXPOSURE_TIME);
+                var newExposureTimeResource = new PartResource(exposureTimeResource);
+                // Cannot simply rename a PartResource - it contains an internal `info` structure which, amongst other
+                // things, has the hash of the resource name which is then used in other APIs. So it is necessary to
+                // get the PartResourceDefinition and use that in SetInfo() in order to change the resource name.
+                var etDef = PartResourceLibrary.Instance.GetDefinition(Resources.EXPOSURE_TIME);
+                if (etDef == null)
+                {
+                    NE_Helper.logError(string.Format("Part Resource Definition for resource {0} not found.", Resources.EXPOSURE_TIME));
+                    return;
+                }
+                newExposureTimeResource.SetInfo(etDef);
+                p.Resources.Add(newExposureTimeResource);
+                p.Resources.Remove(exposureTimeResource);
+            }
         }
 
         /// <summary>

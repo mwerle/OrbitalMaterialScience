@@ -1,6 +1,6 @@
 ﻿/*
  *   This file is part of Orbital Material Science.
- *   
+ *
  *   Orbital Material Science is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -28,7 +28,9 @@ namespace NE_Science
 
         public const string FIR_TEST_RUN = "FIRTestRun";
 
-        public const string EXPOSURE_TIME = "ExposureTime";
+        // Exposure time used in v0.10.0 and earlier; clashes with WildBlueTools
+        public const string LEGACY_EXPOSURE_TIME = "ExposureTime";
+        public const string EXPOSURE_TIME = "NE_ExposureTime";
 
         public const string PRINT_LAYER = "3D_PrintLayer";
 

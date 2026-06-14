@@ -25,8 +25,7 @@ namespace NE_Science
     {
         public static PartResource getResource(Part part, string name)
         {
-            PartResourceList resourceList = part.Resources;
-            return resourceList.Get(name);
+            return part.Resources.Get(name);
         }
 
         public static double getResourceAmount(Part part, string name)
@@ -50,26 +49,32 @@ namespace NE_Science
             return true;
         }
 
-        public static PartResource setResourceMaxAmount(Part part, string name, double max)
+        public static PartResource addResource(Part part, string name)
         {
-            PartResource res = getResource(part, name);
-            if (res == null && max > 0)
+            var res = getResource(part, name);
+            if (res == null)
             {
                 ConfigNode node = new ConfigNode("RESOURCE");
                 node.AddValue("name", name);
                 node.AddValue("amount", 0);
-                node.AddValue("maxAmount", max);
                 res = part.Resources.Add (node);
             }
-            else if (res != null && max > 0)
-            {
-                res.maxAmount = max;
-            }
-            else if (res != null && max <= 0)
-            {
-                part.Resources.Remove (res);
-            }
             return res;
+        }
+
+        public static void setResourceMaxAmount(Part part, string name, double max)
+        {
+            if (max <= 0)
+            {
+                part.Resources.Remove(name);
+                return;
+            }
+            var res = getResource(part, name);
+            if (res == null)
+            {
+                res = addResource(part, name);
+            }
+            res.maxAmount = max;
         }
 
         public static double getResourceDensity(string name)
